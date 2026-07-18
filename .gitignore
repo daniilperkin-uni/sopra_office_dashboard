@@ -3,3 +3,7 @@ frontend/node_modules/
 .env
 .idea
 .vscode/
+
+# Local Spring Boot profile overrides (may contain dev secrets)
+backend/backend/src/main/resources/application-dev.properties
+backend/backend/src/main/resources/application-local.properties
