@@ -6,14 +6,14 @@
 export function formatDate(date) {
   if (!date) return ''
 
-  let d;
+  let d
   if (Array.isArray(date) && date.length === 3) {
-    d = new Date(date[0], date[1] - 1, date[2]);
+    d = new Date(date[0], date[1] - 1, date[2])
   } else {
-    d = new Date(date);
+    d = new Date(date)
   }
 
-  if (isNaN(d.getTime())) return ''; // Invalid Date
+  if (isNaN(d.getTime())) return '' // Invalid Date
 
   const day = d.getDate().toString().padStart(2, '0')
   const month = (d.getMonth() + 1).toString().padStart(2, '0')
@@ -46,11 +46,11 @@ export function formatDateISO(date) {
 export function formatDateForAPI(date) {
   if (!date) return ''
 
-  let d;
+  let d
   if (Array.isArray(date) && date.length === 3) {
-    d = new Date(date[0], date[1] - 1, date[2]);
+    d = new Date(date[0], date[1] - 1, date[2])
   } else {
-    d = new Date(date);
+    d = new Date(date)
   }
 
   if (isNaN(d.getTime())) return ''
@@ -71,14 +71,14 @@ export function formatDateForAPI(date) {
 export function formatWeekday(date) {
   if (!date) return ''
 
-  let d;
+  let d
   if (Array.isArray(date) && date.length === 3) {
-    d = new Date(date[0], date[1] - 1, date[2]);
+    d = new Date(date[0], date[1] - 1, date[2])
   } else {
-    d = new Date(date);
+    d = new Date(date)
   }
 
-  if (isNaN(d.getTime())) return '';
+  if (isNaN(d.getTime())) return ''
 
   const options = { weekday: 'long' }
   return new Intl.DateTimeFormat('de-DE', options).format(d)

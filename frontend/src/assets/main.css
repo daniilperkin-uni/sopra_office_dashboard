@@ -4,9 +4,13 @@
 
 body {
   margin: 0;
-  font-family: 'Mulish', system-ui, -apple-system, sans-serif;
-  background-color: #F5F7FA;
-  color: #102A43;
+  font-family:
+    'Mulish',
+    system-ui,
+    -apple-system,
+    sans-serif;
+  background-color: #f5f7fa;
+  color: #102a43;
 }
 
 #app {
@@ -15,7 +19,7 @@ body {
 
 /* Custom utility classes for the new colors */
 .text-text-dark {
-  color: #102A43;
+  color: #102a43;
 }
 
 .text-primary {

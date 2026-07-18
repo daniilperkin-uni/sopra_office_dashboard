@@ -91,6 +91,9 @@ $ npm install # only needed for the first time or after changes in the package.j
 $ npm run dev
 ```
 
+The Vite dev server runs on port `3000` by default (see `vite.config.js`).
+The application will be accessible at `http://localhost:3000`.
+
 Here is an example for the `backend/src/main/resources/application-dev.properties` file:
 
 ```

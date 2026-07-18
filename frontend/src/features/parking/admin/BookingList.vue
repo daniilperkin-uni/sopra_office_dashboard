@@ -1,31 +1,22 @@
 <template>
   <div class="booking-list">
-    <div
-      v-if="bookings.length === 0"
-      class="text-center py-8 text-gray-500"
-    >
+    <div v-if="bookings.length === 0" class="text-center py-8 text-gray-500">
       Keine Reservierungen gefunden
     </div>
 
-    <div
-      v-else
-      class="space-y-6"
-    >
+    <div v-else class="space-y-6">
       <!-- Serien-Reservierungen -->
-      <div
-        v-if="groupedData.recurring.length > 0"
-        class="space-y-4"
-      >
+      <div v-if="groupedData.recurring.length > 0" class="space-y-4">
         <h3 class="font-bold text-gray-700 uppercase text-xs border-b pb-2">
           Serien-Reservierungen
         </h3>
-        
+
         <div
           v-for="group in groupedData.recurring"
           :key="group.reservation.id"
           class="border border-gray-200 rounded-lg overflow-hidden"
         >
-          <div 
+          <div
             class="bg-gray-50 p-3 sm:p-4 flex items-center justify-between cursor-pointer hover:bg-gray-100 transition-colors"
             @click="toggleSeries(group.reservation.id)"
           >
@@ -45,9 +36,9 @@
                 </div>
               </div>
             </div>
-            
+
             <div class="flex items-center gap-2 shrink-0">
-              <BaseButton 
+              <BaseButton
                 variant="secondary"
                 size="small"
                 title="Bearbeiten"
@@ -68,7 +59,7 @@
                   />
                 </svg>
               </BaseButton>
-              <BaseButton 
+              <BaseButton
                 variant="danger"
                 size="small"
                 title="Löschen"
@@ -100,13 +91,15 @@
             <div class="space-y-4">
               <!-- Name -->
               <div>
-                <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Name der Serie</label>
-                <input 
-                  v-model="seriesEditData.employeeName" 
-                  type="text" 
+                <label class="block text-xs font-medium text-gray-500 uppercase mb-1"
+                  >Name der Serie</label
+                >
+                <input
+                  v-model="seriesEditData.employeeName"
+                  type="text"
                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="Name des Mitarbeiters"
-                >
+                />
               </div>
 
               <!-- Datum -->
@@ -116,18 +109,16 @@
                   v-model="seriesEditData.startDate"
                   label="Startdatum"
                 />
-                  
+
                 <div>
-                  <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Dauer (Monate)</label>
+                  <label class="block text-xs font-medium text-gray-500 uppercase mb-1"
+                    >Dauer (Monate)</label
+                  >
                   <select
                     v-model.number="seriesEditData.duration"
                     class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white"
                   >
-                    <option
-                      v-for="i in 6"
-                      :key="i"
-                      :value="i"
-                    >
+                    <option v-for="i in 6" :key="i" :value="i">
                       {{ i }} Monat{{ i > 1 ? 'e' : '' }}
                     </option>
                   </select>
@@ -136,19 +127,21 @@
 
               <!-- Wochentage -->
               <div>
-                <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Wochentage</label>
+                <label class="block text-xs font-medium text-gray-500 uppercase mb-2"
+                  >Wochentage</label
+                >
                 <div class="flex flex-wrap gap-2">
                   <label
                     v-for="day in weekdayOptions"
                     :key="day.value"
                     class="inline-flex items-center bg-white border border-gray-300 rounded px-2 py-1 cursor-pointer hover:bg-gray-50"
                   >
-                    <input 
-                      v-model="seriesEditData.daysOfWeek" 
-                      type="checkbox" 
+                    <input
+                      v-model="seriesEditData.daysOfWeek"
+                      type="checkbox"
                       :value="day.value"
                       class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500"
-                    >
+                    />
                     <span class="ml-2 text-sm text-gray-700">{{ day.label }}</span>
                   </label>
                 </div>
@@ -192,10 +185,7 @@
       </div>
 
       <!-- Einzel-Reservierungen -->
-      <div
-        v-if="groupedData.single.length > 0"
-        class="space-y-4"
-      >
+      <div v-if="groupedData.single.length > 0" class="space-y-4">
         <h3 class="font-bold text-gray-700 uppercase text-xs border-b pb-2">
           Einzel-Reservierungen
         </h3>
@@ -229,20 +219,20 @@ import DateInput from '@/components/common/DateInput.vue'
 const props = defineProps({
   bookings: {
     type: Array,
-    default: () => []
-  }
+    default: () => [],
+  },
 })
 
 const emit = defineEmits(['booking-deleted', 'booking-updated'])
 
 const expandedSeries = ref(new Set())
 const editingSeriesId = ref(null)
-const seriesEditData = ref({ 
-    employeeName: '',
-    startDate: '',
-    endDate: '',
-    daysOfWeek: [],
-    skipDates: []
+const seriesEditData = ref({
+  employeeName: '',
+  startDate: '',
+  endDate: '',
+  daysOfWeek: [],
+  skipDates: [],
 })
 const savingSeries = ref(false)
 
@@ -251,7 +241,7 @@ const weekdayOptions = [
   { value: 'TUESDAY', label: 'Di' },
   { value: 'WEDNESDAY', label: 'Mi' },
   { value: 'THURSDAY', label: 'Do' },
-  { value: 'FRIDAY', label: 'Fr' }
+  { value: 'FRIDAY', label: 'Fr' },
 ]
 
 /**
@@ -261,13 +251,13 @@ const groupedData = computed(() => {
   const single = []
   const recurringMap = new Map()
 
-  props.bookings.forEach(b => {
+  props.bookings.forEach((b) => {
     if (b.recurringReservation) {
       const id = b.recurringReservation.id
       if (!recurringMap.has(id)) {
         recurringMap.set(id, {
           reservation: b.recurringReservation,
-          entries: []
+          entries: [],
         })
       }
       recurringMap.get(id).entries.push(b)
@@ -275,12 +265,12 @@ const groupedData = computed(() => {
       single.push(b)
     }
   })
-  
+
   // Sorting by date
-  single.sort((a,b) => new Date(a.date) - new Date(b.date))
-  const recurring = Array.from(recurringMap.values()).map(group => {
-      group.entries.sort((a,b) => new Date(a.date) - new Date(b.date))
-      return group
+  single.sort((a, b) => new Date(a.date) - new Date(b.date))
+  const recurring = Array.from(recurringMap.values()).map((group) => {
+    group.entries.sort((a, b) => new Date(a.date) - new Date(b.date))
+    return group
   })
 
   return { single, recurring }
@@ -298,7 +288,7 @@ const toggleSeries = (id) => {
 
 const startEditSeries = (reservation) => {
   editingSeriesId.value = reservation.id
-  
+
   // Calculate approximate duration in months
   const start = new Date(reservation.startDate)
   const end = new Date(reservation.endDate)
@@ -307,12 +297,12 @@ const startEditSeries = (reservation) => {
   if (months < 1) months = 1
   if (months > 6) months = 6
 
-  seriesEditData.value = { 
+  seriesEditData.value = {
     employeeName: reservation.employeeName,
     startDate: reservation.startDate,
     duration: months,
     daysOfWeek: reservation.daysOfWeek,
-    skipDates: reservation.skipDates || []
+    skipDates: reservation.skipDates || [],
   }
 }
 
@@ -329,7 +319,7 @@ const saveSeriesEdit = async () => {
   savingSeries.value = true
   try {
     const { formatDateForAPI } = await import('@/utils/dateUtils')
-    
+
     // Calculate new End Date based on Start Date + Duration
     const startDateObj = new Date(seriesEditData.value.startDate)
     const endDateObj = new Date(startDateObj)
@@ -340,19 +330,22 @@ const saveSeriesEdit = async () => {
       startDate: formatDateForAPI(seriesEditData.value.startDate),
       endDate: formatDateForAPI(endDateObj),
       daysOfWeek: seriesEditData.value.daysOfWeek,
-      skipDates: seriesEditData.value.skipDates.map(d => formatDateForAPI(d))
+      skipDates: seriesEditData.value.skipDates.map((d) => formatDateForAPI(d)),
     }
-    
+
     await parkingApi.updateRecurringReservation(editingSeriesId.value, payload)
-    
+
     // Success feedback (using name)
     alert(`Serie ${seriesEditData.value.employeeName} erfolgreich aktualisiert.`)
-    
+
     editingSeriesId.value = null
     emit('booking-updated')
   } catch (e) {
     console.error(e)
-    const msg = e.response?.data?.detail || e.response?.data?.message || "Fehler beim Aktualisieren der Serie."
+    const msg =
+      e.response?.data?.detail ||
+      e.response?.data?.message ||
+      'Fehler beim Aktualisieren der Serie.'
     alert(msg)
   } finally {
     savingSeries.value = false
@@ -360,22 +353,28 @@ const saveSeriesEdit = async () => {
 }
 
 const deleteSeries = async (id) => {
-  if (!confirm("Möchten Sie wirklich die gesamte Serien-Reservierung und alle zugehörigen Termine löschen?")) return
-  
+  if (
+    !confirm(
+      'Möchten Sie wirklich die gesamte Serien-Reservierung und alle zugehörigen Termine löschen?'
+    )
+  )
+    return
+
   try {
     await parkingApi.deleteRecurringReservation(id)
     emit('booking-deleted')
   } catch (e) {
     console.error(e)
-    const msg = e.response?.data?.detail || e.response?.data?.message || "Fehler beim Löschen der Serie."
+    const msg =
+      e.response?.data?.detail || e.response?.data?.message || 'Fehler beim Löschen der Serie.'
     alert(msg)
   }
 }
 
 const formatDateRange = (entries) => {
-    if (entries.length === 0) return ''
-    const start = entries[0].date
-    const end = entries[entries.length - 1].date
-    return `${formatDate(start)} - ${formatDate(end)}`
+  if (entries.length === 0) return ''
+  const start = entries[0].date
+  const end = entries[entries.length - 1].date
+  return `${formatDate(start)} - ${formatDate(end)}`
 }
 </script>

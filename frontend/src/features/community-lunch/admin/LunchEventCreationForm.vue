@@ -1,5 +1,7 @@
 <template>
-  <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+  <div
+    class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"
+  >
     <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">
       Neues Lunch-Event anlegen
     </h3>
@@ -12,11 +14,8 @@
             type="date"
             class="w-full rounded-md border-gray-300 bg-white text-gray-900 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
             :class="{ 'border-red-500 focus:border-red-500 focus:ring-red-500': errors.date }"
-          >
-          <p
-            v-if="errors.date"
-            class="mt-1 text-sm text-red-600"
-          >
+          />
+          <p v-if="errors.date" class="mt-1 text-sm text-red-600">
             {{ errors.date }}
           </p>
         </div>
@@ -27,7 +26,7 @@
             type="text"
             placeholder="z.B. Geburtstagsfeier"
             class="w-full rounded-md border-gray-300 bg-white text-gray-900 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
-          >
+          />
         </div>
       </div>
 
@@ -51,20 +50,13 @@
             placeholder="Neue Option hinzufügen..."
             class="flex-grow rounded-md border-gray-300 bg-white text-gray-900 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
             @keyup.enter="createCatalogItem"
-          >
-          <BaseButton
-            variant="primary"
-            :disabled="!newItemLabel.trim()"
-            @click="createCatalogItem"
-          >
+          />
+          <BaseButton variant="primary" :disabled="!newItemLabel.trim()" @click="createCatalogItem">
             Hinzufügen
           </BaseButton>
         </div>
 
-        <div
-          v-if="loadingCatalog"
-          class="text-center py-4 text-gray-500 italic"
-        >
+        <div v-if="loadingCatalog" class="text-center py-4 text-gray-500 italic">
           Lade Optionen...
         </div>
         <div
@@ -87,9 +79,11 @@
               <div class="flex items-center gap-2">
                 <button
                   class="text-xs px-3 py-1.5 rounded border transition-colors font-semibold"
-                  :class="item.active
-                    ? 'text-red-600 border-red-200 hover:bg-red-50 dark:text-red-400 dark:border-red-900/50 dark:hover:bg-red-900/20'
-                    : 'text-green-600 border-green-200 hover:bg-green-50 dark:text-green-400 dark:border-green-900/50 dark:hover:bg-green-900/20'"
+                  :class="
+                    item.active
+                      ? 'text-red-600 border-red-200 hover:bg-red-50 dark:text-red-400 dark:border-red-900/50 dark:hover:bg-red-900/20'
+                      : 'text-green-600 border-green-200 hover:bg-green-50 dark:text-green-400 dark:border-green-900/50 dark:hover:bg-green-900/20'
+                  "
                   @click="toggleActive(item)"
                 >
                   {{ item.active ? 'Deaktivieren' : 'Aktivieren' }}
@@ -127,7 +121,7 @@
                 class="flex-grow mr-2 rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 text-sm py-1"
                 @keyup.enter="saveEdit"
                 @keyup.esc="cancelEdit"
-              >
+              />
               <div class="flex gap-2">
                 <button
                   class="text-green-600 hover:text-green-800"
@@ -199,185 +193,186 @@
  * Form for creating new community lunch events.
  * Manages event details and initial catalog item selection.
  */
-import { ref, onMounted, computed, nextTick, reactive, watch } from 'vue';
-import { lunchService } from '@/services/lunchService';
-import { isPastDate } from '@/utils/dateUtils';
-import BaseButton from '@/components/common/BaseButton.vue';
+import { ref, onMounted, computed, nextTick, reactive, watch } from 'vue'
+import { lunchService } from '@/services/lunchService'
+import { isPastDate } from '@/utils/dateUtils'
+import BaseButton from '@/components/common/BaseButton.vue'
 
-const emit = defineEmits(['event-created']);
+const emit = defineEmits(['event-created'])
 
-const loading = ref(false);
-const loadingCatalog = ref(false);
-const catalogItems = ref([]);
-const newItemLabel = ref('');
-const showDeactivatedFirst = ref(false);
+const loading = ref(false)
+const loadingCatalog = ref(false)
+const catalogItems = ref([])
+const newItemLabel = ref('')
+const showDeactivatedFirst = ref(false)
 
 // Edit State
-const editingId = ref(null);
-const editLabel = ref('');
-const editInput = ref(null);
+const editingId = ref(null)
+const editLabel = ref('')
+const editInput = ref(null)
 
 const newEvent = ref({
   date: '',
   location: 'Büro',
-  note: ''
-});
+  note: '',
+})
 
 const errors = reactive({
-  date: ''
-});
+  date: '',
+})
 
 const validateForm = () => {
-  let isValid = true;
+  let isValid = true
   if (newEvent.value.date && isPastDate(newEvent.value.date)) {
-    errors.date = 'Lunch-Events können nicht in der Vergangenheit erstellt werden.';
-    isValid = false;
+    errors.date = 'Lunch-Events können nicht in der Vergangenheit erstellt werden.'
+    isValid = false
   } else {
-    errors.date = '';
+    errors.date = ''
   }
-  return isValid;
-};
+  return isValid
+}
 
-watch(() => newEvent.value.date, () => {
-  validateForm();
-});
+watch(
+  () => newEvent.value.date,
+  () => {
+    validateForm()
+  }
+)
 
 /**
  * Starts editing a catalog item.
  */
 const startEdit = (item) => {
-    editingId.value = item.id;
-    editLabel.value = item.label;
-    nextTick(() => {
-        const el = Array.isArray(editInput.value) ? editInput.value[0] : editInput.value;
-        el?.focus();
-    });
-};
+  editingId.value = item.id
+  editLabel.value = item.label
+  nextTick(() => {
+    const el = Array.isArray(editInput.value) ? editInput.value[0] : editInput.value
+    el?.focus()
+  })
+}
 
 /**
  * Cancels editing.
  */
 const cancelEdit = () => {
-    editingId.value = null;
-    editLabel.value = '';
-};
+  editingId.value = null
+  editLabel.value = ''
+}
 
 /**
  * Saves the edited label.
  */
 const saveEdit = async () => {
-    if (!editLabel.value.trim()) return;
-    try {
-        const updated = await lunchService.updateCatalogItem(editingId.value, editLabel.value);
-        // Update local state
-        const idx = catalogItems.value.findIndex(i => i.id === editingId.value);
-        if (idx !== -1) {
-            catalogItems.value[idx] = updated;
-        }
-        cancelEdit();
-    } catch (e) {
-        console.error(e);
-        if (e.response && e.response.status === 409) {
-            alert('Dieses Gericht existiert bereits.');
-        } else {
-            alert('Fehler beim Speichern.');
-        }
+  if (!editLabel.value.trim()) return
+  try {
+    const updated = await lunchService.updateCatalogItem(editingId.value, editLabel.value)
+    // Update local state
+    const idx = catalogItems.value.findIndex((i) => i.id === editingId.value)
+    if (idx !== -1) {
+      catalogItems.value[idx] = updated
     }
-};
+    cancelEdit()
+  } catch (e) {
+    console.error(e)
+    if (e.response && e.response.status === 409) {
+      alert('Dieses Gericht existiert bereits.')
+    } else {
+      alert('Fehler beim Speichern.')
+    }
+  }
+}
 
 /**
  * Sorts catalog items based on active status and label.
  */
 const sortedCatalogItems = computed(() => {
   return [...catalogItems.value].sort((a, b) => {
-    const aActive = a.active ? 1 : 0;
-    const bActive = b.active ? 1 : 0;
+    const aActive = a.active ? 1 : 0
+    const bActive = b.active ? 1 : 0
 
     if (showDeactivatedFirst.value) {
-      return aActive - bActive || a.label.localeCompare(b.label);
+      return aActive - bActive || a.label.localeCompare(b.label)
     } else {
-      return bActive - aActive || a.label.localeCompare(b.label);
+      return bActive - aActive || a.label.localeCompare(b.label)
     }
-  });
-});
+  })
+})
 
 /**
  * Loads all items from the food catalog.
  */
 const loadCatalog = async () => {
-  loadingCatalog.value = true;
+  loadingCatalog.value = true
   try {
-    catalogItems.value = await lunchService.getCatalogItems(false);
+    catalogItems.value = await lunchService.getCatalogItems(false)
   } catch (e) {
-    console.error("Failed to load catalog", e);
+    console.error('Failed to load catalog', e)
   } finally {
-    loadingCatalog.value = false;
+    loadingCatalog.value = false
   }
-};
+}
 
 /**
  * Creates a new catalog item and adds it to the list.
  */
 const createCatalogItem = async () => {
-  if (!newItemLabel.value.trim()) return;
+  if (!newItemLabel.value.trim()) return
   try {
-    const created = await lunchService.createCatalogItem(newItemLabel.value);
-    catalogItems.value.unshift(created);
-    newItemLabel.value = '';
+    const created = await lunchService.createCatalogItem(newItemLabel.value)
+    catalogItems.value.unshift(created)
+    newItemLabel.value = ''
   } catch (e) {
-    console.error(e);
+    console.error(e)
     if (e.response && e.response.status === 409) {
-         alert('Diese Option existiert bereits (aktiv oder inaktiv).');
+      alert('Diese Option existiert bereits (aktiv oder inaktiv).')
     } else {
-         alert('Fehler beim Erstellen der Option.');
+      alert('Fehler beim Erstellen der Option.')
     }
   }
-};
+}
 
 /**
  * Toggles the active status of a catalog item.
  */
 const toggleActive = async (item) => {
-  const newState = !item.active;
-  item.active = newState;
+  const newState = !item.active
+  item.active = newState
   try {
-    await lunchService.updateCatalogItemActive(item.id, newState);
+    await lunchService.updateCatalogItemActive(item.id, newState)
   } catch (e) {
-    console.error(e);
-    item.active = !newState;
-    alert('Fehler beim Aktualisieren des Status.');
+    console.error(e)
+    item.active = !newState
+    alert('Fehler beim Aktualisieren des Status.')
   }
-};
+}
 
 /**
  * Submits the form to create a new lunch event.
  */
 const createEvent = async () => {
   if (!validateForm()) {
-    return;
+    return
   }
 
-  loading.value = true;
+  loading.value = true
   try {
-    const activeItemIds = catalogItems.value
-        .filter(item => item.active)
-        .map(item => item.id);
+    const activeItemIds = catalogItems.value.filter((item) => item.active).map((item) => item.id)
 
     const payload = {
       ...newEvent.value,
-      initialCatalogItemIds: activeItemIds
-    };
-    await lunchService.createEvent(payload);
+      initialCatalogItemIds: activeItemIds,
+    }
+    await lunchService.createEvent(payload)
 
-    newEvent.value = { date: '', note: '' };
-    emit('event-created');
+    newEvent.value = { date: '', note: '' }
+    emit('event-created')
   } catch (e) {
-    console.error(e);
-    alert('Fehler beim Erstellen des Events');
+    console.error(e)
+    alert('Fehler beim Erstellen des Events')
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
-onMounted(loadCatalog);
+onMounted(loadCatalog)
 </script>

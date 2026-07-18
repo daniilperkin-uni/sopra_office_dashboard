@@ -1,5 +1,7 @@
 <template>
-  <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 sm:p-4 shadow-sm mb-3">
+  <div
+    class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 sm:p-4 shadow-sm mb-3"
+  >
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
       <div class="flex-1 w-full">
         <!-- Darts Layout -->
@@ -29,7 +31,9 @@
             <div class="flex items-center justify-between mt-2">
               <div class="flex items-center">
                 <span class="text-black text-xs mr-1">Ergebnis:</span>
-                <span class="px-2 py-0.5 rounded text-xs font-bold uppercase bg-gray-100 text-black">
+                <span
+                  class="px-2 py-0.5 rounded text-xs font-bold uppercase bg-gray-100 text-black"
+                >
                   {{ formatResult(match.matchResult) }}
                 </span>
               </div>
@@ -97,9 +101,9 @@
  * Represents a single match (Darts or Kicker) in the admin history.
  * Offers the possibility to delete the match after a security confirmation.
  */
-import { ref } from 'vue';
-import BaseButton from '@/components/common/BaseButton.vue';
-import { formatDate } from '@/utils/dateUtils';
+import { ref } from 'vue'
+import BaseButton from '@/components/common/BaseButton.vue'
+import { formatDate } from '@/utils/dateUtils'
 
 // Declares the match data and the type (darts/kicker).
 const props = defineProps({
@@ -111,32 +115,32 @@ const props = defineProps({
     type: String,
     required: true, // 'darts' or 'kicker'
   },
-});
+})
 
 // Declares the event for deleting a match.
-const emit = defineEmits(['delete', 'edit']);
-const deleting = ref(false);
+const emit = defineEmits(['delete', 'edit'])
+const deleting = ref(false)
 
 /**
  * Requests a confirmation and then triggers the delete event.
  */
 const deleteMatch = async () => {
-  if (!confirm('Bist du sicher, dass du dieses Match löschen möchtest?')) return;
+  if (!confirm('Bist du sicher, dass du dieses Match löschen möchtest?')) return
 
-  deleting.value = true;
+  deleting.value = true
   try {
-    emit('delete', { id: props.match.id, type: props.type });
+    emit('delete', { id: props.match.id, type: props.type })
   } finally {
-    deleting.value = false;
+    deleting.value = false
   }
-};
+}
 
 /**
  * Converts technical result codes into user-friendly texts.
  */
 const formatResult = (result) => {
-  if (result === 'TEAM_A_WIN') return 'Team A gewinnt';
-  if (result === 'TEAM_B_WIN') return 'Team B gewinnt';
-  return result;
-};
+  if (result === 'TEAM_A_WIN') return 'Team A gewinnt'
+  if (result === 'TEAM_B_WIN') return 'Team B gewinnt'
+  return result
+}
 </script>

@@ -1,9 +1,8 @@
 <template>
-  <div class="flex flex-col p-[60px] bg-white dark:bg-gray-800 rounded-3xl shadow-2xl h-full w-full">
-    <h3
-      id="column-title"
-      class="text-[58px] font-bold mb-8 text-primary text-center"
-    >
+  <div
+    class="flex flex-col p-[60px] bg-white dark:bg-gray-800 rounded-3xl shadow-2xl h-full w-full"
+  >
+    <h3 id="column-title" class="text-[58px] font-bold mb-8 text-primary text-center">
       {{ title }}
     </h3>
     <div
@@ -31,8 +30,8 @@
  * Renders a list of HighscoreCard components and limits the display to the
  * top 3 entries for leaderboards or 7 for history.
  */
-import { computed } from 'vue';
-import HighscoreCard from './HighscoreCard.vue';
+import { computed } from 'vue'
+import HighscoreCard from './HighscoreCard.vue'
 
 // Defines the title of the column and the list of entries to display.
 const props = defineProps({
@@ -48,7 +47,7 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-});
+})
 
 /**
  * Calculates the list of entries to display.
@@ -56,7 +55,7 @@ const props = defineProps({
  * - History/Others: Top 7
  */
 const displayItems = computed(() => {
-  const limit = props.isLeaderboard ? 3 : 7;
-  return props.items.slice(0, limit);
-});
+  const limit = props.isLeaderboard ? 3 : 7
+  return props.items.slice(0, limit)
+})
 </script>

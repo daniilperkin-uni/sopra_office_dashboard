@@ -8,7 +8,11 @@
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "vue-tsc --noEmit",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "format": "prettier --write src/ tests/",
+    "format:check": "prettier --check src/ tests/",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@fontsource/mulish": "^5.2.8",
@@ -32,6 +36,7 @@
     "globals": "^16.5.0",
     "jsdom": "^27.3.0",
     "postcss": "^8.4.28",
+    "prettier": "^3.9.5",
     "tailwindcss": "^3.3.3",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.53.1",

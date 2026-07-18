@@ -4,7 +4,9 @@
       The header displays the date and weekday formatted.
       It has a striking blue color to clearly highlight the date.
     -->
-    <div class="day-header bg-gray-100 text-primary px-14 py-10 flex items-baseline justify-between gap-4">
+    <div
+      class="day-header bg-gray-100 text-primary px-14 py-10 flex items-baseline justify-between gap-4"
+    >
       <h3 class="text-[68px] font-bold leading-tight">
         {{ formatDate(date) }}
       </h3>
@@ -29,7 +31,9 @@
             The label inside the bar shows either the name of the employee who reserved the spot,
             or the word 'frei' if the spot is available.
           -->
-          <span class="text-white font-bold text-[40px] bg-white bg-opacity-20 px-10 py-3 rounded-lg">
+          <span
+            class="text-white font-bold text-[40px] bg-white bg-opacity-20 px-10 py-3 rounded-lg"
+          >
             {{ isSpotOccupied(spot) ? getEmployeeForSpot(spot) : 'frei' }}
           </span>
         </div>
@@ -48,16 +52,16 @@ import { formatDate, formatWeekday } from '@/utils/dateUtils'
 const props = defineProps({
   date: {
     type: String,
-    required: true
+    required: true,
   },
   entries: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   maxSpots: {
     type: Number,
-    default: 5
-  }
+    default: 5,
+  },
 })
 
 // A helper function that checks if a specific parking spot (based on its number) is occupied.
@@ -101,8 +105,8 @@ const getEmployeeForSpot = (spotNumber) => {
 
 .horizontal-bar:hover {
   transform: translateX(4px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
-
-
 </style>

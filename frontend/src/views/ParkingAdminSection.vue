@@ -1,9 +1,7 @@
 <template>
   <div class="parking-admin-section p-4 sm:p-6">
     <div class="mb-6">
-      <h2 class="text-2xl sm:text-3xl font-bold text-text-dark">
-        Parking
-      </h2>
+      <h2 class="text-2xl sm:text-3xl font-bold text-text-dark">Parking</h2>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -21,10 +19,7 @@
             @filter-changed="handleFilterChanged"
           />
 
-          <div
-            v-if="parkingStore.adminLoading"
-            class="flex justify-center items-center h-64"
-          >
+          <div v-if="parkingStore.adminLoading" class="flex justify-center items-center h-64">
             <LoadingSpinner />
           </div>
 
@@ -46,17 +41,12 @@
 
           <div v-else>
             <p class="text-sm text-gray-600 mb-4">
-              Zeige {{ filteredBookings.length }} von {{ parkingStore.allEntries.length }} Reservierungen
-              <span
-                v-if="selectedDate"
-                class="font-medium"
-              >
+              Zeige {{ filteredBookings.length }} von
+              {{ parkingStore.allEntries.length }} Reservierungen
+              <span v-if="selectedDate" class="font-medium">
                 für den {{ formatDateForDisplay(selectedDate) }}
               </span>
-              <span
-                v-if="searchName"
-                class="font-medium"
-              >
+              <span v-if="searchName" class="font-medium">
                 <span v-if="selectedDate"> und </span>
                 Suche nach "{{ searchName }}"
               </span>
@@ -107,8 +97,12 @@ const formatDateForDisplay = (dateString) => {
  */
 const isSameDay = (dateString1, dateString2) => {
   if (!dateString1 || !dateString2) return false
-  const date1 = new Date(dateString1.includes('-') ? dateString1 : dateString1.split('.').reverse().join('-'))
-  const date2 = new Date(dateString2.includes('-') ? dateString2 : dateString2.split('.').reverse().join('-'))
+  const date1 = new Date(
+    dateString1.includes('-') ? dateString1 : dateString1.split('.').reverse().join('-')
+  )
+  const date2 = new Date(
+    dateString2.includes('-') ? dateString2 : dateString2.split('.').reverse().join('-')
+  )
   return date1.toDateString() === date2.toDateString()
 }
 
@@ -116,9 +110,10 @@ const isSameDay = (dateString1, dateString2) => {
  * Filters the list of bookings based on the selected date and/or employee name.
  */
 const filteredBookings = computed(() => {
-  return parkingStore.allEntries.filter(booking => {
+  return parkingStore.allEntries.filter((booking) => {
     const matchesDate = !selectedDate.value || isSameDay(booking.date, selectedDate.value)
-    const matchesName = !searchName.value ||
+    const matchesName =
+      !searchName.value ||
       booking.employeeName.toLowerCase().includes(searchName.value.toLowerCase())
 
     return matchesDate && matchesName

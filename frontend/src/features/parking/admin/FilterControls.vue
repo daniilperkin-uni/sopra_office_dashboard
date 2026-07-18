@@ -2,10 +2,7 @@
   <div class="filter-controls mb-4">
     <div class="flex flex-col sm:flex-row gap-4">
       <div class="flex-1">
-        <label
-          for="nameFilter"
-          class="block text-sm font-medium text-gray-700 mb-1"
-        >
+        <label for="nameFilter" class="block text-sm font-medium text-gray-700 mb-1">
           Nach Name suchen
         </label>
         <input
@@ -15,14 +12,11 @@
           placeholder="Name eingeben..."
           class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
           @input="handleNameInput"
-        >
+        />
       </div>
 
       <div class="flex-1">
-        <label
-          for="dateFilter"
-          class="block text-sm font-medium text-gray-700 mb-1"
-        >
+        <label for="dateFilter" class="block text-sm font-medium text-gray-700 mb-1">
           Nach Datum filtern
         </label>
         <input
@@ -31,15 +25,11 @@
           type="date"
           class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
           @change="handleDateChange"
-        >
+        />
       </div>
 
       <div class="flex items-end">
-        <BaseButton
-          variant="secondary"
-          class="w-full sm:w-auto"
-          @click="clearFilter"
-        >
+        <BaseButton variant="secondary" class="w-full sm:w-auto" @click="clearFilter">
           Filter löschen
         </BaseButton>
       </div>
@@ -52,19 +42,19 @@
  * Provides controls for filtering parking reservations.
  * Enables searching by employee name, selecting a specific date, or resetting filters.
  */
-import {ref, watch} from 'vue'
+import { ref, watch } from 'vue'
 import BaseButton from '@/components/common/BaseButton.vue'
 
 // Defines the props passed from the parent component.
 const props = defineProps({
   selectedDate: {
     type: String,
-    default: ''
+    default: '',
   },
   searchName: {
     type: String,
-    default: ''
-  }
+    default: '',
+  },
 })
 
 // Declares the events this component can emit to the parent component.
@@ -75,13 +65,19 @@ const localSelectedDate = ref(props.selectedDate)
 const localSearchName = ref(props.searchName)
 
 // Synchronizes the local values when the props change externally.
-watch(() => props.selectedDate, (newValue) => {
-  localSelectedDate.value = newValue
-})
+watch(
+  () => props.selectedDate,
+  (newValue) => {
+    localSelectedDate.value = newValue
+  }
+)
 
-watch(() => props.searchName, (newValue) => {
-  localSearchName.value = newValue
-})
+watch(
+  () => props.searchName,
+  (newValue) => {
+    localSearchName.value = newValue
+  }
+)
 
 // Called when the user types in the name search field.
 const handleNameInput = () => {

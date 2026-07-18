@@ -3,17 +3,12 @@
     <!-- Header specifically for Parking View -->
     <header class="bg-gray-100 text-primary shadow-sm w-full border-b border-gray-200">
       <div class="px-4 py-3 flex items-center">
-        <h1 class="text-7xl font-black flex-grow text-center tracking-wider">
-          itestra Parking
-        </h1>
+        <h1 class="text-7xl font-black flex-grow text-center tracking-wider">itestra Parking</h1>
       </div>
     </header>
 
     <div class="flex-grow p-6">
-      <div
-        v-if="loading"
-        class="flex justify-center items-center h-full"
-      >
+      <div v-if="loading" class="flex justify-center items-center h-full">
         <LoadingSpinner />
       </div>
       <div
@@ -22,18 +17,11 @@
       >
         <strong class="font-bold">Fehler:</strong>
         <span class="block sm:inline">{{ error }}</span>
-        <BaseButton 
-          variant="danger" 
-          class="mt-2" 
-          @click="refreshData"
-        >
+        <BaseButton variant="danger" class="mt-2" @click="refreshData">
           Erneut versuchen
         </BaseButton>
       </div>
-      <div
-        v-else
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-      >
+      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         <BarDisplay
           v-for="day in weekData.slice(0, 8)"
           :key="day.date"
@@ -52,26 +40,26 @@
  * It handles loading and error states and renders a BarDisplay component for each day
  * of the week.
  */
-import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
-import BarDisplay from '@/features/dashboard/components/BarDisplay.vue';
-import BaseButton from '@/components/common/BaseButton.vue';
+import LoadingSpinner from '@/components/common/LoadingSpinner.vue'
+import BarDisplay from '@/features/dashboard/components/BarDisplay.vue'
+import BaseButton from '@/components/common/BaseButton.vue'
 
 defineProps({
   weekData: {
     type: Array,
-    required: true
+    required: true,
   },
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   error: {
     type: String,
-    default: null
+    default: null,
   },
   refreshData: {
     type: Function,
-    required: true
-  }
-});
+    required: true,
+  },
+})
 </script>

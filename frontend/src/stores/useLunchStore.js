@@ -39,7 +39,12 @@ export const useLunchStore = defineStore('lunch', () => {
   }
 
   return {
-    events, loading, error, refreshCounter,
-    fetchUpcomingLunches, fetchCalendarLunches, refresh,
+    events,
+    loading,
+    error,
+    refreshCounter,
+    fetchUpcomingLunches,
+    fetchCalendarLunches,
+    refresh,
   }
 })

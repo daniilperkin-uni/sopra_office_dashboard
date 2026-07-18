@@ -5,11 +5,7 @@
       <!-- Column 1: Calendar (approx 33% - 4/12) -->
       <div class="col-span-4 h-full relative">
         <div class="h-full w-full rounded-2xl bg-white shadow-lg overflow-hidden relative">
-          <DashboardCalendar
-            ref="calendarRef"
-            :events="events"
-            class="h-full w-full"
-          />
+          <DashboardCalendar ref="calendarRef" :events="events" class="h-full w-full" />
         </div>
         <!-- Loading Overlay for Calendar -->
         <div
@@ -23,10 +19,7 @@
       <!-- Column 2: Parking (approx 33% - 4/12) -->
       <div class="col-span-4 h-full relative">
         <div class="h-full w-full rounded-2xl bg-white shadow-lg overflow-hidden">
-          <DashboardParkingSummary
-            :week-data="parkingData"
-            class="h-full w-full"
-          />
+          <DashboardParkingSummary :week-data="parkingData" class="h-full w-full" />
         </div>
         <div
           v-if="loadingState.parking"
@@ -75,21 +68,21 @@
  * Uses a 3-column layout (or grid) to display all information at a glance.
  * Layout is fixed for 4K display, as it is wrapped in a global scaler.
  */
-import { ref } from 'vue';
-import DashboardCalendar from '@/features/dashboard/components/DashboardCalendar.vue';
-import DashboardParkingSummary from '@/features/dashboard/components/DashboardParkingSummary.vue';
-import DashboardHighscoreColumn from '@/features/dashboard/components/DashboardHighscoreColumn.vue';
-import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
+import { ref } from 'vue'
+import DashboardCalendar from '@/features/dashboard/components/DashboardCalendar.vue'
+import DashboardParkingSummary from '@/features/dashboard/components/DashboardParkingSummary.vue'
+import DashboardHighscoreColumn from '@/features/dashboard/components/DashboardHighscoreColumn.vue'
+import LoadingSpinner from '@/components/common/LoadingSpinner.vue'
 
 // Receives all necessary data for the sub-components.
 defineProps({
   events: {
     type: Object,
-    default: () => ({})
+    default: () => ({}),
   },
   parkingData: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   highscoreData: {
     type: Object,
@@ -97,22 +90,22 @@ defineProps({
       'Match history': [],
       'Darts Leaderboard': [],
       'Kicker leaderboard': [],
-    })
+    }),
   },
   loadingState: {
     type: Object,
     default: () => ({
       calendar: false,
       parking: false,
-      highscore: false
-    })
-  }
-});
+      highscore: false,
+    }),
+  },
+})
 
-const calendarRef = ref(null);
+const calendarRef = ref(null)
 
 // Enables access to the calendar reference from outside (e.g., for date calculations).
 defineExpose({
-  calendarRef
-});
+  calendarRef,
+})
 </script>

@@ -56,8 +56,14 @@ export const useHighscoreStore = defineStore('highscore', () => {
   }
 
   return {
-    displayData, loading, error,
-    dartsMatches, kickerMatches, adminLoading, adminError,
-    fetchHighscore, fetchAdminMatches,
+    displayData,
+    loading,
+    error,
+    dartsMatches,
+    kickerMatches,
+    adminLoading,
+    adminError,
+    fetchHighscore,
+    fetchAdminMatches,
   }
 })

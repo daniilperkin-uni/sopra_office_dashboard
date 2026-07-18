@@ -2,9 +2,7 @@
   <div class="h-full w-full flex flex-col bg-white">
     <!-- Header -->
     <div class="p-10 border-b-2 border-primary/10 bg-gray-100">
-      <h2 class="text-7xl font-black text-primary text-center tracking-wider">
-        Kalender
-      </h2>
+      <h2 class="text-7xl font-black text-primary text-center tracking-wider">Kalender</h2>
     </div>
 
     <div class="flex-grow flex flex-col h-full overflow-hidden">
@@ -26,16 +24,8 @@
             {{ day.monthName }}
           </div>
 
-          <div
-            v-if="index === 0"
-            class="mt-5 text-2xl font-black opacity-90"
-          >
-            Heute
-          </div>
-          <div
-            v-else
-            class="mt-3 text-2xl font-semibold opacity-50"
-          >
+          <div v-if="index === 0" class="mt-5 text-2xl font-black opacity-90">Heute</div>
+          <div v-else class="mt-3 text-2xl font-semibold opacity-50">
             {{ day.weekdayShort }}
           </div>
         </div>
@@ -43,15 +33,12 @@
         <!-- Right Side: Content -->
         <div
           class="flex-1 flex flex-col justify-center px-12 py-4 bg-white"
-          :class="index !== upcomingDays.length - 1
-            ? 'shadow-[inset_0_-1px_0_rgba(0,0,0,0.55)]'
-            : ''"
+          :class="
+            index !== upcomingDays.length - 1 ? 'shadow-[inset_0_-1px_0_rgba(0,0,0,0.55)]' : ''
+          "
         >
           <!-- Empty State -->
-          <div
-            v-if="day.events.length === 0"
-            class="flex items-center text-gray-400 gap-6"
-          >
+          <div v-if="day.events.length === 0" class="flex items-center text-gray-400 gap-6">
             <span class="opacity-50">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -72,10 +59,7 @@
           </div>
 
           <!-- Events List -->
-          <div
-            v-else
-            class="flex flex-col gap-8"
-          >
+          <div v-else class="flex flex-col gap-8">
             <div
               v-for="(event, eIndex) in day.events"
               :key="eIndex"
@@ -101,110 +85,113 @@
  * Displays the next 3 days (Today + 2) in a vertical list.
  * Optimized for large 4K displays with readable typography and icons.
  */
-import { computed, ref, onMounted, watch } from 'vue';
-import { lunchService } from '@/services/lunchService';
+import { computed, ref, onMounted, watch } from 'vue'
+import { lunchService } from '@/services/lunchService'
 
 // Receives the calendar events as an object, grouped by date.
 const props = defineProps({
   events: {
     type: Object,
-    default: () => ({})
-  }
-});
+    default: () => ({}),
+  },
+})
 
-const lunchData = ref({});
+const lunchData = ref({})
 
 /**
  * Loads lunch data for the displayed days.
  */
 const fetchLunchData = async () => {
-  const dates = upcomingDays.value.map(day => day.dateStr);
-  if (dates.length === 0) return;
+  const dates = upcomingDays.value.map((day) => day.dateStr)
+  if (dates.length === 0) return
 
   try {
-    const events = await lunchService.getCalendarLunches(dates[0], dates[dates.length - 1]);
-    if (!Array.isArray(events)) return;
+    const events = await lunchService.getCalendarLunches(dates[0], dates[dates.length - 1])
+    if (!Array.isArray(events)) return
 
-    const initialMap = {};
+    const initialMap = {}
     for (const e of events) {
-      let label = 'Lunch';
+      let label = 'Lunch'
       if (e.note) {
-        label += ` (${e.note})`;
+        label += ` (${e.note})`
       }
-      initialMap[e.date] = label;
+      initialMap[e.date] = label
     }
     // Update immediately with basic info
-    lunchData.value = { ...lunchData.value, ...initialMap };
+    lunchData.value = { ...lunchData.value, ...initialMap }
 
     // Asynchronously update with results
     events.forEach(async (e) => {
       try {
-        const resultsData = await lunchService.getResults(e.id);
+        const resultsData = await lunchService.getResults(e.id)
         if (resultsData && Array.isArray(resultsData.results) && resultsData.results.length > 0) {
-          const topOption = resultsData.results[0];
+          const topOption = resultsData.results[0]
           if (topOption.count > 0) {
-            let newLabel = `Lunch`;
+            let newLabel = `Lunch`
             if (e.note) {
-              newLabel += ` (${e.note})`;
+              newLabel += ` (${e.note})`
             }
-            newLabel += ` : ${topOption.label}`;
-            lunchData.value[e.date] = newLabel;
+            newLabel += ` : ${topOption.label}`
+            lunchData.value[e.date] = newLabel
           }
         }
       } catch (resError) {
-        console.error(`Error loading lunch results for event ${e.id}`, resError);
+        console.error(`Error loading lunch results for event ${e.id}`, resError)
       }
-    });
-
+    })
   } catch (error) {
-    console.error('Error loading lunch data for dashboard calendar', error);
+    console.error('Error loading lunch data for dashboard calendar', error)
   }
-};
+}
 
 onMounted(() => {
-  fetchLunchData();
-});
+  fetchLunchData()
+})
 
 // Reload when events change (often implies date changes)
-watch(() => props.events, () => {
-  fetchLunchData();
-}, { deep: true });
+watch(
+  () => props.events,
+  () => {
+    fetchLunchData()
+  },
+  { deep: true }
+)
 
 // Extracts the label to display from the event object.
 const parseEvent = (event) => {
   return {
-    label: event.label || event.title || event.dashboardEventDescription
-  };
-};
+    label: event.label || event.title || event.dashboardEventDescription,
+  }
+}
 
 // Calculates the list of the next 3 days for display.
 const upcomingDays = computed(() => {
-  const days = [];
-  const today = new Date();
+  const days = []
+  const today = new Date()
 
   for (let i = 0; i < 3; i++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() + i);
+    const date = new Date(today)
+    date.setDate(today.getDate() + i)
 
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const dayOfMonth = date.getDate().toString().padStart(2, '0');
-    const dateStr = `${year}-${month}-${dayOfMonth}`;
+    const year = date.getFullYear()
+    const month = (date.getMonth() + 1).toString().padStart(2, '0')
+    const dayOfMonth = date.getDate().toString().padStart(2, '0')
+    const dateStr = `${year}-${month}-${dayOfMonth}`
 
-    const dayDigit = date.getDate().toString().padStart(2, '0');
-    const monthName = date.toLocaleDateString('de-DE', { month: 'short' }).replace('.', '');
-    const weekdayShort = date.toLocaleDateString('de-DE', { weekday: 'short' });
+    const dayDigit = date.getDate().toString().padStart(2, '0')
+    const monthName = date.toLocaleDateString('de-DE', { month: 'short' }).replace('.', '')
+    const weekdayShort = date.toLocaleDateString('de-DE', { weekday: 'short' })
 
     // Existing events
-    const dayEvents = [...(props.events[dateStr] || [])];
+    const dayEvents = [...(props.events[dateStr] || [])]
 
     // Integrate Community Lunch
     if (lunchData.value[dateStr]) {
       dayEvents.unshift({
         label: `🍴 ${lunchData.value[dateStr]}`,
         color: 'lunch',
-        isLunch: true
-      });
+        isLunch: true,
+      })
     }
 
     days.push({
@@ -212,14 +199,14 @@ const upcomingDays = computed(() => {
       dayDigit,
       monthName,
       weekdayShort,
-      events: dayEvents
-    });
+      events: dayEvents,
+    })
   }
-  return days;
-});
+  return days
+})
 
 // Exposes a method to retrieve the displayed dates (important for API calls).
 defineExpose({
-  getDisplayedDates: () => upcomingDays.value.map(day => day.dateStr)
-});
+  getDisplayedDates: () => upcomingDays.value.map((day) => day.dateStr),
+})
 </script>

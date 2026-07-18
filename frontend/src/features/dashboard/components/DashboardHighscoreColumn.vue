@@ -1,11 +1,10 @@
 <template>
-  <div class="flex flex-col bg-white rounded-2xl shadow-md border border-gray-200 h-full w-full overflow-hidden">
+  <div
+    class="flex flex-col bg-white rounded-2xl shadow-md border border-gray-200 h-full w-full overflow-hidden"
+  >
     <!-- Header -->
     <div class="bg-gray-100 p-8 border-b border-gray-200">
-      <h3
-        id="column-title"
-        class="font-black text-primary text-7xl text-center leading-none"
-      >
+      <h3 id="column-title" class="font-black text-primary text-7xl text-center leading-none">
         {{ title }}
       </h3>
     </div>
@@ -36,8 +35,8 @@
  * Renders a list of DashboardHighscoreCards.
  * Automatically limits the display to the top 3 (Leaderboard) or top 7 (Other).
  */
-import { computed } from 'vue';
-import DashboardHighscoreCard from './DashboardHighscoreCard.vue';
+import { computed } from 'vue'
+import DashboardHighscoreCard from './DashboardHighscoreCard.vue'
 
 const props = defineProps({
   title: {
@@ -51,12 +50,12 @@ const props = defineProps({
   isLeaderboard: {
     type: Boolean,
     default: false,
-  }
-});
+  },
+})
 
 // Limits the number of displayed items.
 const displayItems = computed(() => {
-  const limit = props.isLeaderboard ? 3 : 7;
-  return props.items.slice(0, limit);
-});
+  const limit = props.isLeaderboard ? 3 : 7
+  return props.items.slice(0, limit)
+})
 </script>

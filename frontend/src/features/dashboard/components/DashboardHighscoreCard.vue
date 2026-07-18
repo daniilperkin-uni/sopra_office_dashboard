@@ -1,18 +1,13 @@
 <template>
   <div
     class="flex justify-between items-center transition-all duration-300 border rounded-xl shadow-sm px-8 py-4"
-    :class="[
-      isPlaceholder ? 'opacity-20 pointer-events-none' : '',
-      rankColorClasses
-    ]"
+    :class="[isPlaceholder ? 'opacity-20 pointer-events-none' : '', rankColorClasses]"
     :role="isPlaceholder ? 'presentation' : 'listitem'"
     :tabindex="isPlaceholder ? -1 : 0"
     :aria-hidden="isPlaceholder"
   >
     <!-- Rank -->
-    <div 
-      class="flex items-center justify-center font-black leading-none text-6xl w-20"
-    >
+    <div class="flex items-center justify-center font-black leading-none text-6xl w-20">
       <span v-if="rank === 1">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -32,23 +27,16 @@
 
     <!-- Player -->
     <div class="flex flex-col text-left leading-tight flex-grow ml-4 overflow-hidden">
-      <span
-        class="font-black text-5xl truncate"
-      >
+      <span class="font-black text-5xl truncate">
         {{ label }}
       </span>
-      <span
-        v-if="secondaryText"
-        class="font-bold uppercase text-xl whitespace-nowrap opacity-70"
-      >
+      <span v-if="secondaryText" class="font-bold uppercase text-xl whitespace-nowrap opacity-70">
         {{ secondaryText }}
       </span>
     </div>
 
     <!-- Score -->
-    <div
-      class="font-black text-right tabular-nums text-6xl whitespace-nowrap ml-4"
-    >
+    <div class="font-black text-right tabular-nums text-6xl whitespace-nowrap ml-4">
       {{ value }}
     </div>
   </div>
@@ -60,30 +48,30 @@
  * Displays rank, player name, and score.
  * Supports special highlights for the top 3 (Gold, Silver, Bronze).
  */
-import { computed } from 'vue';
+import { computed } from 'vue'
 
 const props = defineProps({
   label: { type: String, required: true },
   value: { type: [String, Number], required: true },
   secondaryText: { type: String, default: '' },
   rank: { type: Number, default: 0 },
-  isPlaceholder: { type: Boolean, default: false }
-});
+  isPlaceholder: { type: Boolean, default: false },
+})
 
 // Calculates the CSS classes for the background color based on the rank.
 const rankColorClasses = computed(() => {
-  if (props.isPlaceholder) return 'bg-gray-50 border-dashed border-gray-200 text-gray-400';
-  
+  if (props.isPlaceholder) return 'bg-gray-50 border-dashed border-gray-200 text-gray-400'
+
   if (props.rank === 1) {
-    return 'bg-[#FFD700] border-[#FFD700] text-black shadow-[0_4px_12px_rgba(255,215,0,0.3)]';
+    return 'bg-[#FFD700] border-[#FFD700] text-black shadow-[0_4px_12px_rgba(255,215,0,0.3)]'
   }
   if (props.rank === 2) {
-    return 'bg-[#E0E0E0] border-[#E0E0E0] text-black';
+    return 'bg-[#E0E0E0] border-[#E0E0E0] text-black'
   }
   if (props.rank === 3) {
-    return 'bg-[#CD7F32] border-[#CD7F32] text-white';
+    return 'bg-[#CD7F32] border-[#CD7F32] text-white'
   }
-  
-  return 'bg-white border-gray-100 text-gray-600';
-});
+
+  return 'bg-white border-gray-100 text-gray-600'
+})
 </script>

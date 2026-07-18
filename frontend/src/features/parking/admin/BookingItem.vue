@@ -1,5 +1,7 @@
 <template>
-  <div class="booking-item bg-white border border-gray-200 rounded-lg p-3 sm:p-4 shadow-sm relative">
+  <div
+    class="booking-item bg-white border border-gray-200 rounded-lg p-3 sm:p-4 shadow-sm relative"
+  >
     <div
       v-if="!isEditing"
       class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3"
@@ -11,10 +13,7 @@
         <p class="text-sm text-gray-600 mt-1">
           {{ formatDate(booking.date) }} ({{ formatWeekday(booking.date) }})
         </p>
-        <p
-          v-if="booking.note"
-          class="text-sm text-gray-500 mt-1"
-        >
+        <p v-if="booking.note" class="text-sm text-gray-500 mt-1">
           {{ booking.note }}
         </p>
       </div>
@@ -68,43 +67,26 @@
     </div>
 
     <!-- Bearbeitungsmodus -->
-    <div
-      v-else
-      class="space-y-4"
-    >
+    <div v-else class="space-y-4">
       <div>
         <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Name</label>
-        <input 
-          v-model="editData.employeeName" 
-          type="text" 
+        <input
+          v-model="editData.employeeName"
+          type="text"
           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           placeholder="Name des Mitarbeiters"
-        >
-      </div>
-      
-      <div v-if="!booking.recurringReservation">
-        <DateInput
-          id="edit-date"
-          v-model="editData.date"
-          label="Datum"
         />
       </div>
 
+      <div v-if="!booking.recurringReservation">
+        <DateInput id="edit-date" v-model="editData.date" label="Datum" />
+      </div>
+
       <div class="flex gap-2 pt-2">
-        <BaseButton
-          variant="primary"
-          size="small"
-          :loading="saving"
-          @click="saveEdit"
-        >
+        <BaseButton variant="primary" size="small" :loading="saving" @click="saveEdit">
           Speichern
         </BaseButton>
-        <BaseButton
-          variant="secondary"
-          size="small"
-          :disabled="saving"
-          @click="isEditing = false"
-        >
+        <BaseButton variant="secondary" size="small" :disabled="saving" @click="isEditing = false">
           Abbrechen
         </BaseButton>
       </div>
@@ -128,8 +110,8 @@ import DateInput from '@/components/common/DateInput.vue'
 const props = defineProps({
   booking: {
     type: Object,
-    required: true
-  }
+    required: true,
+  },
 })
 
 const emit = defineEmits(['booking-deleted', 'booking-updated'])
@@ -142,7 +124,7 @@ const editData = ref({ employeeName: '', date: '' })
 const startEdit = () => {
   editData.value = {
     employeeName: props.booking.employeeName,
-    date: props.booking.date
+    date: props.booking.date,
   }
   isEditing.value = true
 }
@@ -158,14 +140,17 @@ const saveEdit = async () => {
   try {
     const payload = {
       employeeName: editData.value.employeeName,
-      date: formatDateForAPI(editData.value.date)
+      date: formatDateForAPI(editData.value.date),
     }
     await parkingApi.updateEntry(props.booking.id, payload)
     isEditing.value = false
     emit('booking-updated')
   } catch (error) {
     console.error('Error updating booking:', error)
-    const msg = error.response?.data?.detail || error.response?.data?.message || 'Fehler beim Speichern der Änderungen.'
+    const msg =
+      error.response?.data?.detail ||
+      error.response?.data?.message ||
+      'Fehler beim Speichern der Änderungen.'
     alert(msg)
   } finally {
     saving.value = false
@@ -173,7 +158,9 @@ const saveEdit = async () => {
 }
 
 const deleteBooking = async () => {
-  if (!confirm(`Möchten Sie die Reservierung für ${props.booking.employeeName} wirklich löschen?`)) {
+  if (
+    !confirm(`Möchten Sie die Reservierung für ${props.booking.employeeName} wirklich löschen?`)
+  ) {
     return
   }
 
@@ -184,7 +171,10 @@ const deleteBooking = async () => {
     emit('booking-deleted')
   } catch (error) {
     console.error('Error deleting booking:', error)
-    const msg = error.response?.data?.detail || error.response?.data?.message || 'Fehler beim Löschen der Reservierung.'
+    const msg =
+      error.response?.data?.detail ||
+      error.response?.data?.message ||
+      'Fehler beim Löschen der Reservierung.'
     alert(msg)
   } finally {
     deleting.value = false

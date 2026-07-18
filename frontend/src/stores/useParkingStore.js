@@ -36,15 +36,21 @@ export const useParkingStore = defineStore('parking', () => {
       allEntries.value = Array.isArray(data) ? data : []
     } catch (e) {
       console.error('Error loading bookings:', e)
-      adminError.value = 'Buchungen konnten nicht geladen werden. Bitte versuchen Sie es später erneut.'
+      adminError.value =
+        'Buchungen konnten nicht geladen werden. Bitte versuchen Sie es später erneut.'
     } finally {
       adminLoading.value = false
     }
   }
 
   return {
-    weekData, loading, error,
-    allEntries, adminLoading, adminError,
-    fetchOverview, fetchAllEntries,
+    weekData,
+    loading,
+    error,
+    allEntries,
+    adminLoading,
+    adminError,
+    fetchOverview,
+    fetchAllEntries,
   }
 })

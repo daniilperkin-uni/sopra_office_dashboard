@@ -1,10 +1,6 @@
 <template>
   <div class="mb-4">
-    <label
-      v-if="label"
-      :for="id"
-      class="block text-sm font-medium text-gray-700 mb-1"
-    >
+    <label v-if="label" :for="id" class="block text-sm font-medium text-gray-700 mb-1">
       {{ label }}
     </label>
     <input
@@ -16,11 +12,8 @@
       :disabled="disabled"
       class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
       @input="updateValue"
-    >
-    <p
-      v-if="error"
-      class="mt-1 text-sm text-red-600"
-    >
+    />
+    <p v-if="error" class="mt-1 text-sm text-red-600">
       {{ error }}
     </p>
   </div>
@@ -38,14 +31,14 @@ defineProps({
    */
   id: {
     type: String,
-    required: true
+    required: true,
   },
   /**
    * The label text displayed above the input field.
    */
   label: {
     type: String,
-    default: ''
+    default: '',
   },
   /**
    * The current value of the date input (ISO 8601 format: YYYY-MM-DD).
@@ -53,36 +46,36 @@ defineProps({
    */
   modelValue: {
     type: String,
-    default: ''
+    default: '',
   },
   /**
    * The minimum selectable date (ISO 8601 format). Dates before this will be disabled.
    */
   minDate: {
     type: String,
-    default: ''
+    default: '',
   },
   /**
    * The maximum selectable date (ISO 8601 format). Dates after this will be disabled.
    */
   maxDate: {
     type: String,
-    default: ''
+    default: '',
   },
   /**
    * If true, the date input will be disabled and uneditable.
    */
   disabled: {
     type: Boolean,
-    default: false
+    default: false,
   },
   /**
    * An error message to display below the input field.
    */
   error: {
     type: String,
-    default: ''
-  }
+    default: '',
+  },
 })
 
 const emit = defineEmits(['update:modelValue'])

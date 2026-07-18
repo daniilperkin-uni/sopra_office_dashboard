@@ -172,20 +172,20 @@ export const calendarApi = {
    */
   async getEvents(startDate, endDate) {
     try {
-      let params = {};
+      let params = {}
       if (startDate) {
-        params.startDate = startDate;
+        params.startDate = startDate
       }
       if (endDate) {
-        params.endDate = endDate;
+        params.endDate = endDate
       }
-      const response = await apiClient.get('/dashboard-events', { params });
-      return response.data;
+      const response = await apiClient.get('/dashboard-events', { params })
+      return response.data
     } catch (error) {
-      console.error('Error fetching calendar events:', error);
-      throw error;
+      console.error('Error fetching calendar events:', error)
+      throw error
     }
-  }
+  },
 }
 
 /**
@@ -198,28 +198,28 @@ export const highscoreApi = {
    */
   async getHighscore() {
     try {
-      const data = await this.getHighscoreOverview();
+      const data = await this.getHighscoreOverview()
 
       return {
-        'Match history': (data.matchHistoryEntries || []).map(item => ({
+        'Match history': (data.matchHistoryEntries || []).map((item) => ({
           label: item.players,
           value: item.type === 'Darts' ? `${item.points} Throws` : item.matchResult,
           secondaryText: item.dateText,
         })),
-        'Darts Leaderboard': (data.dartsTop5 || []).map(item => ({
+        'Darts Leaderboard': (data.dartsTop5 || []).map((item) => ({
           label: item.name,
           value: item.totalThrows,
           secondaryText: 'Gesamtwürfe',
         })),
-        'Kicker leaderboard': (data.kickerTop5 || []).map(item => ({
+        'Kicker leaderboard': (data.kickerTop5 || []).map((item) => ({
           label: item.name,
           value: `${item.totalPoints} Wins`,
           secondaryText: 'Gesamtsiege',
         })),
-      };
+      }
     } catch (error) {
-      console.error('Error fetching highscore data for display:', error);
-      throw error;
+      console.error('Error fetching highscore data for display:', error)
+      throw error
     }
   },
 
@@ -229,14 +229,14 @@ export const highscoreApi = {
    */
   async getHighscoreOverview() {
     try {
-      const response = await apiClient.get('/highscore-overview');
-      return response.data;
+      const response = await apiClient.get('/highscore-overview')
+      return response.data
     } catch (error) {
-      console.error('Error fetching highscore overview:', error);
-      throw error;
+      console.error('Error fetching highscore overview:', error)
+      throw error
     }
   },
-};
+}
 
 /**
  * Service for highscore administrative operations.
@@ -248,11 +248,11 @@ export const highscoreAdminApi = {
    */
   async getDartsMatches() {
     try {
-      const response = await apiClient.get('/matches/darts');
-      return response.data;
+      const response = await apiClient.get('/matches/darts')
+      return response.data
     } catch (error) {
-      console.error('Error fetching Darts matches:', error);
-      throw error;
+      console.error('Error fetching Darts matches:', error)
+      throw error
     }
   },
 
@@ -263,11 +263,11 @@ export const highscoreAdminApi = {
    */
   async deleteDartsMatch(id) {
     try {
-      await apiClient.delete(`/matches/darts/${id}`);
-      return true;
+      await apiClient.delete(`/matches/darts/${id}`)
+      return true
     } catch (error) {
       console.error('Error deleting Darts match:', error)
-      throw error;
+      throw error
     }
   },
 
@@ -277,11 +277,11 @@ export const highscoreAdminApi = {
    */
   async getKickerMatches() {
     try {
-      const response = await apiClient.get('/matches/kicker');
-      return response.data;
+      const response = await apiClient.get('/matches/kicker')
+      return response.data
     } catch (error) {
-      console.error('Error fetching Kicker matches:', error);
-      throw error;
+      console.error('Error fetching Kicker matches:', error)
+      throw error
     }
   },
 
@@ -292,11 +292,11 @@ export const highscoreAdminApi = {
    */
   async deleteKickerMatch(id) {
     try {
-      await apiClient.delete(`/matches/kicker/${id}`);
-      return true;
+      await apiClient.delete(`/matches/kicker/${id}`)
+      return true
     } catch (error) {
-      console.error('Error deleting Kicker match:', error);
-      throw error;
+      console.error('Error deleting Kicker match:', error)
+      throw error
     }
   },
 
@@ -307,11 +307,11 @@ export const highscoreAdminApi = {
    */
   async createDartsEntry(entryData) {
     try {
-      const response = await apiClient.post('/matches/darts', entryData);
-      return response.data;
+      const response = await apiClient.post('/matches/darts', entryData)
+      return response.data
     } catch (error) {
-      console.error('Error creating Darts entry:', error);
-      throw error;
+      console.error('Error creating Darts entry:', error)
+      throw error
     }
   },
 
@@ -322,11 +322,11 @@ export const highscoreAdminApi = {
    */
   async createKickerEntry(entryData) {
     try {
-      const response = await apiClient.post('/matches/kicker', entryData);
-      return response.data;
+      const response = await apiClient.post('/matches/kicker', entryData)
+      return response.data
     } catch (error) {
-      console.error('Error creating Kicker entry:', error);
-      throw error;
+      console.error('Error creating Kicker entry:', error)
+      throw error
     }
   },
 
@@ -338,11 +338,11 @@ export const highscoreAdminApi = {
    */
   async updateDartsEntry(id, entryData) {
     try {
-      const response = await apiClient.put(`/matches/darts/${id}`, entryData);
-      return response.data;
+      const response = await apiClient.put(`/matches/darts/${id}`, entryData)
+      return response.data
     } catch (error) {
-      console.error('Error updating Darts entry:', error);
-      throw error;
+      console.error('Error updating Darts entry:', error)
+      throw error
     }
   },
 
@@ -354,14 +354,14 @@ export const highscoreAdminApi = {
    */
   async updateKickerEntry(id, entryData) {
     try {
-      const response = await apiClient.put(`/matches/kicker/${id}`, entryData);
-      return response.data;
+      const response = await apiClient.put(`/matches/kicker/${id}`, entryData)
+      return response.data
     } catch (error) {
-      console.error('Error updating Kicker entry:', error);
-      throw error;
+      console.error('Error updating Kicker entry:', error)
+      throw error
     }
   },
-};
+}
 
 /**
  * Service for display configuration settings.
@@ -373,11 +373,11 @@ export const configApi = {
    */
   async getConfig() {
     try {
-      const response = await apiClient.get('/config/display');
-      return response.data;
+      const response = await apiClient.get('/config/display')
+      return response.data
     } catch (error) {
-      console.error('Error fetching configuration:', error);
-      throw error;
+      console.error('Error fetching configuration:', error)
+      throw error
     }
   },
 
@@ -388,13 +388,13 @@ export const configApi = {
    */
   async updateConfig(config) {
     try {
-      const response = await apiClient.post('/config/display', config);
-      return response.data;
+      const response = await apiClient.post('/config/display', config)
+      return response.data
     } catch (error) {
-      console.error('Error updating configuration:', error);
-      throw error;
+      console.error('Error updating configuration:', error)
+      throw error
     }
-  }
-};
+  },
+}
 
 export default apiClient

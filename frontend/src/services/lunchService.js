@@ -1,12 +1,12 @@
-import apiClient from './api';
+import apiClient from './api'
 
 /**
  * Service for managing all Community Lunch data, including events,
  * food catalog, options, and voting.
  */
 
-const API_PATH = '/community-lunches';
-const CATALOG_API_PATH = '/food-catalog';
+const API_PATH = '/community-lunches'
+const CATALOG_API_PATH = '/food-catalog'
 
 export const lunchService = {
   // --- Lunch Events ---
@@ -19,12 +19,12 @@ export const lunchService = {
   async getUpcomingLunches(days = 30) {
     try {
       const response = await apiClient.get(`${API_PATH}/upcoming`, {
-        params: { days }
-      });
-      return response.data;
+        params: { days },
+      })
+      return response.data
     } catch (error) {
-      console.error('Error fetching upcoming lunch events:', error);
-      return [];
+      console.error('Error fetching upcoming lunch events:', error)
+      return []
     }
   },
 
@@ -37,12 +37,12 @@ export const lunchService = {
   async getCalendarLunches(from, to) {
     try {
       const response = await apiClient.get(API_PATH, {
-        params: { from, to }
-      });
-      return response.data;
+        params: { from, to },
+      })
+      return response.data
     } catch (error) {
-      console.error('Error fetching calendar lunches:', error);
-      return [];
+      console.error('Error fetching calendar lunches:', error)
+      return []
     }
   },
 
@@ -56,8 +56,8 @@ export const lunchService = {
    * @returns {Promise<Object>} A promise that resolves to the newly created event object.
    */
   async createEvent(eventData) {
-    const response = await apiClient.post(API_PATH, eventData);
-    return response.data;
+    const response = await apiClient.post(API_PATH, eventData)
+    return response.data
   },
 
   /**
@@ -66,8 +66,8 @@ export const lunchService = {
    * @returns {Promise<Object>} A promise that resolves to the detailed event object.
    */
   async getEvent(eventId) {
-    const response = await apiClient.get(`${API_PATH}/${eventId}`);
-    return response.data;
+    const response = await apiClient.get(`${API_PATH}/${eventId}`)
+    return response.data
   },
 
   /**
@@ -78,9 +78,9 @@ export const lunchService = {
    */
   async updateStatus(eventId, status) {
     const response = await apiClient.patch(`${API_PATH}/${eventId}/status`, null, {
-      params: { status }
-    });
-    return response.data;
+      params: { status },
+    })
+    return response.data
   },
 
   /**
@@ -89,7 +89,7 @@ export const lunchService = {
    * @returns {Promise<void>}
    */
   async deleteEvent(eventId) {
-    await apiClient.delete(`${API_PATH}/${eventId}`);
+    await apiClient.delete(`${API_PATH}/${eventId}`)
   },
 
   /**
@@ -99,7 +99,7 @@ export const lunchService = {
    * @returns {Promise<void>}
    */
   async deleteOption(eventId, optionId) {
-      await apiClient.delete(`${API_PATH}/${eventId}/options/${optionId}`);
+    await apiClient.delete(`${API_PATH}/${eventId}/options/${optionId}`)
   },
 
   // --- Food Options ---
@@ -112,9 +112,9 @@ export const lunchService = {
    */
   async addOptionFromCatalog(eventId, catalogItemId) {
     const response = await apiClient.post(`${API_PATH}/${eventId}/options/from-catalog`, {
-      catalogItemId
-    });
-    return response.data;
+      catalogItemId,
+    })
+    return response.data
   },
 
   /**
@@ -127,9 +127,9 @@ export const lunchService = {
   async addCustomOption(eventId, label, saveToDefaultCatalog = false) {
     const response = await apiClient.post(`${API_PATH}/${eventId}/options/custom`, {
       label,
-      saveToDefaultCatalog
-    });
-    return response.data;
+      saveToDefaultCatalog,
+    })
+    return response.data
   },
 
   // --- Voting ---
@@ -145,11 +145,11 @@ export const lunchService = {
     try {
       await apiClient.put(`${API_PATH}/${eventId}/choices`, {
         optionId,
-        employeeName
-      });
+        employeeName,
+      })
     } catch (error) {
-      console.error('Error submitting vote:', error);
-      throw error;
+      console.error('Error submitting vote:', error)
+      throw error
     }
   },
 
@@ -161,12 +161,12 @@ export const lunchService = {
   async getMyChoices(employeeName) {
     try {
       const response = await apiClient.get(`${API_PATH}/choices`, {
-        params: { employeeName }
-      });
-      return response.data;
+        params: { employeeName },
+      })
+      return response.data
     } catch (error) {
-      console.error('Error fetching my choices:', error);
-      return [];
+      console.error('Error fetching my choices:', error)
+      return []
     }
   },
 
@@ -177,11 +177,11 @@ export const lunchService = {
    */
   async getResults(eventId) {
     try {
-      const response = await apiClient.get(`${API_PATH}/${eventId}/results`);
-      return response.data;
+      const response = await apiClient.get(`${API_PATH}/${eventId}/results`)
+      return response.data
     } catch (error) {
-      console.error('Error fetching results:', error);
-      return null;
+      console.error('Error fetching results:', error)
+      return null
     }
   },
 
@@ -194,17 +194,17 @@ export const lunchService = {
    */
   async getCatalogItems(activeOnly = true) {
     try {
-      const params = {};
+      const params = {}
       if (activeOnly === false) {
-        params.activeOnly = false;
+        params.activeOnly = false
       }
       const response = await apiClient.get(CATALOG_API_PATH, {
-        params
-      });
-      return response.data;
+        params,
+      })
+      return response.data
     } catch (error) {
-      console.error('Error fetching food catalog:', error);
-      return [];
+      console.error('Error fetching food catalog:', error)
+      return []
     }
   },
 
@@ -214,8 +214,8 @@ export const lunchService = {
    * @returns {Promise<Object>} A promise that resolves to the newly created catalog item.
    */
   async createCatalogItem(label) {
-    const response = await apiClient.post(CATALOG_API_PATH, { label });
-    return response.data;
+    const response = await apiClient.post(CATALOG_API_PATH, { label })
+    return response.data
   },
 
   /**
@@ -225,8 +225,8 @@ export const lunchService = {
    * @returns {Promise<Object>} A promise that resolves to the updated catalog item.
    */
   async updateCatalogItem(id, label) {
-    const response = await apiClient.put(`${CATALOG_API_PATH}/${id}`, { label });
-    return response.data;
+    const response = await apiClient.put(`${CATALOG_API_PATH}/${id}`, { label })
+    return response.data
   },
 
   /**
@@ -237,7 +237,7 @@ export const lunchService = {
    */
   async updateCatalogItemActive(id, active) {
     await apiClient.patch(`${CATALOG_API_PATH}/${id}`, null, {
-      params: { active }
-    });
-  }
-};
+      params: { active },
+    })
+  },
+}

@@ -1,9 +1,7 @@
 <template>
   <div class="admin-view bg-neutral-bg min-h-screen">
     <div class="bg-gray-100 py-6 border-b border-gray-200">
-      <h1 class="text-4xl font-black text-primary tracking-wider text-center">
-        Admin Bereich
-      </h1>
+      <h1 class="text-4xl font-black text-primary tracking-wider text-center">Admin Bereich</h1>
     </div>
 
     <nav class="border-b border-gray-200">
@@ -13,7 +11,9 @@
             to="/admin/parking"
             class="py-4 px-1 border-b-2 font-medium text-lg whitespace-nowrap"
             :class="[
-              $route.path === '/admin/parking' ? 'border-primary text-primary dark:text-blue-400' : 'border-transparent text-gray-500 hover:text-primary hover:border-primary dark:text-gray-400 dark:hover:text-blue-400',
+              $route.path === '/admin/parking'
+                ? 'border-primary text-primary dark:text-blue-400'
+                : 'border-transparent text-gray-500 hover:text-primary hover:border-primary dark:text-gray-400 dark:hover:text-blue-400',
             ]"
           >
             Parken
@@ -24,7 +24,9 @@
             to="/admin/highscores"
             class="py-4 px-1 border-b-2 font-medium text-base sm:text-lg whitespace-nowrap"
             :class="[
-              $route.path === '/admin/highscores' ? 'border-primary text-primary dark:text-blue-400' : 'border-transparent text-gray-500 hover:text-primary hover:border-primary dark:text-gray-400 dark:hover:text-blue-400',
+              $route.path === '/admin/highscores'
+                ? 'border-primary text-primary dark:text-blue-400'
+                : 'border-transparent text-gray-500 hover:text-primary hover:border-primary dark:text-gray-400 dark:hover:text-blue-400',
             ]"
           >
             Highscores
@@ -35,7 +37,9 @@
             to="/admin/lunch"
             class="py-4 px-1 border-b-2 font-medium text-base sm:text-lg whitespace-nowrap"
             :class="[
-              $route.path === '/admin/lunch' ? 'border-primary text-primary dark:text-blue-400' : 'border-transparent text-gray-500 hover:text-primary hover:border-primary dark:text-gray-400 dark:hover:text-blue-400',
+              $route.path === '/admin/lunch'
+                ? 'border-primary text-primary dark:text-blue-400'
+                : 'border-transparent text-gray-500 hover:text-primary hover:border-primary dark:text-gray-400 dark:hover:text-blue-400',
             ]"
           >
             Lunch
@@ -46,7 +50,9 @@
             to="/admin/config"
             class="py-4 px-1 border-b-2 font-medium text-base sm:text-lg whitespace-nowrap"
             :class="[
-              $route.path === '/admin/config' ? 'border-primary text-primary dark:text-blue-400' : 'border-transparent text-gray-500 hover:text-primary hover:border-primary dark:text-gray-400 dark:hover:text-blue-400',
+              $route.path === '/admin/config'
+                ? 'border-primary text-primary dark:text-blue-400'
+                : 'border-transparent text-gray-500 hover:text-primary hover:border-primary dark:text-gray-400 dark:hover:text-blue-400',
             ]"
           >
             Konfiguration

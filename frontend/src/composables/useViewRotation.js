@@ -39,7 +39,7 @@ export function useViewRotation({ config, currentViewId, onRotate, viewIds }) {
       viewRotationInterval = setInterval(() => {
         let availableViews = viewIds
         if (config.value.skipOneDisplayInRotation) {
-          availableViews = viewIds.filter(id => id !== 'dashboard')
+          availableViews = viewIds.filter((id) => id !== 'dashboard')
         }
 
         let currentIndex = availableViews.indexOf(currentViewId.value)

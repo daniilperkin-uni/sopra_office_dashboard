@@ -239,5 +239,5 @@ The frontend follows a **Feature-Driven Architecture** to improve maintainabilit
 
 ### 6.2 Troubleshooting
 *   **Database**: `spring.jpa.hibernate.ddl-auto` in `application.properties` is set to `update`.
-*   **Frontend Access**: The application is available at `http://localhost:8098` (Docker) or via the Vite dev server port (usually `http://localhost:5173`) when running locally.
+*   **Frontend Access**: The application is available at `http://localhost:8098` (Docker) or via the Vite dev server port (`http://localhost:3000`) when running locally.
 *   **Backend Access**: API is available at `http://localhost:8099` (Docker).
