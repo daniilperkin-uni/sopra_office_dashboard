@@ -5,7 +5,7 @@
     </h2>
 
     <div
-      v-if="loading"
+      v-if="configStore.loading && !config"
       class="flex justify-center py-8"
     >
       <LoadingSpinner />
@@ -29,7 +29,7 @@
         <div class="flex items-center h-5">
           <input
             id="rotationEnabled"
-            v-model="config.rotationEnabled"
+            v-model="configStore.config.rotationEnabled"
             type="checkbox"
             class="h-5 w-5 text-primary focus:ring-primary border-gray-300 rounded"
           >
@@ -44,13 +44,13 @@
 
       <!-- Skip OneDisplay in Rotation -->
       <div
-        v-if="config.rotationEnabled"
+        v-if="configStore.config.rotationEnabled"
         class="flex items-start ml-8"
       >
         <div class="flex items-center h-5">
           <input
             id="skipOneDisplay"
-            v-model="config.skipOneDisplayInRotation"
+            v-model="configStore.config.skipOneDisplayInRotation"
             type="checkbox"
             class="h-5 w-5 text-primary focus:ring-primary border-gray-300 rounded"
           >
@@ -64,14 +64,14 @@
       </div>
 
       <!-- Rotation Interval -->
-      <div v-if="config.rotationEnabled">
+      <div v-if="configStore.config.rotationEnabled">
         <label
           for="interval"
           class="block text-sm font-medium text-black"
         >Rotationsintervall (Sekunden)</label>
         <input
           id="interval"
-          v-model.number="config.rotationIntervalSeconds"
+          v-model.number="configStore.config.rotationIntervalSeconds"
           type="number"
           min="5"
           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-white text-gray-900"
@@ -88,11 +88,11 @@
           for="defaultView"
           class="block text-sm font-medium text-black"
         >
-          {{ config.rotationEnabled ? 'Standardansicht (Fallback)' : 'Aktive Ansicht' }}
+          {{ configStore.config.rotationEnabled ? 'Standardansicht (Fallback)' : 'Aktive Ansicht' }}
         </label>
         <select
           id="defaultView"
-          v-model="config.defaultSingleViewId"
+          v-model="configStore.config.defaultSingleViewId"
           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-white text-gray-900"
         >
           <option value="dashboard">
@@ -112,7 +112,7 @@
           </option>
         </select>
         <p
-          v-if="!config.rotationEnabled"
+          v-if="!configStore.config.rotationEnabled"
           class="mt-1 text-sm text-gray-500 dark:text-gray-400"
         >
           Da die Rotation deaktiviert ist, wird diese Ansicht dauerhaft angezeigt.
@@ -138,37 +138,27 @@
  * Component for managing display configuration.
  * Enables enabling/disabling rotation, setting the interval,
  * and selecting the default view.
+ * Uses the display config store so changes are shared with the DisplayView.
  */
 import { ref, onMounted } from 'vue';
-import { configApi } from '@/services/api';
+import { useDisplayConfigStore } from '@/stores/useDisplayConfigStore';
 import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
 import BaseButton from '@/components/common/BaseButton.vue';
 
-const loading = ref(true);
+const configStore = useDisplayConfigStore();
 const saving = ref(false);
 const error = ref(null);
-const config = ref({
-    rotationEnabled: true,
-    skipOneDisplayInRotation: false,
-    rotationIntervalSeconds: 15,
-    defaultSingleViewId: 'calendar'
-});
 
 onMounted(async () => {
     try {
-        const data = await configApi.getConfig();
-        if (data) {
-            config.value = data;
-        }
+        await configStore.fetchConfig();
     } catch {
         error.value = "Konfiguration konnte nicht geladen werden.";
-    } finally {
-        loading.value = false;
     }
 });
 
 const saveConfig = async () => {
-    const interval = config.value.rotationIntervalSeconds;
+    const interval = configStore.config.rotationIntervalSeconds;
 
     // Rotation interval must be at least 5 seconds to prevent browser crashes
     if (interval < 5) {
@@ -179,7 +169,7 @@ const saveConfig = async () => {
     saving.value = true;
     error.value = null;
     try {
-        await configApi.updateConfig(config.value);
+        await configStore.updateConfig(configStore.config);
         alert("Konfiguration erfolgreich gespeichert!");
     } catch {
         error.value = "Konfiguration konnte nicht gespeichert werden.";

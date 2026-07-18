@@ -163,13 +163,15 @@
  * Allows viewing match history, adding new Darts and Kicker results,
  * and deleting existing entries.
  */
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { useHighscoreStore } from '@/stores/useHighscoreStore';
 import { highscoreAdminApi } from '@/services/api';
 import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
 import BaseButton from '@/components/common/BaseButton.vue';
 import HighscoreAdminForm from './HighscoreAdminForm.vue';
 import HighscoreMatchItem from './HighscoreMatchItem.vue';
 
+const highscoreStore = useHighscoreStore();
 const loading = ref(false);
 const message = ref(null);
 
@@ -178,8 +180,8 @@ const formType = ref('darts');
 const initialFormData = ref(null);
 const editingMatchId = ref(null);
 
-const dartsMatches = ref([]);
-const kickerMatches = ref([]);
+const dartsMatches = computed(() => highscoreStore.dartsMatches);
+const kickerMatches = computed(() => highscoreStore.kickerMatches);
 
 /**
  * Deletes all matches that are not "top performances".
@@ -324,12 +326,7 @@ const closeForm = () => {
 const fetchMatches = async () => {
     loading.value = true;
     try {
-        const [darts, kicker] = await Promise.all([
-            highscoreAdminApi.getDartsMatches(),
-            highscoreAdminApi.getKickerMatches()
-        ]);
-        dartsMatches.value = darts || [];
-        kickerMatches.value = kicker || [];
+        await highscoreStore.fetchAdminMatches();
     } catch (err) {
         console.error("Failed to load matches", err);
         message.value = { type: 'error', text: 'Fehler beim Laden des Spielverlaufs.' };

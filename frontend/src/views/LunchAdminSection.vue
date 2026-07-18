@@ -35,8 +35,8 @@
       {{ successMessage }}
     </div>
 
-    <!-- List View -->
-    <LunchEventAdmin :key="listKey" />
+    <!-- List View (re-rendered via :key when refresh is triggered) -->
+    <LunchEventAdmin :key="lunchStore.refreshCounter" />
   </div>
 </template>
 
@@ -44,27 +44,26 @@
 /**
  * Main view for managing Lunch events.
  * Provides a toggle for the creation form and displays the list of existing events.
+ * Uses the lunch store to trigger a refresh of the event list after creation
+ * instead of manually incrementing a local counter.
  */
-import { ref } from 'vue';
-import LunchEventAdmin from '@/features/community-lunch/admin/LunchEventAdmin.vue';
-import LunchEventCreationForm from '@/features/community-lunch/admin/LunchEventCreationForm.vue';
+import { ref } from 'vue'
+import { useLunchStore } from '@/stores/useLunchStore'
+import LunchEventAdmin from '@/features/community-lunch/admin/LunchEventAdmin.vue'
+import LunchEventCreationForm from '@/features/community-lunch/admin/LunchEventCreationForm.vue'
 
-const showCreateForm = ref(false);
-const listKey = ref(0);
-const successMessage = ref('');
+const lunchStore = useLunchStore()
+const showCreateForm = ref(false)
+const successMessage = ref('')
 
-/**
- * Handles the event when a new lunch event is successfully created.
- * Shows a success message and refreshes the list.
- */
 const handleEventCreated = () => {
-  successMessage.value = 'Lunch-Event wurde erfolgreich angelegt!';
-  showCreateForm.value = false;
-  listKey.value++; // Refresh the list
+  successMessage.value = 'Lunch-Event wurde erfolgreich angelegt!'
+  showCreateForm.value = false
+  lunchStore.refresh()
   setTimeout(() => {
-    successMessage.value = '';
-  }, 3000);
-};
+    successMessage.value = ''
+  }, 3000)
+}
 </script>
 
 <style scoped>

@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
@@ -12,8 +13,9 @@ import './assets/main.css'
 
 /**
  * Main application entry point.
- * Initializes the Vue app, registers the router, and mounts to the DOM.
+ * Initializes the Vue app with Pinia state management and the router.
  */
 const app = createApp(App)
+app.use(createPinia())
 app.use(router)
 app.mount('#app')

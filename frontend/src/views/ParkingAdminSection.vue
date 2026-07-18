@@ -22,23 +22,23 @@
           />
 
           <div
-            v-if="loading"
+            v-if="parkingStore.adminLoading"
             class="flex justify-center items-center h-64"
           >
             <LoadingSpinner />
           </div>
 
           <div
-            v-else-if="error"
+            v-else-if="parkingStore.adminError"
             class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
           >
             <strong class="font-bold">Fehler:</strong>
-            <span class="block sm:inline">{{ error }}</span>
+            <span class="block sm:inline">{{ parkingStore.adminError }}</span>
             <BaseButton
               variant="danger"
               size="small"
               class="mt-2"
-              @click="loadBookings"
+              @click="parkingStore.fetchAllEntries"
             >
               Erneut versuchen
             </BaseButton>
@@ -46,7 +46,7 @@
 
           <div v-else>
             <p class="text-sm text-gray-600 mb-4">
-              Zeige {{ filteredBookings.length }} von {{ bookings.length }} Reservierungen
+              Zeige {{ filteredBookings.length }} von {{ parkingStore.allEntries.length }} Reservierungen
               <span
                 v-if="selectedDate"
                 class="font-medium"
@@ -78,9 +78,10 @@
  * Main component for parking management in the admin area.
  * Allows creating new reservations, as well as viewing and deleting
  * existing bookings with filtering functionality.
+ * Uses the parking store for shared data management.
  */
-import {ref, onMounted, computed} from 'vue'
-import {parkingApi} from '@/services/api'
+import { ref, onMounted, computed } from 'vue'
+import { useParkingStore } from '@/stores/useParkingStore'
 import BaseCard from '@/components/common/BaseCard.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
 import BookingForm from '@/features/parking/admin/BookingForm.vue'
@@ -88,9 +89,7 @@ import BookingList from '@/features/parking/admin/BookingList.vue'
 import FilterControls from '@/features/parking/admin/FilterControls.vue'
 import LoadingSpinner from '@/components/common/LoadingSpinner.vue'
 
-const bookings = ref([])
-const loading = ref(true)
-const error = ref(null)
+const parkingStore = useParkingStore()
 const selectedDate = ref('')
 const searchName = ref('')
 
@@ -117,7 +116,7 @@ const isSameDay = (dateString1, dateString2) => {
  * Filters the list of bookings based on the selected date and/or employee name.
  */
 const filteredBookings = computed(() => {
-  return bookings.value.filter(booking => {
+  return parkingStore.allEntries.filter(booking => {
     const matchesDate = !selectedDate.value || isSameDay(booking.date, selectedDate.value)
     const matchesName = !searchName.value ||
       booking.employeeName.toLowerCase().includes(searchName.value.toLowerCase())
@@ -126,34 +125,16 @@ const filteredBookings = computed(() => {
   })
 })
 
-/**
- * Loads all parking reservations from the server.
- */
-const loadBookings = async () => {
-  loading.value = true
-  error.value = null
-
-  try {
-    const data = await parkingApi.getAllEntries()
-    bookings.value = data
-  } catch (err) {
-    console.error('Error loading bookings:', err)
-    error.value = 'Buchungen konnten nicht geladen werden. Bitte versuchen Sie es später erneut.'
-  } finally {
-    loading.value = false
-  }
-}
-
 const handleBookingCreated = () => {
-  loadBookings()
+  parkingStore.fetchAllEntries()
 }
 
 const handleBookingDeleted = () => {
-  loadBookings()
+  parkingStore.fetchAllEntries()
 }
 
 const handleBookingUpdated = () => {
-  loadBookings()
+  parkingStore.fetchAllEntries()
 }
 
 const handleFilterChanged = () => {
@@ -161,7 +142,7 @@ const handleFilterChanged = () => {
 }
 
 onMounted(() => {
-  loadBookings()
+  parkingStore.fetchAllEntries()
 })
 </script>
 
