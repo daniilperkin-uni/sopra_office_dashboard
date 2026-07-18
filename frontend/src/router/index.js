@@ -4,7 +4,7 @@ import AdminView from '../views/AdminView.vue'
 import HighscoreAdminView from '../views/HighscoreAdminView.vue'
 import ParkingAdminSection from '../views/ParkingAdminSection.vue'
 import LunchAdminSection from '../views/LunchAdminSection.vue'
-import DisplayConfigAdmin from '@/features/dashboard/admin/DisplayConfigAdmin.vue'
+import DisplayConfigAdmin from '@/views/DisplayConfigAdminView.vue'
 import { authService } from '@/services/authService'
 
 /**

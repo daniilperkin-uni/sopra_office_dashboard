@@ -93,6 +93,16 @@
         </BaseButton>
       </div>
     </div>
+
+    <ConfirmDialog
+      :is-open="showDeleteDialog"
+      title="Match löschen"
+      message="Bist du sicher, dass du dieses Match löschen möchtest?"
+      confirm-text="Löschen"
+      cancel-text="Abbrechen"
+      @confirm="confirmDelete"
+      @cancel="showDeleteDialog = false"
+    />
   </div>
 </template>
 
@@ -103,6 +113,7 @@
  */
 import { ref } from 'vue'
 import BaseButton from '@/components/common/BaseButton.vue'
+import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
 import { formatDate } from '@/utils/dateUtils'
 
 // Declares the match data and the type (darts/kicker).
@@ -120,13 +131,14 @@ const props = defineProps({
 // Declares the event for deleting a match.
 const emit = defineEmits(['delete', 'edit'])
 const deleting = ref(false)
+const showDeleteDialog = ref(false)
 
-/**
- * Requests a confirmation and then triggers the delete event.
- */
 const deleteMatch = async () => {
-  if (!confirm('Bist du sicher, dass du dieses Match löschen möchtest?')) return
+  showDeleteDialog.value = true
+}
 
+const confirmDelete = async () => {
+  showDeleteDialog.value = false
   deleting.value = true
   try {
     emit('delete', { id: props.match.id, type: props.type })

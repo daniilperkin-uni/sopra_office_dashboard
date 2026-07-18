@@ -127,6 +127,16 @@
     >
       <LoadingSpinner />
     </div>
+
+    <ConfirmDialog
+      :is-open="showBulkDeleteDialog"
+      title="Spiele löschen"
+      :message="`Möchten Sie wirklich alle ${bulkDeleteInfo.total} Spiele löschen, die keine Top-Leistungen sind?\n\n- Darts: Nur die 3 Bestleistungen bleiben erhalten.\n- Kicker: Nur Siege der aktuellen Top 3 Teams bleiben erhalten.`"
+      confirm-text="Löschen"
+      cancel-text="Abbrechen"
+      @confirm="confirmBulkDelete"
+      @cancel="showBulkDeleteDialog = false"
+    />
   </div>
 </template>
 
@@ -141,6 +151,7 @@ import { useHighscoreStore } from '@/stores/useHighscoreStore'
 import { highscoreAdminApi } from '@/services/api'
 import LoadingSpinner from '@/components/common/LoadingSpinner.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
+import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
 import HighscoreAdminForm from './HighscoreAdminForm.vue'
 import HighscoreMatchItem from './HighscoreMatchItem.vue'
 
@@ -155,6 +166,9 @@ const editingMatchId = ref(null)
 
 const dartsMatches = computed(() => highscoreStore.dartsMatches)
 const kickerMatches = computed(() => highscoreStore.kickerMatches)
+
+const showBulkDeleteDialog = ref(false)
+const bulkDeleteInfo = ref({ total: 0, dartsCount: 0, kickerCount: 0 })
 
 /**
  * Deletes all matches that are not "top performances".
@@ -208,18 +222,31 @@ const deleteNonTopMatches = async () => {
   const totalToDelete = dartsToDelete.length + kickerToDelete.length
 
   if (totalToDelete === 0) {
-    alert('Es gibt keine alten Spiele zum Löschen. Die Historie ist bereits optimiert.')
+    message.value = {
+      type: 'success',
+      text: 'Es gibt keine alten Spiele zum Löschen. Die Historie ist bereits optimiert.',
+    }
+    setTimeout(() => {
+      if (message.value) message.value = null
+    }, 5000)
     return
   }
 
-  if (
-    !confirm(
-      `Möchten Sie wirklich alle ${totalToDelete} Spiele löschen, die keine Top-Leistungen sind?\n\n- Darts: Nur die 3 Bestleistungen bleiben erhalten.\n- Kicker: Nur Siege der aktuellen Top 3 Teams bleiben erhalten.`
-    )
-  ) {
-    return
+  bulkDeleteInfo.value = {
+    total: totalToDelete,
+    dartsCount: dartsToDelete.length,
+    kickerCount: kickerToDelete.length,
   }
+  pendingDartsToDelete.value = dartsToDelete
+  pendingKickerToDelete.value = kickerToDelete
+  showBulkDeleteDialog.value = true
+}
 
+const pendingDartsToDelete = ref([])
+const pendingKickerToDelete = ref([])
+
+const confirmBulkDelete = async () => {
+  showBulkDeleteDialog.value = false
   loading.value = true
   message.value = null
   let deletedCount = 0
@@ -227,7 +254,7 @@ const deleteNonTopMatches = async () => {
 
   try {
     // Delete Darts matches
-    for (const match of dartsToDelete) {
+    for (const match of pendingDartsToDelete.value) {
       try {
         await highscoreAdminApi.deleteDartsMatch(match.id)
         deletedCount++
@@ -238,7 +265,7 @@ const deleteNonTopMatches = async () => {
     }
 
     // Delete Kicker matches
-    for (const match of kickerToDelete) {
+    for (const match of pendingKickerToDelete.value) {
       try {
         await highscoreAdminApi.deleteKickerMatch(match.id)
         deletedCount++
