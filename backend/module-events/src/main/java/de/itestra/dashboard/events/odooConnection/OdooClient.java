@@ -93,7 +93,9 @@ public class OdooClient {
      * @throws XmlRpcException if authentication fails
      */
     private synchronized void ensureAuthenticated() throws XmlRpcException {
-        if (authenticated) return;
+        if (authenticated) {
+            return;
+        }
         try {
             Object uidObject = clientCommon.execute("authenticate", new Object[]{
                     db, username, password, Map.of()
