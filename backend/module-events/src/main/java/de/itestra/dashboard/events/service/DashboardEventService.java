@@ -32,10 +32,10 @@ public class DashboardEventService {
 
     private final DashboardEventMapper dashboardEventMapper;
     private final OdooClient odooClient;
-    private List<DashboardEventResponse> cachedEvents = new ArrayList<>();
-    private LocalDate lastUpdateDate;
-    private LocalDate latestCachedDate;
-    private LocalDate earliestCachedDate;
+    private volatile List<DashboardEventResponse> cachedEvents = new ArrayList<>();
+    private volatile LocalDate lastUpdateDate;
+    private volatile LocalDate latestCachedDate;
+    private volatile LocalDate earliestCachedDate;
 
     /**
      * Constructs a new DashboardEventService.

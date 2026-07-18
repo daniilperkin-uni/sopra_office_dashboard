@@ -12,6 +12,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api'
 
 /**
  * The configured Axios instance for all API requests.
+ * Includes a response interceptor that redirects to /login on 401.
  */
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -19,6 +20,19 @@ const apiClient = axios.create({
     'Content-Type': 'application/json',
   },
 })
+
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      const currentPath = window.location.pathname
+      if (currentPath.startsWith('/admin') && currentPath !== '/login') {
+        window.location.href = `/login?redirect=${encodeURIComponent(currentPath)}`
+      }
+    }
+    return Promise.reject(error)
+  }
+)
 
 /**
  * Service for parking-related API calls.

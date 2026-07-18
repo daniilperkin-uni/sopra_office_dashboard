@@ -40,27 +40,27 @@ public class OdooClient {
     private String location;
 
     private int uid;
+    private volatile boolean authenticated = false;
     private final XmlRpcClient clientCommon;
     private final XmlRpcClient clientObject;
 
     /**
-     * Constructs a new OdooClient and establishes connection to the Odoo system.
+     * Constructs a new OdooClient.
      * <p>
-     * Initializes XML-RPC clients for common and object endpoints, and
-     * authenticates
-     * with the Odoo server using the provided credentials.
+     * Initializes XML-RPC clients for common and object endpoints. Authentication
+     * is deferred to the first API call so the application context starts even
+     * if Odoo is temporarily unreachable.
      * </p>
      *
      * @param url      the base URL of the Odoo server
      * @param db       the database name
      * @param username the Odoo username for authentication
      * @param password the Odoo password for authentication
-     * @throws Exception if connection or authentication fails
      */
     public OdooClient(@Value("${odoo.api.url}") String url,
                       @Value("${odoo.api.db}") String db,
                       @Value("${odoo.api.username}") String username,
-                      @Value("${odoo.api.password}") String password) throws Exception {
+                      @Value("${odoo.api.password}") String password) {
         log.info("OdooClient created");
 
         this.url = url;
@@ -70,8 +70,6 @@ public class OdooClient {
 
         clientCommon = buildConfigeredXmlRpcClient("/xmlrpc/2/common");
         clientObject = buildConfigeredXmlRpcClient("/xmlrpc/2/object");
-
-        authenticate();
     }
 
     private XmlRpcClient buildConfigeredXmlRpcClient(String path) {
@@ -82,7 +80,7 @@ public class OdooClient {
             URI uri = new URI(this.url + path);
             config.setServerURL(uri.toURL());
         } catch (MalformedURLException | URISyntaxException e) {
-            log.error(e.getMessage());
+            throw new IllegalStateException("Invalid Odoo API URL: " + this.url + path, e);
         }
 
         client.setConfig(config);
@@ -90,15 +88,23 @@ public class OdooClient {
     }
 
     /**
-     * Authenticates with the Odoo server and stores the user ID.
+     * Lazily authenticates with the Odoo server on the first API call.
      *
-     * @throws Exception if authentication fails
+     * @throws XmlRpcException if authentication fails
      */
-    private void authenticate() throws Exception {
-        Object uidObject = clientCommon.execute("authenticate", new Object[]{
-                db, username, password, Map.of()
-        });
-        this.uid = (int) uidObject;
+    private synchronized void ensureAuthenticated() throws XmlRpcException {
+        if (authenticated) return;
+        try {
+            Object uidObject = clientCommon.execute("authenticate", new Object[]{
+                    db, username, password, Map.of()
+            });
+            this.uid = (int) uidObject;
+            this.authenticated = true;
+        } catch (XmlRpcException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new XmlRpcException("Odoo authentication failed", e);
+        }
     }
 
     /**
@@ -112,6 +118,7 @@ public class OdooClient {
      * @throws XmlRpcException if the Odoo API call fails
      */
     public List<Map<String, Object>> getEmployees() throws XmlRpcException {
+        ensureAuthenticated();
         Object[] employeesObj = readEmployees(searchEmployees());
         List<Map<String, Object>> employees = Arrays.stream(employeesObj)
                 .map(e -> (Map<String, Object>) e)
@@ -130,6 +137,7 @@ public class OdooClient {
      * @throws XmlRpcException if the Odoo API call fails
      */
     public List<Map<String, Object>> getContracts() throws XmlRpcException {
+        ensureAuthenticated();
         Object[] contractsObj = readContracts(searchContracts());
         List<Map<String, Object>> contracts = Arrays.stream(contractsObj)
                 .map(e -> (Map<String, Object>) e)

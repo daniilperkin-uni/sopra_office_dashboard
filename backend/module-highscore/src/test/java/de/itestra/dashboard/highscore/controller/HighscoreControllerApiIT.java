@@ -40,6 +40,10 @@ class HighscoreControllerApiIT {
         return "http://localhost:" + port + path;
     }
 
+    private TestRestTemplate adminRest() {
+        return new TestRestTemplate("admin", "REDACTED-SECRET");
+    }
+
     @Test
     void api_getOverview_returns200_andJsonShape() throws Exception {
         OverviewResponse response = new OverviewResponse(List.of(), List.of(), List.of());
@@ -72,7 +76,7 @@ class HighscoreControllerApiIT {
 
         HttpEntity<String> entity = new HttpEntity<>(objectMapper.writeValueAsString(req), headers);
 
-        ResponseEntity<String> res = rest.exchange(url("/api/matches/darts"), HttpMethod.POST, entity, String.class);
+        ResponseEntity<String> res = adminRest().exchange(url("/api/matches/darts"), HttpMethod.POST, entity, String.class);
 
         assertThat(res.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -98,7 +102,7 @@ class HighscoreControllerApiIT {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        ResponseEntity<String> res = rest.exchange(
+        ResponseEntity<String> res = adminRest().exchange(
                 url("/api/matches/darts"),
                 HttpMethod.POST,
                 new HttpEntity<>(invalidJson, headers),
@@ -132,7 +136,7 @@ class HighscoreControllerApiIT {
 
         HttpEntity<String> entity = new HttpEntity<>(objectMapper.writeValueAsString(req), headers);
 
-        ResponseEntity<String> res = rest.exchange(url("/api/matches/kicker"), HttpMethod.POST, entity, String.class);
+        ResponseEntity<String> res = adminRest().exchange(url("/api/matches/kicker"), HttpMethod.POST, entity, String.class);
 
         assertThat(res.getStatusCode()).isEqualTo(HttpStatus.OK);
 

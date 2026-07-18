@@ -19,7 +19,6 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -156,22 +155,5 @@ public class ParkingController {
             @PathVariable("id") Long id) {
         parkingService.deleteRecurringReservation(id);
         return ResponseEntity.noContent().build();
-    }
-
-    /**
-     * Global exception handler for all exceptions thrown by controller methods.
-     * <p>
-     * This handler catches all exceptions and converts them into standardized
-     * HTTP 400 (Bad Request) responses with a ProblemDetail body containing
-     * the exception message. This provides consistent error responses to clients.
-     * </p>
-     *
-     * @param e the exception that was thrown
-     * @return response entity with ProblemDetail and HTTP status 400
-     */
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ProblemDetail> handleErrors(Exception e) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
     }
 }

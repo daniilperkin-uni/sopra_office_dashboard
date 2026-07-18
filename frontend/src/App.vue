@@ -31,6 +31,13 @@
           >
             Verwaltung
           </router-link>
+          <button
+            v-if="showNavigation && $route.path.startsWith('/admin')"
+            class="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-red-500 transition-colors"
+            @click="handleLogout"
+          >
+            Abmelden
+          </button>
         </nav>
       </div>
     </header>
@@ -52,14 +59,21 @@
  * Hides navigation in display mode (/display).
  */
 import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { authService } from '@/services/authService'
 
 const route = useRoute()
+const router = useRouter()
 
 // Show navigation only if we are not on the display page
 const showNavigation = computed(() => {
   return route.path !== '/display'
 })
+
+const handleLogout = async () => {
+  await authService.logout()
+  router.push('/display')
+}
 </script>
 
 <style>

@@ -1,6 +1,7 @@
 package de.itestra.dashboard.events;
 
 import de.itestra.dashboard.events.odooConnection.OdooClient;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +17,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * Tests the connectivity and basic functionality of the OdooClient by verifying
  * that it can authenticate and retrieve data from the Odoo system.
  * </p>
+ * <p>
+ * Disabled by default — requires real Odoo credentials in the environment.
+ * To run locally, set the ODOO_API_* environment variables and remove @Disabled.
+ * </p>
  */
+@Disabled("Requires real Odoo credentials — set ODOO_API_* env vars and remove @Disabled to run locally")
 @SpringBootTest(classes = de.itestra.dashboard.BackendApplication.class)
 class OdooClientApiTest {
 
