@@ -1,0 +1,27 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 002-lunch-choice-option-fk-on-delete-cascade
+      author: team
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: lunch_choice
+          - tableExists:
+              tableName: lunch_event_option
+          - foreignKeyConstraintExists:
+              foreignKeyName: FK6mas12s53qaqly68iwjxi0h1s
+
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: lunch_choice
+            constraintName: FK6mas12s53qaqly68iwjxi0h1s
+
+        - addForeignKeyConstraint:
+            baseTableName: lunch_choice
+            baseColumnNames: option_id
+            referencedTableName: lunch_event_option
+            referencedColumnNames: id
+            constraintName: FK6mas12s53qaqly68iwjxi0h1s
+            onDelete: CASCADE

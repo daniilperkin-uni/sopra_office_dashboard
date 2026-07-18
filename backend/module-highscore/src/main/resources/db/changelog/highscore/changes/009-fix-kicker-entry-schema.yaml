@@ -1,0 +1,125 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 009-drop-kicker-entry-employee-name
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: kicker_entry
+          - columnExists:
+              tableName: kicker_entry
+              columnName: employee_name
+      changes:
+        - dropColumn:
+            tableName: kicker_entry
+            columnName: employee_name
+
+  - changeSet:
+      id: 009-create-kicker-entry-team-a-table-if-missing
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: kicker_entry_team_a_player
+      changes:
+        - createTable:
+            tableName: kicker_entry_team_a_player
+            columns:
+              - column:
+                  name: kicker_entry_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: player_pos
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: player_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: kicker_entry_team_a_player
+            columnNames: kicker_entry_id, player_pos
+            constraintName: pk_kicker_entry_team_a_player
+
+  - changeSet:
+      id: 009-add-fk-kicker-entry-team-a-if-missing
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: kicker_entry_team_a_player
+          - tableExists:
+              tableName: kicker_entry
+          - not:
+              foreignKeyConstraintExists:
+                foreignKeyName: fk_kicker_entry_team_a_entry
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: kicker_entry_team_a_player
+            baseColumnNames: kicker_entry_id
+            referencedTableName: kicker_entry
+            referencedColumnNames: id
+            constraintName: fk_kicker_entry_team_a_entry
+            onDelete: CASCADE
+
+  - changeSet:
+      id: 009-create-kicker-entry-team-b-table-if-missing
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: kicker_entry_team_b_player
+      changes:
+        - createTable:
+            tableName: kicker_entry_team_b_player
+            columns:
+              - column:
+                  name: kicker_entry_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: player_pos
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: player_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: kicker_entry_team_b_player
+            columnNames: kicker_entry_id, player_pos
+            constraintName: pk_kicker_entry_team_b_player
+
+  - changeSet:
+      id: 009-add-fk-kicker-entry-team-b-if-missing
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: kicker_entry_team_b_player
+          - tableExists:
+              tableName: kicker_entry
+          - not:
+              foreignKeyConstraintExists:
+                foreignKeyName: fk_kicker_entry_team_b_entry
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: kicker_entry_team_b_player
+            baseColumnNames: kicker_entry_id
+            referencedTableName: kicker_entry
+            referencedColumnNames: id
+            constraintName: fk_kicker_entry_team_b_entry
+            onDelete: CASCADE

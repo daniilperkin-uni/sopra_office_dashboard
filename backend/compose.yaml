@@ -1,0 +1,53 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      SERVER_PORT: ${ITESTRA_DASHBOARD_PORT:-8080}
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-test}
+      DB_USER: ${DB_USER:-myuser}
+      DB_PASS: ${DB_PASS:-secret}
+      DB_ROOT_PASS: ${DB_ROOT_PASS:-root}
+    ports:
+      - "8099:8080"
+    volumes:
+      - ./:/app/backend
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: frontend/Dockerfile
+      args:
+        VITE_ANONYMIZE_NAMES: ${VITE_ANONYMIZE_NAMES:-false} 
+    ports:
+      - "8098:80"
+    depends_on:
+      - backend
+
+  mariadb:
+    image: mariadb:latest
+    env_file:
+      - .env
+    environment:
+      MARIADB_DATABASE: ${DB_NAME:-test}
+      MARIADB_USER: ${DB_USER:-myuser}
+      MARIADB_PASSWORD: ${DB_PASS:-secret}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASS:-root}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASS:-root}"]
+      timeout: 5s
+      retries: 10
+      interval: 5s
+
+volumes:
+  mariadb_data:

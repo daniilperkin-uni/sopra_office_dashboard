@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-create-kicker-entry
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: kicker_entry
+      changes:
+        - createTable:
+            tableName: kicker_entry
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: player_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: entry_date
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: points
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: match_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: kicker_entry
+            baseColumnNames: match_id
+            referencedTableName: kicker_match
+            referencedColumnNames: id
+            constraintName: fk_kicker_entry_match

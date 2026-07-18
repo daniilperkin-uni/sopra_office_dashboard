@@ -1,0 +1,35 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+body {
+  margin: 0;
+  font-family: 'Mulish', system-ui, -apple-system, sans-serif;
+  background-color: #F5F7FA;
+  color: #102A43;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+/* Custom utility classes for the new colors */
+.text-text-dark {
+  color: #102A43;
+}
+
+.text-primary {
+  color: #009ee2;
+}
+
+.border-primary {
+  border-color: #009ee2;
+}
+
+.focus\:ring-primary:focus {
+  --tw-ring-color: #009ee2;
+}
+
+.focus\:border-primary:focus {
+  border-color: #009ee2;
+}

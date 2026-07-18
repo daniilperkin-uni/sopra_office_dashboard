@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+}
+
+group = 'de.itestra.dashboard'
+version = '0.0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring dependencies for MattermostClient
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework:spring-context'
+
+    // JUnit for testing
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    enabled = true
+}

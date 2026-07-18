@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-remove-spot-id-from-parking-entry
+      author: st194542
+      changes:
+        # - dropConstraint:
+        #     tableName: parking_entry
+        #     constraintName: fk_parkingentry_spot
+        - dropColumn:
+            tableName: parking_entry
+            columnName: spot_id

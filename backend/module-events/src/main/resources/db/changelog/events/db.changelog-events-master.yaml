@@ -1,0 +1,3 @@
+databaseChangeLog:
+  - include:
+      file: classpath:db/changelog/events/changes/001-create-dashboard-event-table.yaml

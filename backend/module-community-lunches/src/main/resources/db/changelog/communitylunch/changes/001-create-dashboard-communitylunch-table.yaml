@@ -1,0 +1,233 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-food-catalog-item
+      author: team
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            tableExists:
+              tableName: food_catalog_item
+      changes:
+        - createTable:
+            tableName: food_catalog_item
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_food_catalog_item
+                    nullable: false
+              - column:
+                  name: label
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: active
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: DATETIME
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: DATETIME
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: food_catalog_item
+            columnNames: label
+            constraintName: uk_food_catalog_item_label
+
+  - changeSet:
+      id: 001-create-community-lunch-event
+      author: team
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            tableExists:
+              tableName: community_lunch_event
+      changes:
+        - createTable:
+            tableName: community_lunch_event
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_community_lunch_event
+                    nullable: false
+              - column:
+                  name: event_date
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: location
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: note
+                  type: VARCHAR(1000)
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: DATETIME
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: DATETIME
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: community_lunch_event
+            columnNames: event_date
+            constraintName: uk_cle_date
+        - createIndex:
+            tableName: community_lunch_event
+            indexName: idx_cle_date
+            columns:
+              - column:
+                  name: event_date
+
+  - changeSet:
+      id: 001-create-lunch-event-option
+      author: team
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            tableExists:
+              tableName: lunch_event_option
+      changes:
+        - createTable:
+            tableName: lunch_event_option
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_lunch_event_option
+                    nullable: false
+              - column:
+                  name: event_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: catalog_item_id
+                  type: BIGINT
+              - column:
+                  name: custom_label
+                  type: VARCHAR(255)
+              - column:
+                  name: active
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+              - column:
+                  name: sort_order
+                  type: INT
+        - addForeignKeyConstraint:
+            baseTableName: lunch_event_option
+            baseColumnNames: event_id
+            referencedTableName: community_lunch_event
+            referencedColumnNames: id
+            constraintName: fk_leo_event
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: lunch_event_option
+            baseColumnNames: catalog_item_id
+            referencedTableName: food_catalog_item
+            referencedColumnNames: id
+            constraintName: fk_leo_catalog_item
+            onDelete: SET NULL
+        - addUniqueConstraint:
+            tableName: lunch_event_option
+            columnNames: event_id, catalog_item_id
+            constraintName: uk_leo_event_catalog
+        - createIndex:
+            tableName: lunch_event_option
+            indexName: idx_leo_event
+            columns:
+              - column:
+                  name: event_id
+
+  - changeSet:
+      id: 001-create-lunch-choice
+      author: team
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            tableExists:
+              tableName: lunch_choice
+      changes:
+        - createTable:
+            tableName: lunch_choice
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_lunch_choice
+                    nullable: false
+              - column:
+                  name: event_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: option_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: employee_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: DATETIME
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: lunch_choice
+            baseColumnNames: event_id
+            referencedTableName: community_lunch_event
+            referencedColumnNames: id
+            constraintName: fk_lc_event
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: lunch_choice
+            baseColumnNames: option_id
+            referencedTableName: lunch_event_option
+            referencedColumnNames: id
+            constraintName: fk_lc_option
+            onDelete: CASCADE
+        - addUniqueConstraint:
+            tableName: lunch_choice
+            columnNames: event_id, employee_name
+            constraintName: uk_lc_event_employee
+        - createIndex:
+            tableName: lunch_choice
+            indexName: idx_lc_event
+            columns:
+              - column:
+                  name: event_id

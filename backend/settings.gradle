@@ -1,0 +1,11 @@
+rootProject.name = 'itestra-dashboard-backend'
+
+include 'common'
+include 'module-events'
+include 'module-parking'
+
+include 'backend'
+include 'module-highscore'
+include 'module-config'
+include 'module-community-lunches'
+

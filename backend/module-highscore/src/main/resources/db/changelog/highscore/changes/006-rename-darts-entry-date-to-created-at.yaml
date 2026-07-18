@@ -1,0 +1,96 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006-rename-darts-entry-date-to-created-at
+      author: team
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: darts_entry
+          - columnExists:
+              tableName: darts_entry
+              columnName: entry_date
+          - not:
+              columnExists:
+                tableName: darts_entry
+                columnName: created_at
+      changes:
+        - renameColumn:
+            tableName: darts_entry
+            oldColumnName: entry_date
+            newColumnName: created_at
+            columnDataType: TIMESTAMP
+        - addNotNullConstraint:
+            tableName: darts_entry
+            columnName: created_at
+            columnDataType: TIMESTAMP
+
+  - changeSet:
+      id: 006-backfill-darts-created-at
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: darts_entry
+          - columnExists:
+              tableName: darts_entry
+              columnName: created_at
+      changes:
+        - sql:
+            sql: |
+              UPDATE darts_entry
+              SET created_at = NOW()
+              WHERE created_at IS NULL;
+        - addNotNullConstraint:
+            tableName: darts_entry
+            columnName: created_at
+            columnDataType: TIMESTAMP
+
+  - changeSet:
+      id: 006-rename-kicker-match-date-to-created-at
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: kicker_match
+          - columnExists:
+              tableName: kicker_match
+              columnName: match_date
+          - not:
+              columnExists:
+                tableName: kicker_match
+                columnName: created_at
+      changes:
+        - renameColumn:
+            tableName: kicker_match
+            oldColumnName: match_date
+            newColumnName: created_at
+            columnDataType: TIMESTAMP
+        - addNotNullConstraint:
+            tableName: kicker_match
+            columnName: created_at
+            columnDataType: TIMESTAMP
+
+  - changeSet:
+      id: 006-backfill-kicker-created-at
+      author: team
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: kicker_match
+          - columnExists:
+              tableName: kicker_match
+              columnName: created_at
+      changes:
+        - sql:
+            sql: |
+              UPDATE kicker_match
+              SET created_at = NOW()
+              WHERE created_at IS NULL;
+        - addNotNullConstraint:
+            tableName: kicker_match
+            columnName: created_at
+            columnDataType: TIMESTAMP

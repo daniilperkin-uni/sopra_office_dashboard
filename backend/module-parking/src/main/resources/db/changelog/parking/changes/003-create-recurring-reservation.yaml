@@ -1,0 +1,103 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-create-recurring-reservation
+      author: team
+      changes:
+
+        - createTable:
+            tableName: recurring_reservation
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: employee_name
+                  type: VARCHAR(150)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+
+        - addColumn:
+            tableName: parking_entry
+            columns:
+              - column:
+                  name: recurring_reservation_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+
+        - addForeignKeyConstraint:
+            baseTableName: parking_entry
+            baseColumnNames: recurring_reservation_id
+            referencedTableName: recurring_reservation
+            referencedColumnNames: id
+            constraintName: fk_parking_entry_recurring_reservation
+            onDelete: SET NULL
+
+        - createTable:
+            tableName: recurring_reservation_skip_date
+            columns:
+              - column:
+                  name: recurring_reservation_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: skip_date
+                  type: DATE
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: recurring_reservation_skip_date
+            baseColumnNames: recurring_reservation_id
+            referencedTableName: recurring_reservation
+            referencedColumnNames: id
+            constraintName: fk_rr_skip_date_rr
+            onDelete: CASCADE
+
+        - addUniqueConstraint:
+            tableName: recurring_reservation_skip_date
+            columnNames: recurring_reservation_id, skip_date
+            constraintName: uk_reservation_skip_date
+
+        - createTable:
+            tableName: recurring_reservation_day
+            columns:
+              - column:
+                  name: recurring_reservation_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: day_of_week
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: recurring_reservation_day
+            baseColumnNames: recurring_reservation_id
+            referencedTableName: recurring_reservation
+            referencedColumnNames: id
+            constraintName: fk_rr_day_rr
+            onDelete: CASCADE

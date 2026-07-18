@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - include:
+      file: classpath:db/changelog/parking/db.changelog-parking-master.yaml
+  - include:
+      file: classpath:db/changelog/events/db.changelog-events-master.yaml
+  - include:
+      file: classpath:db/changelog/config/db.changelog-config-master.yaml
+  - include:
+      file: classpath:db/changelog/highscore/db.changelog-highscore-master.yaml
+  - include:
+      file: classpath:db/changelog/communitylunch/db.changelog-communitylunch-master.yaml

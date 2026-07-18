@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-create-kicker-match
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: kicker_match
+      changes:
+        - createTable:
+            tableName: kicker_match
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: teamA_player1_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: teamA_player2_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: teamB_player1_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: teamB_player2_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: winner_team
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: match_date
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false

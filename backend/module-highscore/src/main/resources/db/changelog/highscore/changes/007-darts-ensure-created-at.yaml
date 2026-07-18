@@ -1,0 +1,236 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 006-darts-ensure-created-at
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: darts_entry
+          - not:
+              columnExists:
+                tableName: darts_entry
+                columnName: created_at
+      changes:
+        - addColumn:
+            tableName: darts_entry
+            columns:
+              - column:
+                  name: created_at
+                  type: DATETIME(6)
+                  constraints:
+                    nullable: true
+
+  - changeSet:
+      id: 006-darts-backfill-created-at-from-entry-date
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: darts_entry
+          - columnExists:
+              tableName: darts_entry
+              columnName: created_at
+          - columnExists:
+              tableName: darts_entry
+              columnName: entry_date
+      changes:
+        - sql:
+            sql: |
+              UPDATE darts_entry
+              SET created_at = entry_date
+              WHERE created_at IS NULL;
+
+  - changeSet:
+      id: 006-darts-backfill-created-at-now-if-still-null
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: darts_entry
+          - columnExists:
+              tableName: darts_entry
+              columnName: created_at
+      changes:
+        - sql:
+            sql: |
+              UPDATE darts_entry
+              SET created_at = NOW(6)
+              WHERE created_at IS NULL;
+
+  - changeSet:
+      id: 006-darts-created-at-not-null
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: darts_entry
+          - columnExists:
+              tableName: darts_entry
+              columnName: created_at
+      changes:
+        - addNotNullConstraint:
+            tableName: darts_entry
+            columnName: created_at
+            columnDataType: DATETIME(6)
+
+  - changeSet:
+      id: 006-darts-rename-points-to-darts-to-finish-if-needed
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: darts_entry
+          - columnExists:
+              tableName: darts_entry
+              columnName: points
+          - not:
+              columnExists:
+                tableName: darts_entry
+                columnName: darts_to_finish
+      changes:
+        - renameColumn:
+            tableName: darts_entry
+            oldColumnName: points
+            newColumnName: darts_to_finish
+            columnDataType: INT
+
+  - changeSet:
+      id: 006-darts-drop-points-if-duplicated
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: darts_entry
+          - columnExists:
+              tableName: darts_entry
+              columnName: points
+          - columnExists:
+              tableName: darts_entry
+              columnName: darts_to_finish
+      changes:
+        - dropColumn:
+            tableName: darts_entry
+            columnName: points
+
+  - changeSet:
+      id: 006-darts-drop-entry-date
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: darts_entry
+          - columnExists:
+              tableName: darts_entry
+              columnName: entry_date
+          - columnExists:
+              tableName: darts_entry
+              columnName: created_at
+      changes:
+        - dropColumn:
+            tableName: darts_entry
+            columnName: entry_date
+
+  - changeSet:
+      id: 006-kicker-ensure-created-at
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: kicker_match
+          - not:
+              columnExists:
+                tableName: kicker_match
+                columnName: created_at
+      changes:
+        - addColumn:
+            tableName: kicker_match
+            columns:
+              - column:
+                  name: created_at
+                  type: DATETIME(6)
+                  constraints:
+                    nullable: true
+
+  - changeSet:
+      id: 006-kicker-backfill-created-at-from-match-date
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: kicker_match
+          - columnExists:
+              tableName: kicker_match
+              columnName: created_at
+          - columnExists:
+              tableName: kicker_match
+              columnName: match_date
+      changes:
+        - sql:
+            sql: |
+              UPDATE kicker_match
+              SET created_at = match_date
+              WHERE created_at IS NULL;
+
+  - changeSet:
+      id: 006-kicker-backfill-created-at-now-if-still-null
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: kicker_match
+          - columnExists:
+              tableName: kicker_match
+              columnName: created_at
+      changes:
+        - sql:
+            sql: |
+              UPDATE kicker_match
+              SET created_at = NOW(6)
+              WHERE created_at IS NULL;
+
+  - changeSet:
+      id: 006-kicker-created-at-not-null
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: kicker_match
+          - columnExists:
+              tableName: kicker_match
+              columnName: created_at
+      changes:
+        - addNotNullConstraint:
+            tableName: kicker_match
+            columnName: created_at
+            columnDataType: DATETIME(6)
+
+  - changeSet:
+      id: 006-kicker-drop-match-date
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: kicker_match
+          - columnExists:
+              tableName: kicker_match
+              columnName: match_date
+          - columnExists:
+              tableName: kicker_match
+              columnName: created_at
+      changes:
+        - dropColumn:
+            tableName: kicker_match
+            columnName: match_date

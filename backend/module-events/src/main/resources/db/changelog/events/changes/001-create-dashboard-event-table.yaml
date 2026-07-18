@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-dashboard-event-table
+      author: Team
+      changes:
+
+        - createTable:
+            tableName: dashboard_event
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: employee_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: employee_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: original_event_date
+                  type: DATE
+                  constraints:
+                    nullable: true
+              - column:
+                  name: dashboard_event_date
+                  type: DATE
+                  constraints:
+                    nullable: true

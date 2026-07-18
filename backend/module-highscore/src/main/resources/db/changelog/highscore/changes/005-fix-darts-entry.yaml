@@ -1,0 +1,60 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005-rename-darts-points-to-darts-to-finish
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: darts_entry
+          - columnExists:
+              tableName: darts_entry
+              columnName: points
+          - not:
+              columnExists:
+                tableName: darts_entry
+                columnName: darts_to_finish
+      changes:
+        - renameColumn:
+            tableName: darts_entry
+            oldColumnName: points
+            newColumnName: darts_to_finish
+            columnDataType: INT
+
+  - changeSet:
+      id: 005-add-darts-start-score
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: darts_entry
+          - not:
+              columnExists:
+                tableName: darts_entry
+                columnName: start_score
+      changes:
+        - addColumn:
+            tableName: darts_entry
+            columns:
+              - column:
+                  name: start_score
+                  type: INT
+                  defaultValueNumeric: 310
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 005-backfill-darts-start-score
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: darts_entry
+          - columnExists:
+              tableName: darts_entry
+              columnName: start_score
+      changes:
+        - sql:
+            sql: UPDATE darts_entry SET start_score = 310 WHERE start_score IS NULL;

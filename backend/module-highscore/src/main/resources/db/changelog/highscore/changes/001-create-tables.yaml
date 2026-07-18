@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-darts-entry
+      author: st192994
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: darts_entry
+      changes:
+        - createTable:
+            tableName: darts_entry
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: employee_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: entry_date
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: points
+                  type: INT
+                  constraints:
+                    nullable: false

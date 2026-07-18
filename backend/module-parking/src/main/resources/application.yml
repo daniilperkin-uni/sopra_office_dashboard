@@ -1,0 +1,6 @@
+maximumParkingSpots: 5
+spring:
+  application:
+    name: parking-module
+  jpa:
+    show-sql: true

@@ -1,0 +1,24 @@
+plugins {
+    id 'org.springframework.boot'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+}
+
+springBoot {
+    mainClass = 'de.itestra.dashboard.BackendApplication'
+}
+
+dependencies {
+
+    implementation project(':module-events') // includes the parking events
+    implementation project(':module-parking') // includes the parking module
+    implementation project(':module-community-lunches')
+    implementation project(':module-highscore')
+    implementation project(':module-config')
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+}
+
+tasks.named('asciidoctor') {
+    inputs.dir snippetsDir
+    dependsOn test
+}
+

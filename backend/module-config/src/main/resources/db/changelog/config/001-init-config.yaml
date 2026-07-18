@@ -1,0 +1,51 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-display-config-table
+      author: gemini
+      changes:
+        - createTable:
+            tableName: display_config
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: rotation_enabled
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: rotation_interval_seconds
+                  type: INT
+                  defaultValueNumeric: 15
+                  constraints:
+                    nullable: false
+              - column:
+                  name: default_single_view_id
+                  type: VARCHAR(255)
+                  defaultValue: "calendar"
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 002-insert-default-config
+      author: gemini
+      changes:
+        - insert:
+            tableName: display_config
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 1
+              - column:
+                  name: rotation_enabled
+                  valueBoolean: true
+              - column:
+                  name: rotation_interval_seconds
+                  valueNumeric: 15
+              - column:
+                  name: default_single_view_id
+                  value: "calendar"

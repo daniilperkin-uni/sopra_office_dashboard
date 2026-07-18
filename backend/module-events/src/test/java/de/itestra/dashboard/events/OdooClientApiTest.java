@@ -1,0 +1,47 @@
+package de.itestra.dashboard.events;
+
+import de.itestra.dashboard.events.odooConnection.OdooClient;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+/**
+ * Integration test for OdooClient API operations.
+ * <p>
+ * Tests the connectivity and basic functionality of the OdooClient by verifying
+ * that it can authenticate and retrieve data from the Odoo system.
+ * </p>
+ */
+@SpringBootTest(classes = de.itestra.dashboard.BackendApplication.class)
+class OdooClientApiTest {
+
+    @Autowired
+    private OdooClient client;
+
+    /**
+     * Tests that the OdooClient can authenticate and retrieve employee data.
+     * Verifies that the returned employee list is not null.
+     */
+    @Test
+    void odooApi_shouldAuthenticateAndReturnEmployees() throws Exception {
+        List<Map<String, Object>> employees = client.getEmployees();
+
+        assertNotNull(employees, "Employees list must not be null");
+    }
+
+    /**
+     * Tests that the OdooClient can authenticate and retrieve contract data.
+     * Verifies that the returned contract list is not null.
+     */
+    @Test
+    void odooApi_shouldAuthenticateAndReturnContracts() throws Exception {
+        List<Map<String, Object>> contracts = client.getContracts();
+
+        assertNotNull(contracts, "Contracts list must not be null");
+    }
+}

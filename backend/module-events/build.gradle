@@ -1,0 +1,23 @@
+dependencies {
+    implementation project(':common')
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'com.odoojava:odoo-java-api:3.3.5'
+
+    // Use Spring Boot’s unified JUnit setup
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // Align launcher version to Spring Boot's JUnit platform
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.12.2'
+
+    implementation "org.springframework.boot:spring-boot-starter-webflux"
+    testImplementation project(':backend')
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    enabled = true
+}

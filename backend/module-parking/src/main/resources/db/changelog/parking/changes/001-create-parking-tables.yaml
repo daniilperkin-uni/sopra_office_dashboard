@@ -1,0 +1,53 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-parking-tables
+      author: team
+      changes:
+
+        - createTable:
+            tableName: parking_spot
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: parking_entry
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: employee_name
+                  type: VARCHAR(150)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: entry_date
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: spot_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+                    referencedTableName: parking_spot
+                    referencedColumnNames: id
+                    foreignKeyName: fk_parkingentry_spot
+        - addUniqueConstraint:
+            tableName: parking_entry
+            columnNames: employee_name, entry_date
+            constraintName: uk_employee_date

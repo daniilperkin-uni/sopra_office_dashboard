@@ -1,0 +1,18 @@
+dependencies {
+    implementation project(':common')
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Use Spring Boot’s unified JUnit setup
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // testImplementation project(':backend')
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.12.2'
+}
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    enabled = true
+}

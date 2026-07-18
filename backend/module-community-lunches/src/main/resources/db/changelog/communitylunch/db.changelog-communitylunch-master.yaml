@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: classpath:db/changelog/communitylunch/changes/001-create-dashboard-communitylunch-table.yaml
+  - include:
+      file: classpath:db/changelog/communitylunch/changes/002-lunch-choice-option-fk-on-delete-cascade.yaml

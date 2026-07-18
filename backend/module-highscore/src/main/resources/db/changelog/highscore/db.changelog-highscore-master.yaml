@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - include:
+      file: classpath:db/changelog/highscore/changes/001-create-tables.yaml
+  - include:
+      file: classpath:db/changelog/highscore/changes/002-create-kicker-match.yaml
+  - include:
+      file: classpath:db/changelog/highscore/changes/003-create-kicker-entry.yaml
+  - include:
+      file: classpath:db/changelog/highscore/changes/004-fix-kicker-match.yaml
+  - include:
+      file: classpath:db/changelog/highscore/changes/005-fix-darts-entry.yaml
+  - include:
+      file: classpath:db/changelog/highscore/changes/006-rename-darts-entry-date-to-created-at.yaml
+  - include:
+      file: classpath:db/changelog/highscore/changes/007-darts-ensure-created-at.yaml
+  - include:
+      file: classpath:db/changelog/highscore/changes/008-kicker-entry-ensure-created-at.yaml
+  - include:
+      file: classpath:db/changelog/highscore/changes/009-fix-kicker-entry-schema.yaml
