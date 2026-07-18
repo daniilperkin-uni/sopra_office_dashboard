@@ -34,17 +34,11 @@ subprojects{//will be applied to all subprojects
     }
 
     dependencies {
-        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-        implementation 'org.springframework.boot:spring-boot-starter-security'
-        //developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
-        runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+        // Shared test dependencies across all subprojects
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
         testImplementation 'org.springframework.security:spring-security-test'
         testRuntimeOnly 'com.h2database:h2'
-        implementation 'org.liquibase:liquibase-core:4.24.0'
-        implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.14' // for the swagger-ui
-        //runtimeOnly 'org.springframework.boot:spring-boot-devtools'
     }
 
     tasks.withType(Test) {

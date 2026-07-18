@@ -8,14 +8,16 @@ springBoot {
 }
 
 dependencies {
-
-    implementation project(':module-events') // includes the parking events
-    implementation project(':module-parking') // includes the parking module
+    implementation project(':module-events')
+    implementation project(':module-parking')
     implementation project(':module-community-lunches')
     implementation project(':module-highscore')
     implementation project(':module-config')
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    implementation 'org.liquibase:liquibase-core:4.24.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.14'
 }
 
 tasks.named('asciidoctor') {
