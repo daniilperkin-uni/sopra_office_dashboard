@@ -24,7 +24,7 @@ C:\git-repositories\team_i5\
 │   ├───backend\                    # Main Application Entrypoint & Orchestration
 │   ├───common\                     # Shared utilities
 │   ├───module-community-lunches\       # Community Lunch Logic
-├───module-config\              # Dynamic Display Configuration Logic
+│   ├───module-config\              # Dynamic Display Configuration Logic
 │   ├───module-events\              # Event Management (Odoo Integration)
 │   ├───module-highscore\           # Highscore Logic (Darts/Kicker)
 │   ├───module-parking\             # Parking Management Logic
