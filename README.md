@@ -62,7 +62,7 @@ An administrative view for managing data (currently for parking reservations).
 ## Install using docker compose
 
 ```bash
-$ git clone https://github.tik.uni-stuttgart.de/iste-sopra-2025-itestra/team_i5.git
+$ git clone [University Internal Git Repository]
 $ cd team_i5/backend
 $ cp .env.example .env
 $ docker compose up -d # or
@@ -74,13 +74,13 @@ $ docker compose up -d --build # to force a build after applying changes
 ### Prerequisites
 
 - Java Development Kit (JDK) 21
-- Node.js (LTS-Version, e.g. 18.x oder 20.x)
+- Node.js 22 LTS
 - MariaDB Server
 
 ### For Linux
 
 ```bash
-$ git clone https://github.tik.uni-stuttgart.de/iste-sopra-2025-itestra/team_i5.git
+$ git clone [University Internal Git Repository]
 # start the backend
 $ cd team_i5/backend
 $ touch backend/src/main/resources/application-dev.properties # and edit to your needs (example below)
