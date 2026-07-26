@@ -6,7 +6,9 @@ vi.mock('vue', async () => {
   const actual = await vi.importActual('vue')
   return {
     ...actual,
-    onMounted: (fn) => { fn() },
+    onMounted: (fn) => {
+      fn()
+    },
     onUnmounted: () => {},
   }
 })
@@ -15,7 +17,11 @@ describe('useDisplayScaler', () => {
   beforeEach(() => {
     // Reset window dimensions
     Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 1920 })
-    Object.defineProperty(window, 'innerHeight', { writable: true, configurable: true, value: 1080 })
+    Object.defineProperty(window, 'innerHeight', {
+      writable: true,
+      configurable: true,
+      value: 1080,
+    })
   })
 
   it('calculates scale based on window dimensions', () => {
@@ -26,7 +32,11 @@ describe('useDisplayScaler', () => {
 
   it('uses the smaller ratio when aspect ratios differ', () => {
     Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 3840 })
-    Object.defineProperty(window, 'innerHeight', { writable: true, configurable: true, value: 1080 })
+    Object.defineProperty(window, 'innerHeight', {
+      writable: true,
+      configurable: true,
+      value: 1080,
+    })
     const { scale } = useDisplayScaler()
     // 3840/3840 = 1.0, 1080/2160 = 0.5, min = 0.5
     expect(scale.value).toBeCloseTo(0.5)
@@ -42,7 +52,11 @@ describe('useDisplayScaler', () => {
 
   it('scale is 1 when window matches reference resolution', () => {
     Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 3840 })
-    Object.defineProperty(window, 'innerHeight', { writable: true, configurable: true, value: 2160 })
+    Object.defineProperty(window, 'innerHeight', {
+      writable: true,
+      configurable: true,
+      value: 2160,
+    })
     const { scale } = useDisplayScaler()
     expect(scale.value).toBe(1)
   })

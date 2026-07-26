@@ -14,9 +14,24 @@ describe('processCalendarEvents', () => {
 
   it('groups events by ISO date', () => {
     const events = [
-      { dashboardEventDate: '01.01.2026', dashboardEventType: 'BIRTHDAY', dashboardEventDescription: 'Test', employeeName: 'John Doe' },
-      { dashboardEventDate: '01.01.2026', dashboardEventType: 'WORK_ANNIVERSARY', dashboardEventDescription: '5 Jahre', employeeName: 'Jane Smith' },
-      { dashboardEventDate: '02.01.2026', dashboardEventType: 'BIRTHDAY', dashboardEventDescription: 'Test2', employeeName: 'Bob' },
+      {
+        dashboardEventDate: '01.01.2026',
+        dashboardEventType: 'BIRTHDAY',
+        dashboardEventDescription: 'Test',
+        employeeName: 'John Doe',
+      },
+      {
+        dashboardEventDate: '01.01.2026',
+        dashboardEventType: 'WORK_ANNIVERSARY',
+        dashboardEventDescription: '5 Jahre',
+        employeeName: 'Jane Smith',
+      },
+      {
+        dashboardEventDate: '02.01.2026',
+        dashboardEventType: 'BIRTHDAY',
+        dashboardEventDescription: 'Test2',
+        employeeName: 'Bob',
+      },
     ]
     const result = processCalendarEvents(events)
     expect(Object.keys(result)).toHaveLength(2)
@@ -26,7 +41,12 @@ describe('processCalendarEvents', () => {
 
   it('transforms BIRTHDAY events with emoji and name', () => {
     const events = [
-      { dashboardEventDate: '15.03.2026', dashboardEventType: 'BIRTHDAY', dashboardEventDescription: 'Birthday', employeeName: 'Alice' },
+      {
+        dashboardEventDate: '15.03.2026',
+        dashboardEventType: 'BIRTHDAY',
+        dashboardEventDescription: 'Birthday',
+        employeeName: 'Alice',
+      },
     ]
     const result = processCalendarEvents(events)
     const entry = result['2026-03-15'][0]
@@ -37,7 +57,12 @@ describe('processCalendarEvents', () => {
 
   it('transforms WORK_ANNIVERSARY events', () => {
     const events = [
-      { dashboardEventDate: '10.06.2026', dashboardEventType: 'WORK_ANNIVERSARY', dashboardEventDescription: '5 Jahre', employeeName: 'Bob Builder' },
+      {
+        dashboardEventDate: '10.06.2026',
+        dashboardEventType: 'WORK_ANNIVERSARY',
+        dashboardEventDescription: '5 Jahre',
+        employeeName: 'Bob Builder',
+      },
     ]
     const result = processCalendarEvents(events)
     const entry = result['2026-06-10'][0]
@@ -47,7 +72,12 @@ describe('processCalendarEvents', () => {
 
   it('transforms PROBATION_END events', () => {
     const events = [
-      { dashboardEventDate: '20.09.2026', dashboardEventType: 'PROBATION_END', dashboardEventDescription: 'End', employeeName: 'Charlie' },
+      {
+        dashboardEventDate: '20.09.2026',
+        dashboardEventType: 'PROBATION_END',
+        dashboardEventDescription: 'End',
+        employeeName: 'Charlie',
+      },
     ]
     const result = processCalendarEvents(events)
     const entry = result['2026-09-20'][0]
@@ -57,7 +87,11 @@ describe('processCalendarEvents', () => {
 
   it('skips events without a date', () => {
     const events = [
-      { dashboardEventType: 'BIRTHDAY', dashboardEventDescription: 'No date', employeeName: 'Test' },
+      {
+        dashboardEventType: 'BIRTHDAY',
+        dashboardEventDescription: 'No date',
+        employeeName: 'Test',
+      },
     ]
     const result = processCalendarEvents(events)
     expect(Object.keys(result)).toHaveLength(0)
@@ -65,7 +99,12 @@ describe('processCalendarEvents', () => {
 
   it('skips events with malformed date', () => {
     const events = [
-      { dashboardEventDate: 'invalid', dashboardEventType: 'BIRTHDAY', dashboardEventDescription: 'Bad', employeeName: 'Test' },
+      {
+        dashboardEventDate: 'invalid',
+        dashboardEventType: 'BIRTHDAY',
+        dashboardEventDescription: 'Bad',
+        employeeName: 'Test',
+      },
     ]
     const result = processCalendarEvents(events)
     expect(Object.keys(result)).toHaveLength(0)
@@ -73,7 +112,12 @@ describe('processCalendarEvents', () => {
 
   it('strips leading date from titles', () => {
     const events = [
-      { dashboardEventDate: '01.01.2026', dashboardEventType: 'OTHER', dashboardEventDescription: '01.01.2026 Some Event', employeeName: 'Test' },
+      {
+        dashboardEventDate: '01.01.2026',
+        dashboardEventType: 'OTHER',
+        dashboardEventDescription: '01.01.2026 Some Event',
+        employeeName: 'Test',
+      },
     ]
     const result = processCalendarEvents(events)
     const entry = result['2026-01-01'][0]
