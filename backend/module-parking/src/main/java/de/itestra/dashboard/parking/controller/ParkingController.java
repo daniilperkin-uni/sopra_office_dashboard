@@ -23,7 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 /**
  * REST controller for managing parking spot reservations.
  * <p>
@@ -155,5 +154,18 @@ public class ParkingController {
             @PathVariable("id") Long id) {
         parkingService.deleteRecurringReservation(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Handles {@link IllegalArgumentException} thrown by the service layer when
+     * a business rule is violated (e.g. duplicate entry, fully booked date).
+     *
+     * @param ex the exception
+     * @return 400 Bad Request with the exception message
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
+        log.warn("Business rule violation: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 }

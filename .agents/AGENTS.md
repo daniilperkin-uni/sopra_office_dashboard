@@ -24,3 +24,29 @@ This file contains rules and guidelines for AI agents working on the `itestraOff
 ## 5. Documentation
 - When creating new features, always update `README.md`, `frontend/README.md`, and `GEMINI.md` to reflect the changes.
 - **GEMINI.md** acts as a technical changelog and architectural document. Keep its resolution history updated.
+
+## 6. Testing Conventions
+
+### Backend
+- **Unit tests** (Mockito, no Spring context): for services and mappers. Name `<Class>Test.java`.
+  Place in `src/test/java/.../service/` or `.../mapper/`.
+- **WebMvcTest** (`@WebMvcTest(Controller.class)` + `@MockitoBean`): for controller
+  HTTP-contract validation. Name `<Controller>Test.java`. Always assert HTTP status
+  codes and JSON shape — never assert on thrown exception types.
+- **Integration tests** (`@SpringBootTest` + MockMvc or `TestRestTemplate`): for
+  end-to-end flows including JPA. Name `<Controller>IntegrationTest.java` or
+  `<Controller>ApiIT.java`. Use H2 (`testRuntimeOnly 'com.h2database:h2'`, already
+  shared via root `build.gradle`) and `@Transactional` for test isolation.
+- **Disabled integration tests**: external-dependency tests (e.g. `OdooClientApiTest`)
+  must use `@Disabled` with a comment explaining how to enable them locally.
+- Every module MUST have at least one test file.
+
+### Frontend
+- **Vitest** + `@testing-library/vue` + `@vue/test-utils` are configured
+  (`frontend/package.json`). CI runs `npm run test`.
+- Place test files adjacent to the source: `src/utils/eventUtils.test.js`,
+  `src/components/common/BaseButton.test.js`.
+- Prefer testing pure functions (`processCalendarEvents`, `formatDateISO`,
+  `useDisplayScaler` math) and component contracts (props → rendered output),
+  not implementation details.
+- Every feature folder SHOULD have at least one component test.

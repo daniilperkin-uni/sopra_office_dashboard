@@ -108,10 +108,6 @@ public class MattermostClient {
         LOG.info("Creating channel for " + receiver + " and bot: " + botUserId);
         List<String> userIds = List.of(botUserId, receiver);
 
-        if (userIds == null) {
-            return null;
-        }
-
         LOG.info("userIds: " + userIds);
 
         Map<String, Object> response = webClient.post()

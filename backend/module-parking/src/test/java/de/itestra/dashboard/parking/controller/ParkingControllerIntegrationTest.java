@@ -1,5 +1,6 @@
 package de.itestra.dashboard.parking.controller;
 
+import de.itestra.dashboard.parking.TestApplication;
 import de.itestra.dashboard.parking.entity.ParkingEntry;
 import de.itestra.dashboard.parking.repository.ParkingEntryRepository;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest(classes = de.itestra.dashboard.BackendApplication.class)
+@SpringBootTest(classes = TestApplication.class)
 @AutoConfigureMockMvc
 @WithMockUser(roles = "ADMIN")
 @Transactional
@@ -113,15 +114,10 @@ public class ParkingControllerIntegrationTest {
                 }
                 """.formatted(apiDate);
 
-        try {
-            mockMvc.perform(post("/api/entries")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(duplicateRequest))
-                    .andReturn();
-        } catch (Exception e) {
-            assertThat(e.getCause()).isInstanceOf(IllegalArgumentException.class);
-            assertThat(e.getMessage()).contains("already registered");
-        }
+        mockMvc.perform(post("/api/entries")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(duplicateRequest))
+                .andExpect(status().isBadRequest());
 
         assertThat(repository.count()).isEqualTo(1);
     }

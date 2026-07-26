@@ -56,12 +56,7 @@ public class HighscoreController {
     @ApiResponse(responseCode = "200", description = "Darts leaderboard, Kicker leaderboard and Match history",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = OverviewResponse.class)))
     public OverviewResponse getOverview() {
-        try {
-            return highscoreService.getOverview();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
+        return highscoreService.getOverview();
     }
 
     @GetMapping("/matches/darts")
