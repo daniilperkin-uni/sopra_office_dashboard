@@ -1,8 +1,17 @@
 frontend/node_modules/
-.nvmrc
 .env
 .idea
 .vscode/
+
+# Gradle / backend build artifacts
+build/
+bin/
+.gradle/
+*.class
+*.jar
+*.iml
+*.log
+Thumbs.db
 
 # Local Spring Boot profile overrides (may contain dev secrets)
 backend/backend/src/main/resources/application-dev.properties
