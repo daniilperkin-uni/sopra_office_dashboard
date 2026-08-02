@@ -383,7 +383,7 @@ public class CommunityLunchService {
      * @param eventId unique identifier of the event
      * @param request request containing the selected option ID and employee name
      * @throws NoSuchElementException if event or option not found
-     * @throws IllegalStateException if voting is closed (event status is CLOSED)
+     * @throws IllegalStateException if voting is not open (event status is not OPEN)
      * @throws IllegalArgumentException if option doesn't belong to event or is inactive
      */
     @Transactional
@@ -391,8 +391,8 @@ public class CommunityLunchService {
         CommunityLunchEvent event = communityLunchEventRepository.findById(eventId)
                 .orElseThrow(() -> new NoSuchElementException("Event not found: " + eventId));
 
-        if (event.getStatus() == LunchStatus.CLOSED) {
-            throw new IllegalStateException("Voting is closed");
+        if (event.getStatus() != LunchStatus.OPEN) {
+            throw new IllegalStateException("Voting is only allowed when the event is OPEN (current: " + event.getStatus() + ")");
         }
 
         LunchEventOption option = lunchEventOptionRepository.findById(request.optionId())

@@ -13,7 +13,7 @@ import java.time.LocalDate;
  * @param date new event date (must be unique if changed)
  * @param location new event location (max 120 characters)
  * @param note new event notes (max 1000 characters)
- * @param status new event status (DRAFT, OPEN, CLOSED, or CANCELLED)
+ * @param status new event status (DRAFT, OPEN, or CLOSED)
  */
 @Schema(description = "Request to update a community lunch event")
 public record UpdateCommunityLunchEventRequest(
@@ -29,11 +29,11 @@ public record UpdateCommunityLunchEventRequest(
         @Size(max = 1000)
         String note,
 
-        @Schema(description = "Event status", example = "OPEN", allowableValues = {"DRAFT", "OPEN", "CLOSED", "CANCELLED"}, requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Event status", example = "OPEN", allowableValues = {"DRAFT", "OPEN", "CLOSED"}, requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank
         @Pattern(
-                regexp = "DRAFT|OPEN|CLOSED|CANCELLED",
-                message = "status must be one of: DRAFT, OPEN, CLOSED, CANCELLED"
+                regexp = "DRAFT|OPEN|CLOSED",
+                message = "status must be one of: DRAFT, OPEN, CLOSED"
         )
         String status
 ) {
