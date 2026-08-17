@@ -19,7 +19,7 @@ The **itestraOfficeDashboard** is a modular, web-based dashboard designed for hi
 ## 2. Directory Structure
 
 ```
-C:\git-repositories\team_i5\
+sopra_office_dashboard\
 ├───backend\                        # Java Spring Boot Backend (Gradle Multi-Module)
 │   ├───backend\                    # Main Application Entrypoint & Orchestration
 │   ├───common\                     # Shared utilities

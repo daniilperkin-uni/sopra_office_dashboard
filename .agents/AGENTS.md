@@ -18,8 +18,8 @@ This file contains rules and guidelines for AI agents working on the `itestraOff
 - **Aesthetics**: Follow the modern, premium aesthetic guidelines. Ensure high-contrast typography for large screen readability.
 
 ## 4. Testing & Running
-- **Frontend Local Dev**: Runs on `http://localhost:3000` via `npm run dev`. Proxy is configured for `/api` to route to the backend.
-- **Backend Local Dev**: Runs on port `8080` (or `9000` via `application-dev.properties`). Use `./gradlew bootRun --args='--spring.profiles.active=dev'`.
+- **Frontend**: Local dev on `http://localhost:3000` (`npm run dev`). Docker runs on `http://localhost:8098` (mapped `8098:80`).
+- **Backend**: Local dev on port `8080` (or `9000` via `application-dev.properties` using `./gradlew bootRun --args='--spring.profiles.active=dev'`). Docker runs on port `8099` (mapped `8099:8080`).
 
 ## 5. Documentation
 - When creating new features, always update `README.md`, `frontend/README.md`, and `GEMINI.md` to reflect the changes.
