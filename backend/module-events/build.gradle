@@ -7,7 +7,10 @@ dependencies {
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     implementation 'org.liquibase:liquibase-core'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.14'
-    implementation 'com.odoojava:odoo-java-api:3.3.5'
+    // OdooClient talks XML-RPC directly; this was previously pulled in
+    // transitively by com.odoojava:odoo-java-api, which only resolves from an
+    // external Nexus and is otherwise unused.
+    implementation 'org.apache.xmlrpc:xmlrpc-client:3.1.3'
 
     // Use Spring Boot's unified JUnit setup
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

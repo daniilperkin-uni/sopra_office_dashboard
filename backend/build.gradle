@@ -69,9 +69,6 @@ java {
 allprojects {
     repositories {
         mavenCentral()
-        maven {
-            url = "https://nexus.mekomsolutions.net/repository/maven-releases/"
-        }
     }
 }
 
