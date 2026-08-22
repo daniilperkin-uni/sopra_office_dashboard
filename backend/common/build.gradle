@@ -23,8 +23,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework:spring-context'
 
-    // JUnit for testing
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    // JUnit for testing. The BOM keeps jupiter and the platform
+    // (engine + launcher) on aligned versions - a hardcoded 5.10.0 without the
+    // launcher made Gradle's newer test launcher fail discovery with
+    // 'OutputDirectoryProvider not available'.
+    testImplementation platform('org.junit:junit-bom:5.12.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.mockito:mockito-core:5.14.2'
 }
 
 java {
