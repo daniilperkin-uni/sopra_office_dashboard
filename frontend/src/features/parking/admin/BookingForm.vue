@@ -75,13 +75,18 @@
       </p>
     </div>
 
-    <!-- eslint-disable vue/no-v-html -->
+    <div
+      v-if="submitSuccess"
+      class="bg-green-100 border border-green-400 text-green-800 px-4 py-3 rounded"
+    >
+      {{ submitSuccess }}
+    </div>
     <div
       v-if="submitError"
-      class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded"
-      v-html="submitError"
-    />
-    <!-- eslint-enable vue/no-v-html -->
+      class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded whitespace-pre-line"
+    >
+      {{ submitError }}
+    </div>
 
     <!-- Conflict Confirmation Modal -->
     <div
@@ -171,6 +176,7 @@ const errors = reactive({
 
 const submitting = ref(false)
 const submitError = ref('')
+const submitSuccess = ref('')
 
 const minDate = computed(() => {
   return new Date().toISOString().split('T')[0]
@@ -243,17 +249,17 @@ function processBookingResult(result) {
   const skippedCount = skippedDetails.length
 
   if (createdCount === 0 && skippedCount > 0) {
-    const details = skippedDetails.slice(0, 5).join('<br> ') + (skippedCount > 5 ? '...' : '')
-    submitError.value = `Keine Reservierungen erstellt. <br> Alle ${skippedCount} Termine waren nicht buchbar: <br> ${details}`
+    const details = skippedDetails.slice(0, 5).join('\n') + (skippedCount > 5 ? '\n...' : '')
+    submitError.value = `Keine Reservierungen erstellt.\nAlle ${skippedCount} Termine waren nicht buchbar:\n${details}`
   } else if (skippedCount > 0) {
-    const details = skippedDetails.slice(0, 3).join('<br>') + (skippedCount > 3 ? '...' : '')
-    submitError.value = `Buchungsserie für ${booking.employeeName} erstellt: <br> ${createdCount} Termine gebucht. <br> ${skippedCount} Termine übersprungen: <br> ${details}`
+    const details = skippedDetails.slice(0, 3).join('\n') + (skippedCount > 3 ? '\n...' : '')
+    submitError.value = `Buchungsserie für ${booking.employeeName} erstellt:\n${createdCount} Termine gebucht.\n${skippedCount} Termine übersprungen:\n${details}`
     booking.employeeName = '' // Reset only on partial success
     emit('booking-created')
   } else {
-    alert(
-      `Buchungsserie für ${booking.employeeName} erfolgreich erstellt (${createdCount} Termine).`
-    )
+    // Full success uses the same inline banner as partial success instead of a
+    // blocking native alert(), so all booking feedback looks and behaves alike.
+    submitSuccess.value = `Buchungsserie für ${booking.employeeName} erfolgreich erstellt (${createdCount} Termine).`
     // Reset form completely on full success
     booking.employeeName = ''
     booking.date = new Date().toISOString().split('T')[0]
