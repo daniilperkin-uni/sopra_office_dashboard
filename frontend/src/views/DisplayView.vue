@@ -56,6 +56,36 @@ const currentViewId = ref('dashboard')
 let configPollInterval = null
 let dataPollInterval = null
 
+/**
+ * Starts the 30s config + data polling loops. Paused while the tab is hidden
+ * (a kiosk display tab in a background window would otherwise keep polling).
+ */
+function startPolling() {
+  if (configPollInterval || dataPollInterval) return
+  configPollInterval = setInterval(() => configStore.fetchConfig(), 30000)
+  dataPollInterval = setInterval(() => {
+    refreshDataForView(currentViewId.value, true)
+  }, 30000)
+}
+
+function stopPolling() {
+  if (configPollInterval) clearInterval(configPollInterval)
+  if (dataPollInterval) clearInterval(dataPollInterval)
+  configPollInterval = null
+  dataPollInterval = null
+}
+
+function handleVisibilityChange() {
+  if (document.hidden) {
+    stopPolling()
+  } else {
+    // Refresh immediately on return so the display is current, then resume.
+    configStore.fetchConfig()
+    refreshDataForView(currentViewId.value, true)
+    startPolling()
+  }
+}
+
 // Template refs for calendar date-range queries
 const threeWeekCalendarRef = ref(null)
 const dashboardRef = ref(null)
@@ -177,16 +207,13 @@ onMounted(async () => {
 
   setupRotation()
 
-  configPollInterval = setInterval(() => configStore.fetchConfig(), 30000)
-
-  dataPollInterval = setInterval(() => {
-    refreshDataForView(currentViewId.value, true)
-  }, 30000)
+  startPolling()
+  document.addEventListener('visibilitychange', handleVisibilityChange)
 })
 
 onUnmounted(() => {
-  if (configPollInterval) clearInterval(configPollInterval)
-  if (dataPollInterval) clearInterval(dataPollInterval)
+  document.removeEventListener('visibilitychange', handleVisibilityChange)
+  stopPolling()
 })
 
 // --- Watchers ---
