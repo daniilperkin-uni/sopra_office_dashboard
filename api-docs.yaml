@@ -116,3 +116,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ParkingEntry"
+        totalSpots:
+          type: integer
+          description: Total number of parking spots available per day
+          example: 5

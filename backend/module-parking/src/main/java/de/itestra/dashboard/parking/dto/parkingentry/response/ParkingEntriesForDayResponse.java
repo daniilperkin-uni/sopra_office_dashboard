@@ -12,7 +12,9 @@ public record ParkingEntriesForDayResponse(
         LocalDate date,
 
         @Schema(description = "List of all parking reservations for this date")
-        List<ParkingEntry> entries
+        List<ParkingEntry> entries,
+
+        @Schema(description = "Total number of parking spots available per day", example = "5")
+        int totalSpots
 ) {
 }
-

@@ -30,8 +30,8 @@
           >
             <div
               class="h-full rounded-full transition-[width] duration-700 ease-out"
-              :class="getOccupancyColor(day.occupied)"
-              :style="{ width: `${(day.occupied / day.total) * 100}%` }"
+              :class="getOccupancyColor(day)"
+              :style="{ width: day.total ? `${(day.occupied / day.total) * 100}%` : '0%' }"
             />
           </div>
 
@@ -40,7 +40,7 @@
             class="font-black tabular-nums w-24 text-right text-5xl"
             :class="isToday(day.date) ? 'text-primary' : 'text-gray-500'"
           >
-            {{ day.occupied }}/{{ day.total }}
+            {{ day.total !== null ? `${day.occupied}/${day.total}` : `${day.occupied}` }}
           </span>
         </div>
       </div>
@@ -76,7 +76,7 @@ const upcomingDays = computed(() => {
     .map((day) => ({
       date: day.date,
       occupied: day.entries.length,
-      total: 5,
+      total: typeof day.totalSpots === 'number' ? day.totalSpots : null,
     }))
     .slice(0, 14) // Show next 14 days to fit screen
 })
@@ -100,11 +100,13 @@ const formatDateShort = (dateStr) => {
     .replace(/\.$/, '') // Remove only the very last dot
 }
 
-// Determines the color of the progress bar based on occupancy.
-const getOccupancyColor = (occupied) => {
-  if (occupied <= 2) return 'bg-emerald-500'
-  if (occupied === 3) return 'bg-yellow-500'
-  if (occupied === 4) return 'bg-orange-500'
+// Determines the color of the progress bar based on occupancy. Falls back to
+// a neutral gray when the backend did not report a total capacity.
+const getOccupancyColor = (day) => {
+  if (!day.total) return 'bg-gray-400'
+  const ratio = day.occupied / day.total
+  if (ratio <= 0.5) return 'bg-emerald-500'
+  if (ratio < 1) return 'bg-yellow-500'
   return 'bg-red-600'
 }
 </script>
