@@ -1,11 +1,13 @@
 package de.itestra.dashboard.parking.controller;
 
+import de.itestra.dashboard.parking.dto.parkinganalytics.response.ParkingAnalyticsResponse;
 import de.itestra.dashboard.parking.dto.parkingentry.request.ParkingEntryRequest;
 import de.itestra.dashboard.parking.dto.parkingentry.response.ParkingEntriesForDayResponse;
 import de.itestra.dashboard.parking.dto.parkingentry.response.ParkingEntryResponse;
 import de.itestra.dashboard.parking.dto.recurringreservation.request.RecurringReservationRequest;
 import de.itestra.dashboard.parking.dto.recurringreservation.response.RecurringReservationResponse;
 import de.itestra.dashboard.parking.entity.ParkingEntry;
+import de.itestra.dashboard.parking.service.ParkingAnalyticsService;
 import de.itestra.dashboard.parking.service.ParkingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -41,14 +43,17 @@ public class ParkingController {
     private static final Logger log = LoggerFactory.getLogger(ParkingController.class);
 
     private final ParkingService parkingService;
+    private final ParkingAnalyticsService parkingAnalyticsService;
 
     /**
      * Constructs a new ParkingController.
      *
      * @param parkingService service for managing parking reservations
+     * @param parkingAnalyticsService service computing aggregated parking statistics
      */
-    public ParkingController(ParkingService parkingService) {
+    public ParkingController(ParkingService parkingService, ParkingAnalyticsService parkingAnalyticsService) {
         this.parkingService = parkingService;
+        this.parkingAnalyticsService = parkingAnalyticsService;
     }
 
     @GetMapping("/entries")
@@ -63,6 +68,24 @@ public class ParkingController {
     @ApiResponse(responseCode = "200", description = "Returns a list of reserved parking spots for the next 10 working days", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ParkingEntriesForDayResponse.class))))
     public List<ParkingEntriesForDayResponse> getOverview() {
         return parkingService.getInfoForNextDays();
+    }
+
+    /**
+     * Returns aggregated parking statistics over all stored entries.
+     * <p>
+     * The payload feeds the admin analytics page: bookings per weekday
+     * histogram, occupancy ratio per day and the busiest day-of-month stat.
+     * All aggregates are computed on read by
+     * {@link de.itestra.dashboard.parking.service.ParkingAnalyticsService}.
+     * </p>
+     *
+     * @return the aggregated parking analytics
+     */
+    @GetMapping("/parking/analytics")
+    @Operation(summary = "Retrieve aggregated parking statistics", description = "Returns bookings per weekday, occupancy per day and the busiest day-of-month over all stored parking entries")
+    @ApiResponse(responseCode = "200", description = "Aggregated parking analytics", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ParkingAnalyticsResponse.class)))
+    public ParkingAnalyticsResponse getAnalytics() {
+        return parkingAnalyticsService.computeAnalytics();
     }
 
     /**
