@@ -29,16 +29,18 @@ import ThreeWeekCalendar from '@/features/calendar/components/ThreeWeekCalendar.
 import DisplayViewHighscore from '@/views/DisplayViewHighscore.vue'
 import ParkingDisplayWrapper from '@/features/parking/components/ParkingDisplayWrapper.vue'
 import DashboardOverview from '@/features/dashboard/components/DashboardOverview.vue'
+import WeatherDisplay from '@/features/dashboard/components/WeatherDisplay.vue'
 
 const GameView = defineAsyncComponent(() => import('@/features/game/GameView.vue'))
 
-const DISPLAY_VIEW_IDS = ['calendar', 'parking', 'highscore', 'dashboard']
+const DISPLAY_VIEW_IDS = ['calendar', 'parking', 'highscore', 'dashboard', 'weather']
 
 const viewComponentsMap = {
   calendar: ThreeWeekCalendar,
   parking: ParkingDisplayWrapper,
   highscore: DisplayViewHighscore,
   dashboard: DashboardOverview,
+  weather: WeatherDisplay,
   game: GameView,
 }
 
