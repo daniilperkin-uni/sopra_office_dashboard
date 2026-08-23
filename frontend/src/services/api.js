@@ -243,6 +243,20 @@ export const highscoreApi = {
  */
 export const highscoreAdminApi = {
   /**
+   * Ruft die ELO-Rangliste aller Darts-Spieler ab.
+   * @returns {Promise<Array>} Liste der Ranglisten-Eintraege, sortiert nach ELO
+   */
+  async getEloRankings() {
+    try {
+      const response = await apiClient.get('/elo-rankings')
+      return response.data
+    } catch (error) {
+      console.error('Error fetching ELO rankings:', error)
+      throw error
+    }
+  },
+
+  /**
    * Retrieves all Darts matches.
    * @returns {Promise<Array>} List of Darts matches
    */

@@ -1,6 +1,7 @@
 <template>
   <div class="highscore-admin-view">
     <HighscoreAdminList />
+    <EloRankingsTable />
   </div>
 </template>
 
@@ -8,9 +9,10 @@
 /**
  * View component for highscore management.
  *
- * Serves as a simple wrapper for the HighscoreAdminList.
+ * Wraps the match administration list and the ELO rankings table.
  */
 import HighscoreAdminList from '@/features/highscore/admin/HighscoreAdminList.vue'
+import EloRankingsTable from '@/features/highscore/components/EloRankingsTable.vue'
 </script>
 
 <style scoped>
