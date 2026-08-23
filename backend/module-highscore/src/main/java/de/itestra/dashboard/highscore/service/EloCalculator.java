@@ -23,10 +23,10 @@ public final class EloCalculator {
     /** Rating every player starts with. */
     public static final int START_RATING = 1000;
 
+    private final List<Match> matches = new ArrayList<>();
+
     private record Match(String winner, String loser) {
     }
-
-    private final List<Match> matches = new ArrayList<>();
 
     /**
      * Records one finished match. Order of calls matters: ratings are
