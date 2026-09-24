@@ -42,7 +42,6 @@ subprojects{//will be applied to all subprojects
     dependencies {
         // Shared test dependencies across all subprojects
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
-        testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
         testImplementation 'org.springframework.security:spring-security-test'
         testRuntimeOnly 'com.h2database:h2'
     }
@@ -78,11 +77,4 @@ allprojects {
     }
 }
 
-ext {
-    set('snippetsDir', file("build/generated-snippets"))
-}
 
-tasks.named('test') {
-    outputs.dir snippetsDir
-    useJUnitPlatform()
-}
