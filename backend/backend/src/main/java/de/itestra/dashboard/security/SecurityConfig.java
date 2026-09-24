@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 /**
@@ -26,14 +27,21 @@ import org.springframework.web.cors.CorsConfigurationSource;
  * all mutations require the ADMIN role.
  * </p>
  * <p>
- * CSRF is disabled because the admin UI is served from the same origin as the
- * API (via nginx in production) and the intranet threat model does not justify
- * the added token-handling complexity for non-technical staff.
+ * CSRF ist aktiv: das Token liegt im Cookie {@code XSRF-TOKEN} (fuer JS lesbar)
+ * und muss als Header {@code X-XSRF-TOKEN} mitgesendet werden (Axios macht das
+ * automatisch). Nicht explizit freigegebene Pfade werden abgelehnt.
  * </p>
  */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    /** Pfade ausserhalb von /api, die ohne Anmeldung erreichbar sind. */
+    static final String[] PUBLIC_PATHS = {
+        "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**",
+        "/actuator/health", "/error",
+        "/", "/index.html", "/favicon.ico", "/assets/**",
+    };
 
     private final CorsConfigurationSource corsConfigurationSource;
 
@@ -44,14 +52,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
+                // Login ohne vorheriges Token erlauben (erster Request der SPA)
+                .ignoringRequestMatchers("/api/auth/login"))
             .cors(cors -> cors.configurationSource(corsConfigurationSource))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/**").permitAll()
                 .requestMatchers("/api/**").hasRole("ADMIN")
-                .anyRequest().permitAll()
+                // Oeffentliche Infrastruktur: Swagger, Health, Fehlerseite, SPA-Assets
+                .requestMatchers(PUBLIC_PATHS).permitAll()
+                // Alles andere standardmaessig verbieten
+                .anyRequest().denyAll()
             )
             .formLogin(form -> form.disable())
             .httpBasic(basic -> { });

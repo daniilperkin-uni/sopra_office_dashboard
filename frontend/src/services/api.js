@@ -19,6 +19,9 @@ const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  // CSRF: Spring Security legt das Token im Cookie ab, Axios sendet es als Header
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
 })
 
 apiClient.interceptors.response.use(
