@@ -121,7 +121,9 @@ So better you install Linux and continue with [For Linux](#for-linux)
 
 Without any configuration changes you can reach swagger-ui for the backend under the following link: 
 
-http://localhost:8080/swagger-ui/index.html#/
+http://localhost:8080/swagger-ui.html
+
+The OpenAPI spec is generated from the code by springdoc (`/v3/api-docs`); there is no hand-maintained spec file.
 
 ## Configuration
 
