@@ -5,11 +5,11 @@
 The **itestraOfficeDashboard** is a modular, web-based dashboard designed for high-resolution office displays. It provides real-time visibility into office events, parking availability, and competitive highscores.
 
 ### Key Components:
-*   **Backend**: Java 21 (Spring Boot 3.5.7) with a modular architecture.
+*   **Backend**: Java 21 (Spring Boot 4.1.1, Gradle multi-module) with a modular architecture.
     *   Internal Port: `8080`
     *   External Port (Docker): `8099`
 *   **Database**: MariaDB with Liquibase migrations.
-*   Frontend: Vue.js 3 (Vite, TypeScript, Tailwind CSS) using a **Feature-Driven Architecture**.
+*   Frontend: Vue.js 3 (Vite, JavaScript, Pinia, Tailwind CSS) using a **Feature-Driven Architecture**.
     *   Internal Port: `80` (Nginx)
     *   External Port (Docker): `8098`
 *   **Deployment**: Docker-compose orchestrated environment.
@@ -39,6 +39,7 @@ sopra_office_dashboard\
 │   │   │   ├───calendar\           # Calendar View Logic
 │   │   │   ├───community-lunch\    # Community Lunch Logic
 │   │   │   ├───dashboard\          # Dashboard Widgets (OneDisplay Mode)
+│   │   │   ├───game\               # Easter-egg game (FallingCats)
 │   │   │   ├───highscore\          # Highscore View & Admin Logic
 │   │   │   └───parking\            # Parking View & Admin Logic
 │   │   ├───services\               # API Clients (axios)
@@ -238,6 +239,6 @@ The frontend follows a **Feature-Driven Architecture** to improve maintainabilit
 3.  **Docker**: Use `docker-compose -f backend/compose.yaml up --build` for a full system spin-up.
 
 ### 6.2 Troubleshooting
-*   **Database**: `spring.jpa.hibernate.ddl-auto` in `application.properties` is set to `update`.
+*   **Database**: `spring.jpa.hibernate.ddl-auto` in `application.properties` is set to `validate`; the schema is managed by Liquibase.
 *   **Frontend Access**: The application is available at `http://localhost:8098` (Docker) or via the Vite dev server port (`http://localhost:3000`) when running locally.
 *   **Backend Access**: API is available at `http://localhost:8099` (Docker).

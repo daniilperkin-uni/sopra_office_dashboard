@@ -77,7 +77,7 @@ An administrative view for managing data (currently for parking reservations).
 
 ```bash
 $ git clone [University Internal Git Repository]
-$ cd team_i5/backend
+$ cd sopra_office_dashboard/backend
 $ cp .env.example .env
 $ docker compose up -d # or
 $ docker compose up -d --build # to force a build after applying changes
@@ -96,7 +96,7 @@ $ docker compose up -d --build # to force a build after applying changes
 ```bash
 $ git clone [University Internal Git Repository]
 # start the backend
-$ cd team_i5/backend
+$ cd sopra_office_dashboard/backend
 $ touch backend/src/main/resources/application-dev.properties # and edit to your needs (example below)
 $ ./gradlew bootRun --args='--spring.profiles.active=dev'
 # start the frontend
