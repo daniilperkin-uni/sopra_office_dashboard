@@ -4,7 +4,11 @@
       class="origin-center overflow-hidden bg-white absolute top-1/2 left-1/2 shadow-2xl"
       :style="scalerStyle"
     >
-      <component :is="currentViewComponent" v-bind="currentViewProps" class="h-full w-full" />
+      <component
+        :is="currentViewComponent"
+        v-bind="currentViewProps"
+        class="h-full w-full"
+      />
     </div>
   </div>
 </template>

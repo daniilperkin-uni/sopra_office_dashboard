@@ -1,6 +1,9 @@
 <template>
   <div class="bg-white shadow-md rounded-lg overflow-hidden">
-    <div v-if="title" class="bg-primary text-white px-4 sm:px-6 py-3 sm:py-4">
+    <div
+      v-if="title"
+      class="bg-primary text-white px-4 sm:px-6 py-3 sm:py-4"
+    >
       <h3 class="text-base sm:text-lg font-semibold">
         {{ title }}
       </h3>

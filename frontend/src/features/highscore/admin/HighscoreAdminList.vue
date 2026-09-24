@@ -1,17 +1,25 @@
 <template>
   <div class="p-4 sm:p-6">
-    <h1 class="text-2xl sm:text-3xl font-extrabold text-black mb-6">Highscore</h1>
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-black mb-6">
+      Highscore
+    </h1>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 mb-8">
       <!-- Darts Section -->
       <div
         class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-md border-t-4 border-primary"
       >
-        <h2 class="text-xl sm:text-2xl font-bold text-primary mb-4">Darts</h2>
+        <h2 class="text-xl sm:text-2xl font-bold text-primary mb-4">
+          Darts
+        </h2>
         <p class="text-black mb-6 text-sm sm:text-base">
           Erfasse eine neue Darts-Session für einen Mitarbeiter.
         </p>
-        <BaseButton variant="primary" class="w-full shadow-lg" @click="openForm('darts')">
+        <BaseButton
+          variant="primary"
+          class="w-full shadow-lg"
+          @click="openForm('darts')"
+        >
           Darts-Match hinzufügen
         </BaseButton>
       </div>
@@ -20,9 +28,17 @@
       <div
         class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-md border-t-4 border-primary"
       >
-        <h2 class="text-xl sm:text-2xl font-bold text-primary mb-4">Kicker</h2>
-        <p class="text-black mb-6 text-sm sm:text-base">Erfasse ein neues Kicker-Match-Ergebnis.</p>
-        <BaseButton variant="primary" class="w-full shadow-lg" @click="openForm('kicker')">
+        <h2 class="text-xl sm:text-2xl font-bold text-primary mb-4">
+          Kicker
+        </h2>
+        <p class="text-black mb-6 text-sm sm:text-base">
+          Erfasse ein neues Kicker-Match-Ergebnis.
+        </p>
+        <BaseButton
+          variant="primary"
+          class="w-full shadow-lg"
+          @click="openForm('kicker')"
+        >
           Kicker-Match hinzufügen
         </BaseButton>
       </div>
@@ -30,7 +46,9 @@
 
     <div class="border-t border-gray-200 dark:border-gray-700 pt-8">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <h2 class="text-2xl font-bold text-black">Spielverlauf</h2>
+        <h2 class="text-2xl font-bold text-black">
+          Spielverlauf
+        </h2>
         <BaseButton
           v-if="dartsMatches.length > 3 || kickerMatches.length > 3"
           variant="danger"
@@ -59,11 +77,19 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Darts History -->
         <div>
-          <h3 class="text-xl font-semibold text-black mb-4">Darts-Matches</h3>
-          <div v-if="dartsMatches.length === 0" class="text-black italic">
+          <h3 class="text-xl font-semibold text-black mb-4">
+            Darts-Matches
+          </h3>
+          <div
+            v-if="dartsMatches.length === 0"
+            class="text-black italic"
+          >
             Keine Darts-Matches aufgezeichnet.
           </div>
-          <div v-else class="space-y-2">
+          <div
+            v-else
+            class="space-y-2"
+          >
             <HighscoreMatchItem
               v-for="match in dartsMatches"
               :key="match.id"
@@ -77,11 +103,19 @@
 
         <!-- Kicker History -->
         <div>
-          <h3 class="text-xl font-semibold text-black mb-4">Kicker-Matches</h3>
-          <div v-if="kickerMatches.length === 0" class="text-black italic">
+          <h3 class="text-xl font-semibold text-black mb-4">
+            Kicker-Matches
+          </h3>
+          <div
+            v-if="kickerMatches.length === 0"
+            class="text-black italic"
+          >
             Keine Kicker-Matches aufgezeichnet.
           </div>
-          <div v-else class="space-y-2">
+          <div
+            v-else
+            class="space-y-2"
+          >
             <HighscoreMatchItem
               v-for="match in kickerMatches"
               :key="match.id"

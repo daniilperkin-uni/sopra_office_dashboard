@@ -12,7 +12,10 @@
     :aria-hidden="isPlaceholder"
   >
     <div class="flex flex-col text-left leading-tight">
-      <span class="font-semibold" :class="rank > 0 ? 'text-[100px]' : 'text-[50px]'">
+      <span
+        class="font-semibold"
+        :class="rank > 0 ? 'text-[100px]' : 'text-[50px]'"
+      >
         {{ label }}
       </span>
       <span
@@ -23,7 +26,10 @@
         {{ secondaryText }}
       </span>
     </div>
-    <span class="font-black" :class="rank > 0 ? 'text-[83px]' : 'text-[64px]'">
+    <span
+      class="font-black"
+      :class="rank > 0 ? 'text-[83px]' : 'text-[64px]'"
+    >
       {{ value }}
     </span>
   </div>

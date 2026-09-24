@@ -1,16 +1,32 @@
 <template>
   <div class="elo-rankings card">
-    <h2 class="section-title">Darts ELO-Rangliste</h2>
+    <h2 class="section-title">
+      Darts ELO-Rangliste
+    </h2>
 
-    <div v-if="isLoading" class="loading">Lade Rangliste...</div>
-    <p v-else-if="error" class="error-message">
+    <div
+      v-if="isLoading"
+      class="loading"
+    >
+      Lade Rangliste...
+    </div>
+    <p
+      v-else-if="error"
+      class="error-message"
+    >
       Rangliste konnte nicht geladen werden: {{ error }}
     </p>
-    <p v-else-if="rankings.length === 0" class="empty">
+    <p
+      v-else-if="rankings.length === 0"
+      class="empty"
+    >
       Noch keine Darts-Spiele erfasst - die Rangliste erscheint nach dem ersten Match.
     </p>
 
-    <table v-else class="rankings-table">
+    <table
+      v-else
+      class="rankings-table"
+    >
       <thead>
         <tr>
           <th>#</th>
@@ -30,11 +46,16 @@
         >
           <td>{{ index + 1 }}</td>
           <td>{{ entry.playerName }}</td>
-          <td class="elo-cell">{{ entry.elo }}</td>
+          <td class="elo-cell">
+            {{ entry.elo }}
+          </td>
           <td>{{ entry.wins }}</td>
           <td>{{ entry.losses }}</td>
           <td>
-            <span v-if="entry.currentStreak > 0" class="streak-badge">
+            <span
+              v-if="entry.currentStreak > 0"
+              class="streak-badge"
+            >
               {{ entry.currentStreak }} Sieg{{ entry.currentStreak === 1 ? '' : 'e' }}
             </span>
             <span v-else>-</span>

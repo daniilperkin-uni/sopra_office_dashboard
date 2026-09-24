@@ -13,10 +13,16 @@
           {{ message }}
         </p>
         <div class="flex justify-end gap-3">
-          <BaseButton variant="secondary" @click="handleCancel">
+          <BaseButton
+            variant="secondary"
+            @click="handleCancel"
+          >
             {{ cancelText }}
           </BaseButton>
-          <BaseButton :variant="danger ? 'danger' : 'primary'" @click="handleConfirm">
+          <BaseButton
+            :variant="danger ? 'danger' : 'primary'"
+            @click="handleConfirm"
+          >
             {{ confirmText }}
           </BaseButton>
         </div>

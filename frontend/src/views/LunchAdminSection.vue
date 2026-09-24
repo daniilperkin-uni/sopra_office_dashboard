@@ -5,7 +5,9 @@
       class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"
     >
       <div>
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Lunch</h2>
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+          Lunch
+        </h2>
       </div>
       <button
         class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-blue-600 transition-colors font-medium shadow-sm"

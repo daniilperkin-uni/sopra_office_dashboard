@@ -2,30 +2,54 @@
   <div
     class="h-full w-full bg-neutral-bg box-border overflow-hidden font-sans text-white p-8 flex flex-col items-center justify-center relative"
   >
-    <div v-if="loading" class="flex flex-col items-center gap-4">
+    <div
+      v-if="loading"
+      class="flex flex-col items-center gap-4"
+    >
       <LoadingSpinner />
-      <p class="text-white/70">Wetter wird geladen…</p>
+      <p class="text-white/70">
+        Wetter wird geladen…
+      </p>
     </div>
 
-    <div v-else-if="error" class="flex flex-col items-center gap-3 text-center px-8">
+    <div
+      v-else-if="error"
+      class="flex flex-col items-center gap-3 text-center px-8"
+    >
       <span class="text-5xl">🌐</span>
       <p class="text-white/70 text-lg">
         Wetter derzeit nicht verfügbar. Der Kiosk sorgt weiter für sich.
       </p>
     </div>
 
-    <div v-else-if="current" class="flex flex-col items-center gap-2 text-center">
-      <p class="text-white/60 text-xl tracking-wide">{{ locationLabel }}</p>
-      <p class="text-7xl font-light leading-none">{{ current.temperature }}°C</p>
-      <p class="text-3xl">{{ iconFor(current.weathercode) }}</p>
-      <p class="text-white/80 text-lg">{{ labelFor(current.weathercode) }}</p>
+    <div
+      v-else-if="current"
+      class="flex flex-col items-center gap-2 text-center"
+    >
+      <p class="text-white/60 text-xl tracking-wide">
+        {{ locationLabel }}
+      </p>
+      <p class="text-7xl font-light leading-none">
+        {{ current.temperature }}°C
+      </p>
+      <p class="text-3xl">
+        {{ iconFor(current.weathercode) }}
+      </p>
+      <p class="text-white/80 text-lg">
+        {{ labelFor(current.weathercode) }}
+      </p>
       <div class="flex gap-6 mt-2 text-white/70">
         <span>↓ {{ today.min }}°</span>
         <span>↑ {{ today.max }}°</span>
       </div>
     </div>
 
-    <div v-else class="text-white/60 text-lg">Keine Wetterdaten.</div>
+    <div
+      v-else
+      class="text-white/60 text-lg"
+    >
+      Keine Wetterdaten.
+    </div>
   </div>
 </template>
 

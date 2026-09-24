@@ -1,7 +1,9 @@
 <template>
   <div class="admin-view bg-neutral-bg min-h-screen">
     <div class="bg-gray-100 py-6 border-b border-gray-200">
-      <h1 class="text-4xl font-black text-primary tracking-wider text-center">Admin Bereich</h1>
+      <h1 class="text-4xl font-black text-primary tracking-wider text-center">
+        Admin Bereich
+      </h1>
     </div>
 
     <nav class="border-b border-gray-200">

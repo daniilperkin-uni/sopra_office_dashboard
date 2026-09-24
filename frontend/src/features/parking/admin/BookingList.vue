@@ -1,12 +1,21 @@
 <template>
   <div class="booking-list">
-    <div v-if="bookings.length === 0" class="text-center py-8 text-gray-500">
+    <div
+      v-if="bookings.length === 0"
+      class="text-center py-8 text-gray-500"
+    >
       Keine Reservierungen gefunden
     </div>
 
-    <div v-else class="space-y-6">
+    <div
+      v-else
+      class="space-y-6"
+    >
       <!-- Serien-Reservierungen -->
-      <div v-if="groupedData.recurring.length > 0" class="space-y-4">
+      <div
+        v-if="groupedData.recurring.length > 0"
+        class="space-y-4"
+      >
         <h3 class="font-bold text-gray-700 uppercase text-xs border-b pb-2">
           Serien-Reservierungen
         </h3>
@@ -91,15 +100,13 @@
             <div class="space-y-4">
               <!-- Name -->
               <div>
-                <label class="block text-xs font-medium text-gray-500 uppercase mb-1"
-                  >Name der Serie</label
-                >
+                <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Name der Serie</label>
                 <input
                   v-model="seriesEditData.employeeName"
                   type="text"
                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="Name des Mitarbeiters"
-                />
+                >
               </div>
 
               <!-- Datum -->
@@ -111,14 +118,16 @@
                 />
 
                 <div>
-                  <label class="block text-xs font-medium text-gray-500 uppercase mb-1"
-                    >Dauer (Monate)</label
-                  >
+                  <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Dauer (Monate)</label>
                   <select
                     v-model.number="seriesEditData.duration"
                     class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white"
                   >
-                    <option v-for="i in 6" :key="i" :value="i">
+                    <option
+                      v-for="i in 6"
+                      :key="i"
+                      :value="i"
+                    >
                       {{ i }} Monat{{ i > 1 ? 'e' : '' }}
                     </option>
                   </select>
@@ -127,9 +136,7 @@
 
               <!-- Wochentage -->
               <div>
-                <label class="block text-xs font-medium text-gray-500 uppercase mb-2"
-                  >Wochentage</label
-                >
+                <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Wochentage</label>
                 <div class="flex flex-wrap gap-2">
                   <label
                     v-for="day in weekdayOptions"
@@ -141,7 +148,7 @@
                       type="checkbox"
                       :value="day.value"
                       class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500"
-                    />
+                    >
                     <span class="ml-2 text-sm text-gray-700">{{ day.label }}</span>
                   </label>
                 </div>
@@ -185,7 +192,10 @@
       </div>
 
       <!-- Einzel-Reservierungen -->
-      <div v-if="groupedData.single.length > 0" class="space-y-4">
+      <div
+        v-if="groupedData.single.length > 0"
+        class="space-y-4"
+      >
         <h3 class="font-bold text-gray-700 uppercase text-xs border-b pb-2">
           Einzel-Reservierungen
         </h3>

@@ -1,8 +1,13 @@
 <template>
   <div class="max-w-4xl mx-auto p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md mt-6">
-    <h2 class="text-xl sm:text-2xl font-bold mb-6 text-black">Konfiguration</h2>
+    <h2 class="text-xl sm:text-2xl font-bold mb-6 text-black">
+      Konfiguration
+    </h2>
 
-    <div v-if="configStore.loading && !config" class="flex justify-center py-8">
+    <div
+      v-if="configStore.loading && !config"
+      class="flex justify-center py-8"
+    >
       <LoadingSpinner />
     </div>
 
@@ -14,7 +19,11 @@
       <span class="block sm:inline">{{ error }}</span>
     </div>
 
-    <form v-else class="space-y-6" @submit.prevent="saveConfig">
+    <form
+      v-else
+      class="space-y-6"
+      @submit.prevent="saveConfig"
+    >
       <!-- Rotation Enabled -->
       <div class="flex items-start">
         <div class="flex items-center h-5">
@@ -23,33 +32,43 @@
             v-model="configStore.config.rotationEnabled"
             type="checkbox"
             class="h-5 w-5 text-primary focus:ring-primary border-gray-300 rounded"
-          />
+          >
         </div>
-        <label for="rotationEnabled" class="ml-3 block text-base sm:text-lg font-medium text-black">
+        <label
+          for="rotationEnabled"
+          class="ml-3 block text-base sm:text-lg font-medium text-black"
+        >
           Automatische Ansichtsrotation aktivieren
         </label>
       </div>
 
       <!-- Skip OneDisplay in Rotation -->
-      <div v-if="configStore.config.rotationEnabled" class="flex items-start ml-8">
+      <div
+        v-if="configStore.config.rotationEnabled"
+        class="flex items-start ml-8"
+      >
         <div class="flex items-center h-5">
           <input
             id="skipOneDisplay"
             v-model="configStore.config.skipOneDisplayInRotation"
             type="checkbox"
             class="h-5 w-5 text-primary focus:ring-primary border-gray-300 rounded"
-          />
+          >
         </div>
-        <label for="skipOneDisplay" class="ml-3 block text-sm sm:text-base font-medium text-black">
+        <label
+          for="skipOneDisplay"
+          class="ml-3 block text-sm sm:text-base font-medium text-black"
+        >
           Automatische Ansichtsrotation ohne OneDisplay aktivieren
         </label>
       </div>
 
       <!-- Rotation Interval -->
       <div v-if="configStore.config.rotationEnabled">
-        <label for="interval" class="block text-sm font-medium text-black"
-          >Rotationsintervall (Sekunden)</label
-        >
+        <label
+          for="interval"
+          class="block text-sm font-medium text-black"
+        >Rotationsintervall (Sekunden)</label>
         <input
           id="interval"
           v-model.number="configStore.config.rotationIntervalSeconds"
@@ -57,7 +76,7 @@
           min="5"
           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-white text-gray-900"
           required
-        />
+        >
         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
           Zeitdauer bis zum Wechsel zur nächsten Ansicht.
         </p>
@@ -65,7 +84,10 @@
 
       <!-- Default View -->
       <div>
-        <label for="defaultView" class="block text-sm font-medium text-black">
+        <label
+          for="defaultView"
+          class="block text-sm font-medium text-black"
+        >
           {{ configStore.config.rotationEnabled ? 'Standardansicht (Fallback)' : 'Aktive Ansicht' }}
         </label>
         <select
@@ -73,11 +95,21 @@
           v-model="configStore.config.defaultSingleViewId"
           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-white text-gray-900"
         >
-          <option value="dashboard">Dashboard (OneDisplay)</option>
-          <option value="calendar">Kalender</option>
-          <option value="parking">Parken</option>
-          <option value="highscore">Highscore</option>
-          <option value="game">Game</option>
+          <option value="dashboard">
+            Dashboard (OneDisplay)
+          </option>
+          <option value="calendar">
+            Kalender
+          </option>
+          <option value="parking">
+            Parken
+          </option>
+          <option value="highscore">
+            Highscore
+          </option>
+          <option value="game">
+            Game
+          </option>
         </select>
         <p
           v-if="!configStore.config.rotationEnabled"
@@ -88,7 +120,12 @@
       </div>
 
       <div class="pt-4">
-        <BaseButton type="submit" :loading="saving" variant="primary" class="w-full">
+        <BaseButton
+          type="submit"
+          :loading="saving"
+          variant="primary"
+          class="w-full"
+        >
           Konfiguration speichern
         </BaseButton>
       </div>

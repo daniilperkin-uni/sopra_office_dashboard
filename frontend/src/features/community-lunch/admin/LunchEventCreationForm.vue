@@ -14,8 +14,11 @@
             type="date"
             class="w-full rounded-md border-gray-300 bg-white text-gray-900 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
             :class="{ 'border-red-500 focus:border-red-500 focus:ring-red-500': errors.date }"
-          />
-          <p v-if="errors.date" class="mt-1 text-sm text-red-600">
+          >
+          <p
+            v-if="errors.date"
+            class="mt-1 text-sm text-red-600"
+          >
             {{ errors.date }}
           </p>
         </div>
@@ -26,7 +29,7 @@
             type="text"
             placeholder="z.B. Geburtstagsfeier"
             class="w-full rounded-md border-gray-300 bg-white text-gray-900 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
-          />
+          >
         </div>
       </div>
 
@@ -50,13 +53,20 @@
             placeholder="Neue Option hinzufügen..."
             class="flex-grow rounded-md border-gray-300 bg-white text-gray-900 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
             @keyup.enter="createCatalogItem"
-          />
-          <BaseButton variant="primary" :disabled="!newItemLabel.trim()" @click="createCatalogItem">
+          >
+          <BaseButton
+            variant="primary"
+            :disabled="!newItemLabel.trim()"
+            @click="createCatalogItem"
+          >
             Hinzufügen
           </BaseButton>
         </div>
 
-        <div v-if="loadingCatalog" class="text-center py-4 text-gray-500 italic">
+        <div
+          v-if="loadingCatalog"
+          class="text-center py-4 text-gray-500 italic"
+        >
           Lade Optionen...
         </div>
         <div
@@ -121,7 +131,7 @@
                 class="flex-grow mr-2 rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 text-sm py-1"
                 @keyup.enter="saveEdit"
                 @keyup.esc="cancelEdit"
-              />
+              >
               <div class="flex gap-2">
                 <button
                   class="text-green-600 hover:text-green-800"

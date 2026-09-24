@@ -1,7 +1,9 @@
 <template>
   <div class="parking-admin-section p-4 sm:p-6">
     <div class="mb-6">
-      <h2 class="text-2xl sm:text-3xl font-bold text-text-dark">Parking</h2>
+      <h2 class="text-2xl sm:text-3xl font-bold text-text-dark">
+        Parking
+      </h2>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -19,7 +21,10 @@
             @filter-changed="handleFilterChanged"
           />
 
-          <div v-if="parkingStore.adminLoading" class="flex justify-center items-center h-64">
+          <div
+            v-if="parkingStore.adminLoading"
+            class="flex justify-center items-center h-64"
+          >
             <LoadingSpinner />
           </div>
 
@@ -43,10 +48,16 @@
             <p class="text-sm text-gray-600 mb-4">
               Zeige {{ filteredBookings.length }} von
               {{ parkingStore.allEntries.length }} Reservierungen
-              <span v-if="selectedDate" class="font-medium">
+              <span
+                v-if="selectedDate"
+                class="font-medium"
+              >
                 für den {{ formatDateForDisplay(selectedDate) }}
               </span>
-              <span v-if="searchName" class="font-medium">
+              <span
+                v-if="searchName"
+                class="font-medium"
+              >
                 <span v-if="selectedDate"> und </span>
                 Suche nach "{{ searchName }}"
               </span>
