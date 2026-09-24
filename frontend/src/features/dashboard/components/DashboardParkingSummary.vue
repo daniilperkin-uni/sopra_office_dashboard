@@ -2,9 +2,7 @@
   <div class="h-full flex flex-col bg-white">
     <!-- Header -->
     <div class="p-10 border-b-2 border-primary/10 bg-gray-100">
-      <div class="text-7xl font-black text-primary text-center tracking-wider">
-        Parking
-      </div>
+      <div class="text-7xl font-black text-primary text-center tracking-wider">Parking</div>
     </div>
 
     <!-- List Container (Fill remaining height) -->

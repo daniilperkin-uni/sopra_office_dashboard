@@ -5,11 +5,7 @@
       <!-- Column 1: Calendar (approx 33% - 4/12) -->
       <div class="col-span-4 h-full relative">
         <div class="h-full w-full rounded-2xl bg-white shadow-lg overflow-hidden relative">
-          <DashboardCalendar
-            ref="calendarRef"
-            :events="events"
-            class="h-full w-full"
-          />
+          <DashboardCalendar ref="calendarRef" :events="events" class="h-full w-full" />
         </div>
         <!-- Loading Overlay for Calendar -->
         <div
@@ -23,10 +19,7 @@
       <!-- Column 2: Parking (approx 33% - 4/12) -->
       <div class="col-span-4 h-full relative">
         <div class="h-full w-full rounded-2xl bg-white shadow-lg overflow-hidden">
-          <DashboardParkingSummary
-            :week-data="parkingData"
-            class="h-full w-full"
-          />
+          <DashboardParkingSummary :week-data="parkingData" class="h-full w-full" />
         </div>
         <div
           v-if="loadingState.parking"

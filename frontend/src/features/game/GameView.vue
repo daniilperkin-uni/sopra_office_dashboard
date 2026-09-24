@@ -6,10 +6,7 @@
     </div>
 
     <!-- Middle Column: Flappy Bird Game (33%) -->
-    <div
-      ref="wrapperRef"
-      class="column game-wrapper"
-    >
+    <div ref="wrapperRef" class="column game-wrapper">
       <div
         class="game-container"
         :style="{ transform: `scale(${scale})` }"
@@ -42,10 +39,7 @@
         </div>
 
         <!-- Pipes -->
-        <div
-          v-for="pipe in pipes"
-          :key="pipe.id"
-        >
+        <div v-for="pipe in pipes" :key="pipe.id">
           <div
             class="pipe top"
             :style="{
@@ -70,10 +64,7 @@
 
         <!-- Game Over Screen -->
         <transition name="fade">
-          <div
-            v-if="gameOver"
-            class="game-over-overlay"
-          >
+          <div v-if="gameOver" class="game-over-overlay">
             <div class="game-over-box">
               <h1>GAME OVER</h1>
               <div class="score-card">
@@ -84,23 +75,13 @@
                 <span class="label">BEST</span>
                 <span class="value">{{ highScore }}</span>
               </div>
-              <button
-                class="restart-btn"
-                @click.stop="resetGame"
-              >
-                PLAY AGAIN
-              </button>
+              <button class="restart-btn" @click.stop="resetGame">PLAY AGAIN</button>
             </div>
           </div>
         </transition>
 
         <!-- Start Screen Hint -->
-        <div
-          v-if="!gameStarted && !gameOver"
-          class="start-hint"
-        >
-          PRESS SPACE OR CLICK
-        </div>
+        <div v-if="!gameStarted && !gameOver" class="start-hint">PRESS SPACE OR CLICK</div>
       </div>
     </div>
 

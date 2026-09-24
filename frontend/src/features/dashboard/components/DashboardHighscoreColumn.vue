@@ -4,10 +4,7 @@
   >
     <!-- Header -->
     <div class="bg-gray-100 p-8 border-b border-gray-200">
-      <h3
-        id="column-title"
-        class="font-black text-primary text-7xl text-center leading-none"
-      >
+      <h3 id="column-title" class="font-black text-primary text-7xl text-center leading-none">
         {{ title }}
       </h3>
     </div>

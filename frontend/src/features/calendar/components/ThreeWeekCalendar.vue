@@ -3,9 +3,7 @@
     <!-- Header specifically for Calendar View -->
     <header class="bg-gray-100 text-primary shadow-sm w-full border-b border-gray-200">
       <div class="px-4 py-3 flex items-center">
-        <h1 class="text-7xl font-black flex-grow text-center tracking-wider">
-          itestra Kalender
-        </h1>
+        <h1 class="text-7xl font-black flex-grow text-center tracking-wider">itestra Kalender</h1>
       </div>
     </header>
 
@@ -20,12 +18,7 @@
       <template v-if="!isSuperOverflowMode">
         <!-- Sub-Header Row for Weeks and Notes Label -->
         <template v-if="calendarRows.length > 0">
-          <div
-            class="header-cell weekday-label"
-            style="grid-column: weekday; grid-row: 1"
-          >
-            Tag
-          </div>
+          <div class="header-cell weekday-label" style="grid-column: weekday; grid-row: 1">Tag</div>
           <div
             class="header-cell week-header is-week-0-header"
             style="grid-column: week1; grid-row: 1"
@@ -63,24 +56,15 @@
           </div>
         </template>
 
-        <template
-          v-for="(row, rowIndex) in calendarRows"
-          :key="rowIndex"
-        >
+        <template v-for="(row, rowIndex) in calendarRows" :key="rowIndex">
           <!-- Weekday Label Column -->
-          <div
-            class="weekday-label"
-            :style="{ 'grid-row': rowIndex + 2 }"
-          >
+          <div class="weekday-label" :style="{ 'grid-row': rowIndex + 2 }">
             {{ row.weekdayLabel }}
           </div>
 
           <!-- Day Cells for each Row -->
 
-          <template
-            v-for="day in row.days"
-            :key="day.isoDate"
-          >
+          <template v-for="day in row.days" :key="day.isoDate">
             <div
               v-if="!isOverflowMode || day.weekIndex === 0"
               :class="[
@@ -102,14 +86,8 @@
 
           <!-- Notes Column for Week 1 -->
 
-          <div
-            class="notes-cell"
-            :style="{ 'grid-column': 'notes1', 'grid-row': rowIndex + 2 }"
-          >
-            <template
-              v-for="day in row.days.filter((d) => d.weekIndex === 0)"
-              :key="day.isoDate"
-            >
+          <div class="notes-cell" :style="{ 'grid-column': 'notes1', 'grid-row': rowIndex + 2 }">
+            <template v-for="day in row.days.filter((d) => d.weekIndex === 0)" :key="day.isoDate">
               <template v-if="day.notes.length > 0 && !(isOverflowMode && day.isToday)">
                 <div
                   v-for="(note, nIndex) in day.notes.slice(0, 4)"
@@ -121,7 +99,8 @@
                   <span
                     class="event-text"
                     :style="{ color: getEventStyles(note.color).noteText }"
-                  >{{ note.label }}</span>
+                    >{{ note.label }}</span
+                  >
                 </div>
 
                 <div
@@ -142,10 +121,7 @@
             class="notes-cell"
             :style="{ 'grid-column': 'notes2', 'grid-row': rowIndex + 2 }"
           >
-            <template
-              v-for="day in row.days.filter((d) => d.weekIndex === 1)"
-              :key="day.isoDate"
-            >
+            <template v-for="day in row.days.filter((d) => d.weekIndex === 1)" :key="day.isoDate">
               <template v-if="day.notes.length > 0">
                 <div
                   v-for="(note, nIndex) in day.notes.slice(0, 4)"
@@ -157,7 +133,8 @@
                   <span
                     class="event-text"
                     :style="{ color: getEventStyles(note.color).noteText }"
-                  >{{ note.label }}</span>
+                    >{{ note.label }}</span
+                  >
                 </div>
 
                 <div
@@ -194,10 +171,7 @@
               aria-hidden="true"
             />
 
-            <span
-              class="event-text"
-              :style="{ color: getEventStyles(note.color).noteText }"
-            >{{
+            <span class="event-text" :style="{ color: getEventStyles(note.color).noteText }">{{
               note.label
             }}</span>
           </div>
@@ -206,14 +180,8 @@
 
       <!-- Super Overflow View (Full Screen) -->
 
-      <div
-        v-if="isSuperOverflowMode && overflowDay"
-        class="super-overflow-container"
-      >
-        <h2
-          class="header-cell notes-header"
-          style="margin-bottom: 2rem"
-        >
+      <div v-if="isSuperOverflowMode && overflowDay" class="super-overflow-container">
+        <h2 class="header-cell notes-header" style="margin-bottom: 2rem">
           Heute: {{ overflowDay.notes.length }} Ereignisse
         </h2>
 
@@ -233,10 +201,7 @@
               aria-hidden="true"
             />
 
-            <span
-              class="event-text"
-              :style="{ color: getEventStyles(note.color).noteText }"
-            >{{
+            <span class="event-text" :style="{ color: getEventStyles(note.color).noteText }">{{
               note.label
             }}</span>
           </div>

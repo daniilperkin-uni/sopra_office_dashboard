@@ -2,9 +2,7 @@
   <div class="h-full w-full flex flex-col bg-white">
     <!-- Header -->
     <div class="p-10 border-b-2 border-primary/10 bg-gray-100">
-      <h2 class="text-7xl font-black text-primary text-center tracking-wider">
-        Kalender
-      </h2>
+      <h2 class="text-7xl font-black text-primary text-center tracking-wider">Kalender</h2>
     </div>
 
     <div class="flex-grow flex flex-col h-full overflow-hidden">
@@ -26,16 +24,8 @@
             {{ day.monthName }}
           </div>
 
-          <div
-            v-if="index === 0"
-            class="mt-5 text-2xl font-black opacity-90"
-          >
-            Heute
-          </div>
-          <div
-            v-else
-            class="mt-3 text-2xl font-semibold opacity-50"
-          >
+          <div v-if="index === 0" class="mt-5 text-2xl font-black opacity-90">Heute</div>
+          <div v-else class="mt-3 text-2xl font-semibold opacity-50">
             {{ day.weekdayShort }}
           </div>
         </div>
@@ -48,10 +38,7 @@
           "
         >
           <!-- Empty State -->
-          <div
-            v-if="day.events.length === 0"
-            class="flex items-center text-gray-400 gap-6"
-          >
+          <div v-if="day.events.length === 0" class="flex items-center text-gray-400 gap-6">
             <span class="opacity-50">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -72,10 +59,7 @@
           </div>
 
           <!-- Events List -->
-          <div
-            v-else
-            class="flex flex-col gap-8"
-          >
+          <div v-else class="flex flex-col gap-8">
             <div
               v-for="(event, eIndex) in day.events"
               :key="eIndex"

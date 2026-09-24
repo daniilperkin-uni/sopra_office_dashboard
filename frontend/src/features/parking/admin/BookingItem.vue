@@ -13,10 +13,7 @@
         <p class="text-sm text-gray-600 mt-1">
           {{ formatDate(booking.date) }} ({{ formatWeekday(booking.date) }})
         </p>
-        <p
-          v-if="booking.note"
-          class="text-sm text-gray-500 mt-1"
-        >
+        <p v-if="booking.note" class="text-sm text-gray-500 mt-1">
           {{ booking.note }}
         </p>
       </div>
@@ -70,10 +67,7 @@
     </div>
 
     <!-- Bearbeitungsmodus -->
-    <div
-      v-else
-      class="space-y-4"
-    >
+    <div v-else class="space-y-4">
       <div>
         <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Name</label>
         <input
@@ -81,32 +75,18 @@
           type="text"
           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           placeholder="Name des Mitarbeiters"
-        >
-      </div>
-
-      <div v-if="!booking.recurringReservation">
-        <DateInput
-          id="edit-date"
-          v-model="editData.date"
-          label="Datum"
         />
       </div>
 
+      <div v-if="!booking.recurringReservation">
+        <DateInput id="edit-date" v-model="editData.date" label="Datum" />
+      </div>
+
       <div class="flex gap-2 pt-2">
-        <BaseButton
-          variant="primary"
-          size="small"
-          :loading="saving"
-          @click="saveEdit"
-        >
+        <BaseButton variant="primary" size="small" :loading="saving" @click="saveEdit">
           Speichern
         </BaseButton>
-        <BaseButton
-          variant="secondary"
-          size="small"
-          :disabled="saving"
-          @click="isEditing = false"
-        >
+        <BaseButton variant="secondary" size="small" :disabled="saving" @click="isEditing = false">
           Abbrechen
         </BaseButton>
       </div>

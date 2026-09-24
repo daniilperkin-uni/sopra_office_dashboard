@@ -2,9 +2,7 @@
   <div
     class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4"
   >
-    <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
-      Optionen
-    </h3>
+    <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Optionen</h3>
 
     <div class="flex gap-2 mb-4">
       <input
@@ -13,27 +11,15 @@
         placeholder="Neues Gericht..."
         class="flex-grow rounded-md border-gray-300 bg-white text-gray-900 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
         @keyup.enter="createItem"
-      >
-      <BaseButton
-        variant="primary"
-        :disabled="!newItemLabel.trim()"
-        @click="createItem"
-      >
+      />
+      <BaseButton variant="primary" :disabled="!newItemLabel.trim()" @click="createItem">
         Hinzufügen
       </BaseButton>
     </div>
 
-    <div
-      v-if="loading"
-      class="text-center py-4"
-    >
-      Lade...
-    </div>
+    <div v-if="loading" class="text-center py-4">Lade...</div>
 
-    <div
-      v-else
-      class="space-y-2 max-h-60 overflow-y-auto pr-2"
-    >
+    <div v-else class="space-y-2 max-h-60 overflow-y-auto pr-2">
       <div
         v-for="item in items"
         :key="item.id"
@@ -88,13 +74,9 @@
             class="flex-grow mr-2 rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 text-sm py-1"
             @keyup.enter="saveEdit"
             @keyup.esc="cancelEdit"
-          >
+          />
           <div class="flex gap-2">
-            <button
-              class="text-green-600 hover:text-green-800"
-              title="Speichern"
-              @click="saveEdit"
-            >
+            <button class="text-green-600 hover:text-green-800" title="Speichern" @click="saveEdit">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-5 w-5"
@@ -108,11 +90,7 @@
                 />
               </svg>
             </button>
-            <button
-              class="text-red-600 hover:text-red-800"
-              title="Abbrechen"
-              @click="cancelEdit"
-            >
+            <button class="text-red-600 hover:text-red-800" title="Abbrechen" @click="cancelEdit">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-5 w-5"

@@ -4,30 +4,22 @@
     <div
       class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 flex items-center gap-4"
     >
-      <div class="font-bold text-black dark:text-gray-100">
-        Dein Name für Abstimmungen:
-      </div>
+      <div class="font-bold text-black dark:text-gray-100">Dein Name für Abstimmungen:</div>
       <input
         v-model="userName"
         type="text"
         placeholder="Name eingeben..."
         class="flex-grow max-w-sm rounded-md border-gray-300 bg-white text-gray-900 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
         @change="saveUserName"
-      >
+      />
     </div>
 
     <!-- Events List -->
-    <div
-      v-if="loading"
-      class="text-center py-12"
-    >
+    <div v-if="loading" class="text-center py-12">
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
     </div>
 
-    <div
-      v-else
-      class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
-    >
+    <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
       <div
         v-for="lunch in lunches"
         :key="lunch.id"
@@ -68,9 +60,7 @@
 
         <!-- Options List -->
         <div class="p-4 flex-grow overflow-y-auto max-h-96">
-          <h4 class="text-sm font-bold text-gray-500 uppercase mb-2">
-            Optionen
-          </h4>
+          <h4 class="text-sm font-bold text-gray-500 uppercase mb-2">Optionen</h4>
 
           <div class="space-y-3 mb-4">
             <div

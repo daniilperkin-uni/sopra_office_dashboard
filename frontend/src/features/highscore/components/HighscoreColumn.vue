@@ -2,10 +2,7 @@
   <div
     class="flex flex-col p-[60px] bg-white dark:bg-gray-800 rounded-3xl shadow-2xl h-full w-full"
   >
-    <h3
-      id="column-title"
-      class="text-[58px] font-bold mb-8 text-primary text-center"
-    >
+    <h3 id="column-title" class="text-[58px] font-bold mb-8 text-primary text-center">
       {{ title }}
     </h3>
     <div

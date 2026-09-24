@@ -2,6 +2,8 @@ import globals from "globals";
 import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
 import pluginVue from "eslint-plugin-vue";
+// Formatierung uebernimmt Prettier; kollidierende Stilregeln abschalten
+import eslintConfigPrettier from "eslint-config-prettier/flat";
 
 export default [
   {
@@ -25,5 +27,6 @@ export default [
             parser: tseslint.parser
         }
     }
-  }
+  },
+  eslintConfigPrettier
 ];

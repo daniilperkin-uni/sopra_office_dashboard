@@ -30,10 +30,7 @@
       <span class="font-black text-5xl truncate">
         {{ label }}
       </span>
-      <span
-        v-if="secondaryText"
-        class="font-bold uppercase text-xl whitespace-nowrap opacity-70"
-      >
+      <span v-if="secondaryText" class="font-bold uppercase text-xl whitespace-nowrap opacity-70">
         {{ secondaryText }}
       </span>
     </div>

@@ -3,21 +3,11 @@
     class="parking-spot p-2 rounded-md text-center transition-all duration-200"
     :class="spotClasses"
   >
-    <div class="text-xs font-medium mb-1">
-      Platz {{ spotNumber }}
-    </div>
-    <div
-      v-if="occupied"
-      class="text-xs truncate"
-    >
+    <div class="text-xs font-medium mb-1">Platz {{ spotNumber }}</div>
+    <div v-if="occupied" class="text-xs truncate">
       {{ employee }}
     </div>
-    <div
-      v-else
-      class="text-xs opacity-70"
-    >
-      Frei
-    </div>
+    <div v-else class="text-xs opacity-70">Frei</div>
   </div>
 </template>
 

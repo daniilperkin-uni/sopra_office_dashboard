@@ -1,20 +1,12 @@
 <template>
-  <div
-    id="app"
-    class="min-h-screen flex flex-col bg-neutral-bg"
-  >
+  <div id="app" class="min-h-screen flex flex-col bg-neutral-bg">
     <!-- Header with navigation (only visible when not in display mode) -->
-    <header
-      v-if="showNavigation"
-      class="bg-gray-100 shadow-md"
-    >
+    <header v-if="showNavigation" class="bg-gray-100 shadow-md">
       <div class="container mx-auto px-4 py-3 flex flex-col sm:flex-row items-center">
         <!-- Left spacer to balance the nav on the right -->
         <div class="hidden sm:block flex-1" />
 
-        <h1 class="text-3xl sm:text-7xl font-black text-primary text-center">
-          itestra Dashboard
-        </h1>
+        <h1 class="text-3xl sm:text-7xl font-black text-primary text-center">itestra Dashboard</h1>
 
         <nav class="flex-1 flex justify-center sm:justify-end space-x-2 sm:space-x-4 mt-4 sm:mt-0">
           <router-link

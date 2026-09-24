@@ -14,28 +14,19 @@
     </h2>
 
     <!-- DARTS FORM -->
-    <div
-      v-if="type === 'darts'"
-      class="space-y-4"
-    >
+    <div v-if="type === 'darts'" class="space-y-4">
       <div>
-        <label
-          for="playerName"
-          class="block text-sm font-medium text-black"
-        >Spielername</label>
+        <label for="playerName" class="block text-sm font-medium text-black">Spielername</label>
         <input
           id="playerName"
           v-model="dartsData.playerName"
           type="text"
           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-white text-gray-900 focus:ring-primary focus:border-primary"
           required
-        >
+        />
       </div>
       <div>
-        <label
-          for="points"
-          class="block text-sm font-medium text-black"
-        >Würfe</label>
+        <label for="points" class="block text-sm font-medium text-black">Würfe</label>
         <input
           id="points"
           v-model.number="dartsData.dartsToFinish"
@@ -43,20 +34,15 @@
           min="1"
           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-white text-gray-900 focus:ring-primary focus:border-primary"
           required
-        >
+        />
       </div>
     </div>
 
     <!-- KICKER FORM -->
-    <div
-      v-else-if="type === 'kicker'"
-      class="space-y-4"
-    >
+    <div v-else-if="type === 'kicker'" class="space-y-4">
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <h3 class="font-bold text-black mb-2 text-sm">
-            Team A
-          </h3>
+          <h3 class="font-bold text-black mb-2 text-sm">Team A</h3>
           <div class="space-y-2">
             <input
               v-model="kickerData.teamAPlayer1"
@@ -64,19 +50,17 @@
               placeholder="Spieler 1"
               class="block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-white text-gray-900 text-sm"
               required
-            >
+            />
             <input
               v-model="kickerData.teamAPlayer2"
               type="text"
               placeholder="Spieler 2 (optional)"
               class="block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-white text-gray-900 text-sm"
-            >
+            />
           </div>
         </div>
         <div>
-          <h3 class="font-bold text-black mb-2 text-sm">
-            Team B
-          </h3>
+          <h3 class="font-bold text-black mb-2 text-sm">Team B</h3>
           <div class="space-y-2">
             <input
               v-model="kickerData.teamBPlayer1"
@@ -84,13 +68,13 @@
               placeholder="Spieler 1"
               class="block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-white text-gray-900 text-sm"
               required
-            >
+            />
             <input
               v-model="kickerData.teamBPlayer2"
               type="text"
               placeholder="Spieler 2 (optional)"
               class="block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-white text-gray-900 text-sm"
-            >
+            />
           </div>
         </div>
       </div>
@@ -101,29 +85,17 @@
           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-white text-gray-900"
           required
         >
-          <option value="TEAM_A_WIN">
-            Team A gewinnt
-          </option>
-          <option value="TEAM_B_WIN">
-            Team B gewinnt
-          </option>
+          <option value="TEAM_A_WIN">Team A gewinnt</option>
+          <option value="TEAM_B_WIN">Team B gewinnt</option>
         </select>
       </div>
     </div>
 
     <div class="flex flex-col sm:flex-row justify-end gap-3 mt-6">
-      <BaseButton
-        variant="secondary"
-        class="order-2 sm:order-1"
-        @click="emit('cancel')"
-      >
+      <BaseButton variant="secondary" class="order-2 sm:order-1" @click="emit('cancel')">
         Abbrechen
       </BaseButton>
-      <BaseButton
-        type="submit"
-        variant="primary"
-        class="order-1 sm:order-2"
-      >
+      <BaseButton type="submit" variant="primary" class="order-1 sm:order-2">
         Eintrag {{ initialData ? 'speichern' : 'hinzufügen' }}
       </BaseButton>
     </div>
