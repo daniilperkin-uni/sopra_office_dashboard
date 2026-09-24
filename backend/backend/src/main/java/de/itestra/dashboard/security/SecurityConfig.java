@@ -15,7 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 /**
@@ -52,9 +51,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            // spa(): XSRF-TOKEN-Cookie (fuer JS lesbar) + SPA-Token-Handler aus Security 7
             .csrf(csrf -> csrf
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
+                .spa()
                 // Login ohne vorheriges Token erlauben (erster Request der SPA)
                 .ignoringRequestMatchers("/api/auth/login"))
             .cors(cors -> cors.configurationSource(corsConfigurationSource))

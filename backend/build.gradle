@@ -1,10 +1,10 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.5.7' apply false //Download the Spring Boot plugin, but do NOT apply it to this project.
+    id 'org.springframework.boot' version '4.1.1' apply false //Download the Spring Boot plugin, but do NOT apply it to this project.
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
-ext.springdocVersion = '2.8.14'
+ext.springdocVersion = '3.1.1'
 
 subprojects{//will be applied to all subprojects
     apply plugin: 'java'
@@ -35,15 +35,19 @@ subprojects{//will be applied to all subprojects
         }
         dependencies {
             // springdoc-Version zentral fuer alle Module festlegen
-            dependency "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocVersion}"
+            dependency "org.springdoc:springdoc-openapi-starter-webmvc-ui:${rootProject.ext.springdocVersion}"
         }
     }
 
     dependencies {
         // Shared test dependencies across all subprojects
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
-        testImplementation 'org.springframework.security:spring-security-test'
+        testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+        testImplementation 'org.springframework.boot:spring-boot-resttestclient'
+        testImplementation 'org.springframework.boot:spring-boot-starter-restclient'
+        testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
         testRuntimeOnly 'com.h2database:h2'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     }
 
     tasks.withType(Test) {

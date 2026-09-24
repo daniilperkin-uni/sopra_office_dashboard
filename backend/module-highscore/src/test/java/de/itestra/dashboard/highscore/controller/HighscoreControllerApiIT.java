@@ -1,7 +1,7 @@
 package de.itestra.dashboard.highscore.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import de.itestra.dashboard.highscore.MatchResult;
 import de.itestra.dashboard.highscore.dto.OverviewResponse;
 import de.itestra.dashboard.highscore.dto.darts.request.DartsEntryRequest;
@@ -13,7 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.*;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -22,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureTestRestTemplate
 class HighscoreControllerApiIT {
 
     @LocalServerPort
@@ -41,7 +43,7 @@ class HighscoreControllerApiIT {
     }
 
     private TestRestTemplate adminRest() {
-        return new TestRestTemplate("admin", "REDACTED-SECRET");
+        return rest.withBasicAuth("admin", "REDACTED-SECRET");
     }
 
     @Test

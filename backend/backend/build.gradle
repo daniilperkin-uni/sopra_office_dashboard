@@ -12,10 +12,11 @@ dependencies {
     implementation project(':module-community-lunches')
     implementation project(':module-highscore')
     implementation project(':module-config')
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-    implementation 'org.liquibase:liquibase-core'
+    implementation 'org.springframework.boot:spring-boot-starter-liquibase'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui'
 }
 
