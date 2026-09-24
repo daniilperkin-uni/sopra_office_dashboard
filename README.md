@@ -1,5 +1,7 @@
 # itestraOfficeDashboard
 
+[![CI](https://github.com/daniilperkin-uni/sopra_office_dashboard/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/daniilperkin-uni/sopra_office_dashboard/actions/workflows/ci.yml)
+
 ## Description
 
 The **itestraOfficeDashboard** is a modular office management platform designed for displaying information on large 4K screens in kiosk mode with configurable view rotation. The dashboard aggregates and visualizes office information such as parking reservations, employee events, game statistics, and community lunch planning.
@@ -20,9 +22,21 @@ The system consists of two main interfaces:
 
 For detailed module documentation, see [Modules Overview](#modules-overview).
 
+## Architecture overview
+
+- **Backend** (`backend/`): Spring Boot 4 multi-module Gradle build (Java 21). `backend` is the runnable app (security, Liquibase master changelog); `module-*` hold the features (parking, events, highscore, community lunches, config) and `common` shared code. MariaDB in production, H2 in tests.
+- **Frontend** (`frontend/`): Vue 3 + Vite + Tailwind SPA with the kiosk display (`/display`) and the admin UI (`/admin/*`); talks to the backend via `/api` (session login, CSRF token from the `XSRF-TOKEN` cookie).
+- **Deployment**: Docker Compose (`backend/compose.yaml`); CI runs Gradle build and frontend lint/test/build on every push.
+
+## My contribution
+
+This was a university team project (SoPra). My roles and work are listed in [Team.md](Team.md). The `feedback_folder/` contains the graders' milestone feedback.
+
 ## Table of Contents
 
 - [Description](#description)
+- [Architecture overview](#architecture-overview)
+- [My contribution](#my-contribution)
 - [Live Demo (Dokploy)](#live-demo-dokploy)
 - [Install using docker compose](#install-using-docker-compose)
 - [Local setup](#local-setup)
