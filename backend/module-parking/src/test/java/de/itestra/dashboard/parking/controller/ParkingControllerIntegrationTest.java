@@ -35,7 +35,7 @@ public class ParkingControllerIntegrationTest {
 
     @Test
     public void createEntry_ValidRequest_ReturnsCreatedEntry() throws Exception {
-        LocalDate futureDate = LocalDate.now().plusDays(30);
+        LocalDate futureDate = futureWeekday(30);
         String apiDate = futureDate.format(API_DATE_FORMAT);
         String isoDate = futureDate.format(ISO_FORMAT);
 
@@ -76,7 +76,7 @@ public class ParkingControllerIntegrationTest {
 
     @Test
     public void createEntry_BlankEmployeeName_ReturnsBadRequest() throws Exception {
-        String apiDate = LocalDate.now().plusDays(30).format(API_DATE_FORMAT);
+        String apiDate = futureWeekday(30).format(API_DATE_FORMAT);
         String requestJson = """
                 {
                     "employeeName": "   ",
@@ -92,7 +92,7 @@ public class ParkingControllerIntegrationTest {
 
     @Test
     public void createEntry_DuplicateEmployeeAndDate_VerifyPrevented() throws Exception {
-        LocalDate futureDate = LocalDate.now().plusDays(45);
+        LocalDate futureDate = futureWeekday(45);
         String apiDate = futureDate.format(API_DATE_FORMAT);
 
         String firstRequest = """
@@ -135,5 +135,18 @@ public class ParkingControllerIntegrationTest {
         entry.setEmployeeName(employeeName);
         entry.setDate(date);
         repository.save(entry);
+    }
+
+    /**
+     * Liefert den ersten Werktag ab heute + {@code days}, da Buchungen am
+     * Wochenende abgelehnt werden (sonst schlaegt der Test datumsabhaengig fehl).
+     */
+    private static LocalDate futureWeekday(int days) {
+        LocalDate date = LocalDate.now().plusDays(days);
+        while (date.getDayOfWeek() == java.time.DayOfWeek.SATURDAY
+                || date.getDayOfWeek() == java.time.DayOfWeek.SUNDAY) {
+            date = date.plusDays(1);
+        }
+        return date;
     }
 }
