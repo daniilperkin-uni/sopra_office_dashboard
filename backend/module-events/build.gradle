@@ -6,7 +6,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     implementation 'org.liquibase:liquibase-core'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.14'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui'
     // OdooClient talks XML-RPC directly; this was previously pulled in
     // transitively by com.odoojava:odoo-java-api, which only resolves from an
     // external Nexus and is otherwise unused.

@@ -4,6 +4,8 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
+ext.springdocVersion = '2.8.14'
+
 subprojects{//will be applied to all subprojects
     apply plugin: 'java'
     apply plugin: 'io.spring.dependency-management'
@@ -17,7 +19,7 @@ subprojects{//will be applied to all subprojects
     }
 
     checkstyle {
-        toolVersion = '10.12.5'
+        toolVersion = '10.26.1'
         configFile = rootProject.file('PE2CheckStyle.xml')  // <-- rootProject.file() verwenden!
     }
     tasks.withType(Checkstyle) {
@@ -30,6 +32,10 @@ subprojects{//will be applied to all subprojects
     dependencyManagement {
         imports {
             mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES // keeps the spring framework versions up to date
+        }
+        dependencies {
+            // springdoc-Version zentral fuer alle Module festlegen
+            dependency "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocVersion}"
         }
     }
 
