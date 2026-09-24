@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -56,6 +57,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ProblemDetail> handleUnreadable(HttpMessageNotReadableException e) {
         ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Malformed request body");
         return ResponseEntity.badRequest().body(detail);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ProblemDetail> handleAuthentication(AuthenticationException e) {
+        // Generic message: never reveal whether the username or the password was wrong
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.UNAUTHORIZED, "Invalid username or password");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(detail);
     }
 
     @ExceptionHandler(Exception.class)

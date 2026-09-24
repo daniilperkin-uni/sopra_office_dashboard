@@ -78,6 +78,21 @@ class SecurityConfigIntegrationTest {
     }
 
     @Test
+    void loginWithWrongPassword_isUnauthorized() throws Exception {
+        // Real cookie flow, not csrf(): that post-processor swaps the shared
+        // CsrfFilter repository and breaks the XSRF-cookie tests run after it
+        MvcResult primed = mockMvc.perform(get("/api/auth/csrf")).andReturn();
+        Cookie xsrf = primed.getResponse().getCookie("XSRF-TOKEN");
+        mockMvc.perform(post("/api/auth/login")
+                        .cookie(xsrf)
+                        .header("X-XSRF-TOKEN", xsrf.getValue())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"admin\",\"password\":\"wrong\"}"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.detail").value("Invalid username or password"));
+    }
+
+    @Test
     void apiMutation_requiresAuthentication() throws Exception {
         mockMvc.perform(post("/api/entries").with(csrf()))
                 .andExpect(status().isUnauthorized());
