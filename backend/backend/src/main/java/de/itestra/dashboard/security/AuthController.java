@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -68,6 +69,20 @@ public class AuthController {
         }
         SecurityContextHolder.clearContext();
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Liefert das CSRF-Token und setzt dabei das Cookie {@code XSRF-TOKEN}.
+     * Die SPA ruft diesen Endpunkt vor dem Login auf, damit der Login-POST
+     * den Header {@code X-XSRF-TOKEN} mitsenden kann.
+     *
+     * @param csrfToken das aktuelle (ggf. verzoegert geladene) CSRF-Token
+     * @return 200 mit Header-Name und Token-Wert
+     */
+    @GetMapping("/csrf")
+    public ResponseEntity<Map<String, String>> csrf(CsrfToken csrfToken) {
+        // getToken() erzwingt das Laden des verzoegerten Tokens und damit das Cookie
+        return ResponseEntity.ok(Map.of("headerName", csrfToken.getHeaderName(), "token", csrfToken.getToken()));
     }
 
     /**

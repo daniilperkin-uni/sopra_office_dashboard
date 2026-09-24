@@ -52,10 +52,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             // spa(): XSRF-TOKEN-Cookie (fuer JS lesbar) + SPA-Token-Handler aus Security 7
-            .csrf(csrf -> csrf
-                .spa()
-                // Login ohne vorheriges Token erlauben (erster Request der SPA)
-                .ignoringRequestMatchers("/api/auth/login"))
+            // Keine Ausnahmen: auch der Login braucht ein Token (siehe GET /api/auth/csrf)
+            .csrf(csrf -> csrf.spa())
             .cors(cors -> cors.configurationSource(corsConfigurationSource))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
             .authorizeHttpRequests(auth -> auth

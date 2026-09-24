@@ -14,6 +14,8 @@ export const authService = {
   authChecked: computed(() => authChecked.value),
 
   async login(username, password) {
+    // CSRF-Cookie vorab holen, damit der Login-POST den X-XSRF-TOKEN-Header mitsendet
+    await apiClient.get('/auth/csrf')
     const response = await apiClient.post('/auth/login', { username, password })
     currentUser.value = response.data
     return response.data

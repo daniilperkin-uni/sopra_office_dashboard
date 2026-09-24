@@ -5,13 +5,17 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import jakarta.servlet.http.Cookie;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 /**
  * Prueft CSRF-Schutz und die Deny-by-default-Autorisierung.
@@ -25,8 +29,8 @@ class SecurityConfigIntegrationTest {
 
     @Test
     void getRequest_setsReadableXsrfCookie() throws Exception {
-        mockMvc.perform(get("/api/auth/me"))
-                .andExpect(status().isUnauthorized())
+        mockMvc.perform(get("/api/auth/csrf"))
+                .andExpect(status().isOk())
                 .andExpect(cookie().exists("XSRF-TOKEN"))
                 .andExpect(cookie().httpOnly("XSRF-TOKEN", false));
     }
@@ -41,6 +45,36 @@ class SecurityConfigIntegrationTest {
     void postWithCsrfToken_isAccepted() throws Exception {
         mockMvc.perform(post("/api/auth/logout").with(csrf()))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void csrfEndpoint_returnsToken() throws Exception {
+        mockMvc.perform(get("/api/auth/csrf"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").isNotEmpty())
+                .andExpect(jsonPath("$.headerName").value("X-XSRF-TOKEN"));
+    }
+
+    @Test
+    void loginWithoutCsrfToken_isForbidden() throws Exception {
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"admin\",\"password\":\"x\"}"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void loginWithCsrfToken_succeeds() throws Exception {
+        // Echter SPA-Ablauf: Token holen, dann Cookie + Header mitsenden
+        MvcResult primed = mockMvc.perform(get("/api/auth/csrf")).andReturn();
+        Cookie xsrf = primed.getResponse().getCookie("XSRF-TOKEN");
+        mockMvc.perform(post("/api/auth/login")
+                        .cookie(xsrf)
+                        .header("X-XSRF-TOKEN", xsrf.getValue())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"admin\",\"password\":\"REDACTED-SECRET\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value("admin"));
     }
 
     @Test
