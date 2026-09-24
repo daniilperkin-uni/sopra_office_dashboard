@@ -11,8 +11,8 @@ services:
       DB_PORT: 3306
       DB_NAME: ${DB_NAME:-test}
       DB_USER: ${DB_USER:-myuser}
-      DB_PASS: ${DB_PASS:-secret}
-      DB_ROOT_PASS: ${DB_ROOT_PASS:-root}
+      DB_PASS: ${DB_PASS:?DB_PASS must be set in .env}
+      DB_ROOT_PASS: ${DB_ROOT_PASS:?DB_ROOT_PASS must be set in .env}
     ports:
       - "8099:8080"
     volumes:
@@ -39,12 +39,12 @@ services:
     environment:
       MARIADB_DATABASE: ${DB_NAME:-test}
       MARIADB_USER: ${DB_USER:-myuser}
-      MARIADB_PASSWORD: ${DB_PASS:-secret}
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASS:-root}
+      MARIADB_PASSWORD: ${DB_PASS:?DB_PASS must be set in .env}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASS:?DB_ROOT_PASS must be set in .env}
     volumes:
       - mariadb_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASS:-root}"]
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASS:?DB_ROOT_PASS must be set in .env}"]
       timeout: 5s
       retries: 10
       interval: 5s
