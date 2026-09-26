@@ -17,3 +17,5 @@ databaseChangeLog:
       file: classpath:db/changelog/highscore/changes/008-kicker-entry-ensure-created-at.yaml
   - include:
       file: classpath:db/changelog/highscore/changes/009-fix-kicker-entry-schema.yaml
+  - include:
+      file: classpath:db/changelog/highscore/changes/010-fix-kicker-entry-match-result-backfill.yaml

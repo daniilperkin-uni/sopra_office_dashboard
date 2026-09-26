@@ -1,5 +1,6 @@
 package de.itestra.dashboard.events.service;
 
+import de.itestra.dashboard.common.constants.DateTimeFormatterConstants;
 import de.itestra.dashboard.events.DashboardEventType;
 import de.itestra.dashboard.events.dto.DashboardEventResponse;
 import de.itestra.dashboard.events.entity.DashboardEvent;
@@ -11,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -103,7 +105,37 @@ public class DashboardEventService {
                 || startDate.isBefore(this.earliestCachedDate) || endDate.isAfter(this.latestCachedDate)) {
             return generateEvents(startDate, endDate);
         }
-        return getCachedEvents();
+        return filterByDateRange(getCachedEvents(), startDate, endDate);
+    }
+
+    /**
+     * Restricts already cached events to the requested range.
+     * <p>
+     * The cache is filled for a wider window (14 days by default) and
+     * {@link #getCachedEvents()} returns the whole list, so without this filter
+     * a request for two days came back with about two weeks of events.
+     * </p>
+     *
+     * @param events    the cached events
+     * @param startDate the start date of the requested range (inclusive)
+     * @param endDate   the end date of the requested range (inclusive)
+     * @return the events whose dashboard date falls inside the range
+     */
+    private List<DashboardEventResponse> filterByDateRange(List<DashboardEventResponse> events,
+                                                           LocalDate startDate, LocalDate endDate) {
+        return events.stream()
+                .filter(event -> isWithinRange(event.dashboardEventDate(), startDate, endDate))
+                .collect(Collectors.toList());
+    }
+
+    private boolean isWithinRange(String formattedDate, LocalDate startDate, LocalDate endDate) {
+        try {
+            LocalDate date = LocalDate.parse(formattedDate, DateTimeFormatterConstants.DATE_FORMATTER);
+            return !date.isBefore(startDate) && !date.isAfter(endDate);
+        } catch (DateTimeParseException e) {
+            log.warn("Skipping cached event with unparseable date: {}", formattedDate);
+            return false;
+        }
     }
 
     /**
@@ -156,9 +188,10 @@ public class DashboardEventService {
     }
 
     private void calculateLatestCachedDate(LocalDate endFilterDate) {
-        if (this.latestCachedDate == null) {
-            this.latestCachedDate = endFilterDate;
-        } else if (this.latestCachedDate.isAfter(endFilterDate)) {
+        // Keep the furthest end date: the cache bound must grow with every
+        // generated range. Comparing with isAfter() kept the minimum instead,
+        // so the bound never extended and later requests re-generated needlessly.
+        if (this.latestCachedDate == null || this.latestCachedDate.isBefore(endFilterDate)) {
             this.latestCachedDate = endFilterDate;
         }
     }

@@ -62,7 +62,10 @@ public class DashboardEventMapper {
     private String getWorkAnniversaryDesc(DashboardEvent dashboardEvent, String date) {
         int originalDate = dashboardEvent.getOriginalEventDate().getYear();
         int dashboardEventDate = dashboardEvent.getDashboardEventDate().getYear();
-        int years = (dashboardEventDate - originalDate) + 1;
+        // The dashboard date already is the anniversary itself, so the year
+        // difference is the number of completed years. Adding one reported a
+        // five-year anniversary as "6 Jahre".
+        int years = dashboardEventDate - originalDate;
         return String.format(date + " ist %s %d Jahre bei Itestra!",
                 dashboardEvent.getEmployeeName(), years);
     }

@@ -1,0 +1,23 @@
+databaseChangeLog:
+
+  # 008 backfilled kicker_entry.match_result with the literal 'TEAM_A', but
+  # MatchResult defines TEAM_A_WIN and TEAM_B_WIN, so any row it touched failed
+  # to load with "No enum constant ... TEAM_A". 008 is already applied and must
+  # not be edited, so the stored values are corrected in a new changeset.
+  - changeSet:
+      id: 010-fix-kicker-entry-match-result-backfill
+      author: team
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: kicker_entry
+          - columnExists:
+              tableName: kicker_entry
+              columnName: match_result
+      changes:
+        - sql:
+            sql: |
+              UPDATE kicker_entry
+              SET match_result = 'TEAM_A_WIN'
+              WHERE match_result = 'TEAM_A';
