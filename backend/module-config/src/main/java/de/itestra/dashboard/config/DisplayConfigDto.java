@@ -2,21 +2,18 @@ package de.itestra.dashboard.config;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 @Schema(description = "Configuration for dashboard display behavior including automatic view rotation settings")
 public class DisplayConfigDto {
 
     @Schema(description = "Whether automatic rotation between different dashboard views is enabled", example = "true")
-    @NotNull(message = "Rotation enabled flag must be specified")
     private boolean rotationEnabled;
 
     @Schema(description = "Whether to skip the OneDisplay (dashboard) view during automatic rotation", example = "false")
     private boolean skipOneDisplayInRotation;
 
-    @Schema(description = "Time in seconds before rotating to the next view", example = "15", minimum = "5")
-    @Min(value = 5, message = "Rotation interval must be at least 5 seconds")
+    @Schema(description = "Time in seconds before rotating to the next view; -1 selects the game mode view", example = "15")
     private int rotationIntervalSeconds;
 
     @Schema(description = "Identifier of the view to display when rotation is disabled. Valid values include 'Kalender', 'Geburtstage', 'Parkplätze', etc.", example = "Kalender")
@@ -34,9 +31,9 @@ public class DisplayConfigDto {
         this.defaultSingleViewId = defaultSingleViewId;
     }
 
-    @AssertTrue(message = "Rotation interval must be at least 5 seconds")
+    @AssertTrue(message = "Rotation interval must be -1 (game mode) or at least 5 seconds")
     public boolean isValidInterval() {
-        return rotationIntervalSeconds >= 5;
+        return rotationIntervalSeconds == -1 || rotationIntervalSeconds >= 5;
     }
 
     public boolean isRotationEnabled() {

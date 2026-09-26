@@ -58,6 +58,10 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
+                // Employee meal choices are personal data; unlike the other GET
+                // endpoints they are not needed by the kiosk and stay behind the
+                // admin login.
+                .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/community-lunches/choices").hasRole("ADMIN")
                 .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/**").permitAll()
                 .requestMatchers("/api/**").hasRole("ADMIN")
                 // Oeffentliche Infrastruktur: Swagger, Health, Fehlerseite, SPA-Assets
