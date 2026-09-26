@@ -4,7 +4,7 @@
   >
     <!-- Header -->
     <div class="bg-gray-100 p-8 border-b border-gray-200">
-      <h3 id="column-title" class="font-black text-primary text-7xl text-center leading-none">
+      <h3 :id="titleId" class="font-black text-primary text-7xl text-center leading-none">
         {{ title }}
       </h3>
     </div>
@@ -13,7 +13,7 @@
     <div
       class="flex-grow flex flex-col justify-evenly p-4 gap-4"
       role="list"
-      aria-labelledby="column-title"
+      :aria-labelledby="titleId"
     >
       <DashboardHighscoreCard
         v-for="(item, index) in displayItems"
@@ -35,8 +35,12 @@
  * Renders a list of DashboardHighscoreCards.
  * Automatically limits the display to the top 3 (Leaderboard) or top 7 (Other).
  */
-import { computed } from 'vue'
+import { computed, useId } from 'vue'
 import DashboardHighscoreCard from './DashboardHighscoreCard.vue'
+
+// Per-instance id: the dashboard renders two of these columns, so a fixed id
+// made both aria-labelledby attributes point at the first heading.
+const titleId = `column-title-${useId()}`
 
 const props = defineProps({
   title: {

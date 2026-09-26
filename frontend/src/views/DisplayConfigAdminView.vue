@@ -2,16 +2,16 @@
   <div class="max-w-4xl mx-auto p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md mt-6">
     <h2 class="text-xl sm:text-2xl font-bold mb-6 text-black">Konfiguration</h2>
 
-    <div v-if="configStore.loading && !config" class="flex justify-center py-8">
+    <div v-if="configStore.loading && !configStore.loaded" class="flex justify-center py-8">
       <LoadingSpinner />
     </div>
 
     <div
-      v-else-if="error"
+      v-else-if="configStore.error || error"
       class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
       role="alert"
     >
-      <span class="block sm:inline">{{ error }}</span>
+      <span class="block sm:inline">{{ configStore.error || error }}</span>
     </div>
 
     <form v-else class="space-y-6" @submit.prevent="saveConfig">
@@ -54,12 +54,12 @@
           id="interval"
           v-model.number="configStore.config.rotationIntervalSeconds"
           type="number"
-          min="5"
+          min="-1"
           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-white text-gray-900"
           required
         />
         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Zeitdauer bis zum Wechsel zur nächsten Ansicht.
+          Zeitdauer bis zum Wechsel zur nächsten Ansicht. Der Wert -1 aktiviert den Spielmodus.
         </p>
       </div>
 
@@ -113,19 +113,17 @@ const saving = ref(false)
 const error = ref(null)
 
 onMounted(async () => {
-  try {
-    await configStore.fetchConfig()
-  } catch {
-    error.value = 'Konfiguration konnte nicht geladen werden.'
-  }
+  await configStore.fetchConfig()
 })
 
 const saveConfig = async () => {
   const interval = configStore.config.rotationIntervalSeconds
 
-  // Rotation interval must be at least 5 seconds to prevent browser crashes
-  if (interval < 5) {
-    alert('Rotationsintervall muss mindestens 5 Sekunden betragen.')
+  // -1 ist der dokumentierte Spielmodus-Sentinel; alles andere unter 5 Sekunden
+  // bringt den Browser zum Absturz. Vorher war -1 nicht eingebbar, der
+  // Spielmodus also nur durch direkte API-Aufrufe erreichbar.
+  if (interval !== -1 && (Number.isNaN(interval) || interval < 5)) {
+    error.value = 'Rotationsintervall muss -1 (Spielmodus) oder mindestens 5 Sekunden betragen.'
     return
   }
 
@@ -133,7 +131,6 @@ const saveConfig = async () => {
   error.value = null
   try {
     await configStore.updateConfig(configStore.config)
-    alert('Konfiguration erfolgreich gespeichert!')
   } catch {
     error.value = 'Konfiguration konnte nicht gespeichert werden.'
   } finally {

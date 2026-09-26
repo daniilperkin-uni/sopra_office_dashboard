@@ -80,15 +80,18 @@ onMounted(fetchRankings)
 </script>
 
 <style scoped>
+/* main.css definiert keine --space-* oder --color-* Variablen; die
+   Deklarationen wurden vom Browser verworfen, sodass Padding und Textfarben
+   fehlten. */
 .elo-rankings {
-  padding: var(--space-lg);
+  padding: 1.5rem;
 }
 
 .section-title {
   font-size: 1.25rem;
   font-weight: 600;
-  margin-bottom: var(--space-md);
-  color: var(--color-text);
+  margin-bottom: 1rem;
+  color: #102a43;
 }
 
 .rankings-table {
@@ -98,14 +101,14 @@ onMounted(fetchRankings)
 
 .rankings-table th,
 .rankings-table td {
-  border-bottom: 1px solid var(--color-border);
-  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0.5rem 1rem;
   text-align: left;
 }
 
 .rankings-table th {
   font-weight: 600;
-  color: var(--color-text-light);
+  color: #52667a;
   font-size: 0.85rem;
 }
 
@@ -131,11 +134,11 @@ onMounted(fetchRankings)
 .empty,
 .error-message {
   text-align: center;
-  padding: var(--space-lg);
-  color: var(--color-text-light);
+  padding: 1.5rem;
+  color: #52667a;
 }
 
 .error-message {
-  color: var(--color-error, #d0021b);
+  color: #d0021b;
 }
 </style>

@@ -2,13 +2,13 @@
   <div
     class="flex flex-col p-[60px] bg-white dark:bg-gray-800 rounded-3xl shadow-2xl h-full w-full"
   >
-    <h3 id="column-title" class="text-[58px] font-bold mb-8 text-primary text-center">
+    <h3 :id="titleId" class="text-[58px] font-bold mb-8 text-primary text-center">
       {{ title }}
     </h3>
     <div
       class="flex-grow flex flex-col justify-between space-y-[24px]"
       role="list"
-      aria-labelledby="column-title"
+      :aria-labelledby="titleId"
     >
       <HighscoreCard
         v-for="(item, index) in displayItems"
@@ -30,8 +30,12 @@
  * Renders a list of HighscoreCard components and limits the display to the
  * top 3 entries for leaderboards or 7 for history.
  */
-import { computed } from 'vue'
+import { computed, useId } from 'vue'
 import HighscoreCard from './HighscoreCard.vue'
+
+// Per-instance id: several columns can be rendered on one page, and a
+// hardcoded id made every aria-labelledby point at the first heading.
+const titleId = `column-title-${useId()}`
 
 // Defines the title of the column and the list of entries to display.
 const props = defineProps({

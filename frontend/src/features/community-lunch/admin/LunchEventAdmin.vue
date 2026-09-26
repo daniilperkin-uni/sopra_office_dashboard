@@ -19,6 +19,16 @@
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
     </div>
 
+    <!-- Ohne diesen Zweig blieb bei einem Backend-Ausfall die Liste einfach leer. -->
+    <div
+      v-else-if="error"
+      class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+      role="alert"
+    >
+      <strong class="font-bold">Fehler:</strong>
+      <span class="block sm:inline">{{ error }}</span>
+    </div>
+
     <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
       <div
         v-for="lunch in lunches"
@@ -131,6 +141,7 @@ import { lunchService } from '@/services/lunchService'
 
 const lunches = ref([])
 const loading = ref(false)
+const error = ref(null)
 const userName = ref('')
 const myChoices = ref([]) // [{ eventId, optionId }]
 
@@ -210,6 +221,7 @@ const voteForOption = async (lunch, option) => {
  */
 const loadData = async () => {
   loading.value = true
+  error.value = null
   const storedName = localStorage.getItem('lunchUserName')
   if (storedName) {
     userName.value = storedName
@@ -244,6 +256,7 @@ const loadData = async () => {
     })
   } catch (e) {
     console.error(e)
+    error.value = 'Lunch-Events konnten nicht geladen werden.'
     loading.value = false
   }
 }

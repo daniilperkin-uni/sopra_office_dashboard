@@ -24,7 +24,7 @@ export const lunchService = {
       return response.data
     } catch (error) {
       console.error('Error fetching upcoming lunch events:', error)
-      return []
+      throw error
     }
   },
 
@@ -42,7 +42,7 @@ export const lunchService = {
       return response.data
     } catch (error) {
       console.error('Error fetching calendar lunches:', error)
-      return []
+      throw error
     }
   },
 
@@ -166,7 +166,7 @@ export const lunchService = {
       return response.data
     } catch (error) {
       console.error('Error fetching my choices:', error)
-      return []
+      throw error
     }
   },
 
@@ -204,7 +204,7 @@ export const lunchService = {
       return response.data
     } catch (error) {
       console.error('Error fetching food catalog:', error)
-      return []
+      throw error
     }
   },
 

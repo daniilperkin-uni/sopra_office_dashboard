@@ -15,6 +15,8 @@ export const useDisplayConfigStore = defineStore('displayConfig', () => {
     defaultSingleViewId: 'dashboard',
   })
   const loading = ref(false)
+  const loaded = ref(false)
+  const error = ref(null)
 
   async function fetchConfig() {
     loading.value = true
@@ -23,8 +25,13 @@ export const useDisplayConfigStore = defineStore('displayConfig', () => {
       if (remoteConfig) {
         config.value = { ...config.value, ...remoteConfig }
       }
+      loaded.value = true
+      error.value = null
     } catch (e) {
       console.error('Failed to load config', e)
+      // The admin view renders an error banner from this ref; without it a
+      // failed load was indistinguishable from a successful one.
+      error.value = 'Konfiguration konnte nicht geladen werden.'
     } finally {
       loading.value = false
     }
@@ -44,5 +51,5 @@ export const useDisplayConfigStore = defineStore('displayConfig', () => {
     }
   }
 
-  return { config, loading, fetchConfig, updateConfig }
+  return { config, loading, loaded, error, fetchConfig, updateConfig }
 })

@@ -19,6 +19,16 @@
 
     <div v-if="loading" class="text-center py-4">Lade...</div>
 
+    <!-- Ohne diesen Zweig blieb bei einem Backend-Ausfall die Liste einfach leer. -->
+    <div
+      v-else-if="error"
+      class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+      role="alert"
+    >
+      <strong class="font-bold">Fehler:</strong>
+      <span class="block sm:inline">{{ error }}</span>
+    </div>
+
     <div v-else class="space-y-2 max-h-60 overflow-y-auto pr-2">
       <div
         v-for="item in items"
@@ -122,6 +132,7 @@ import BaseButton from '@/components/common/BaseButton.vue'
 
 const items = ref([])
 const loading = ref(false)
+const error = ref(null)
 const newItemLabel = ref('')
 
 // Edit State
@@ -134,8 +145,15 @@ const editInput = ref(null)
  */
 const loadItems = async () => {
   loading.value = true
-  items.value = await lunchService.getCatalogItems(false)
-  loading.value = false
+  error.value = null
+  try {
+    items.value = await lunchService.getCatalogItems(false)
+  } catch (e) {
+    console.error('Failed to load catalog', e)
+    error.value = 'Optionen konnten nicht geladen werden.'
+  } finally {
+    loading.value = false
+  }
 }
 
 /**
