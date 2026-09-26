@@ -49,20 +49,3 @@ databaseChangeLog:
               - column:
                   name: default_single_view_id
                   value: "calendar"
-
-  # Repair changeset: DisplayConfigEntity maps skip_one_display_in_rotation but
-  # the initial config table creation never added the column, so a fresh
-  # database failed Hibernate validation and the backend could not start.
-  - changeSet:
-      id: 003-add-skip-one-display-in-rotation
-      author: team
-      changes:
-        - addColumn:
-            tableName: display_config
-            columns:
-              - column:
-                  name: skip_one_display_in_rotation
-                  type: BOOLEAN
-                  defaultValueBoolean: false
-                  constraints:
-                    nullable: false

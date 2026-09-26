@@ -1,3 +1,5 @@
 databaseChangeLog:
   - include:
       file: classpath:db/changelog/config/001-init-config.yaml
+  - include:
+      file: classpath:db/changelog/config/003-add-skip-one-display-in-rotation.yaml

@@ -1,0 +1,26 @@
+databaseChangeLog:
+
+  # Repair changeset: 001 created the dashboard_event table without
+  # employee_email and named the type column "type", while DashboardEvent maps
+  # employee_email and dashboard_event_type. On a fresh database
+  # ddl-auto=validate therefore failed and the backend could not start.
+  # 001 is already applied everywhere, so the repair lives in its own
+  # changeset instead of editing an applied one.
+  - changeSet:
+      id: 002-add-employee-email-and-rename-type
+      author: team
+      changes:
+        - addColumn:
+            tableName: dashboard_event
+            columns:
+              - column:
+                  name: employee_email
+                  type: VARCHAR(255)
+                  defaultValue: ""
+                  constraints:
+                    nullable: false
+        - renameColumn:
+            tableName: dashboard_event
+            oldColumnName: type
+            newColumnName: dashboard_event_type
+            columnDataType: VARCHAR(255)

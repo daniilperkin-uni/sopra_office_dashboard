@@ -1,0 +1,20 @@
+databaseChangeLog:
+
+  # Repair changeset: DisplayConfigEntity maps skip_one_display_in_rotation but
+  # the initial config table creation (001) never added the column, so a fresh
+  # database failed Hibernate validation (ddl-auto=validate) and the backend
+  # could not start. Kept in its own changeset: 001 and 002 are already applied
+  # everywhere, and editing an applied changeset changes its checksum.
+  - changeSet:
+      id: 003-add-skip-one-display-in-rotation
+      author: team
+      changes:
+        - addColumn:
+            tableName: display_config
+            columns:
+              - column:
+                  name: skip_one_display_in_rotation
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false

@@ -1,3 +1,5 @@
 databaseChangeLog:
   - include:
       file: classpath:db/changelog/events/changes/001-create-dashboard-event-table.yaml
+  - include:
+      file: classpath:db/changelog/events/changes/002-add-employee-email-and-rename-type.yaml
