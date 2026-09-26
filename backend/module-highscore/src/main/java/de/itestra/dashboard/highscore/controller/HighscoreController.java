@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,6 +79,7 @@ public class HighscoreController {
     }
 
     @PostMapping("/matches/darts")
+    @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new darts match", description = "Records a new darts match result and updates the highscore standings accordingly")
     @ApiResponses(value = {
             @ApiResponse(
@@ -126,6 +128,7 @@ public class HighscoreController {
     }
 
     @PostMapping("/matches/kicker")
+    @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new kicker match", description = "Records a new kicker match result and updates the highscore standings accordingly")
     @ApiResponses(value = {
             @ApiResponse(

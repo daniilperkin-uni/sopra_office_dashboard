@@ -11,8 +11,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 /**
@@ -65,6 +68,45 @@ public class GlobalExceptionHandler {
         ProblemDetail detail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.UNAUTHORIZED, "Invalid username or password");
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(detail);
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<ProblemDetail> handleNotFound(NoSuchElementException e) {
+        // Services report "not found" with NoSuchElementException and the
+        // controllers document 404 for it. Without this handler it fell through
+        // to the catch-all below and every missing entity became a 500.
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(detail);
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ProblemDetail> handleIllegalState(IllegalStateException e) {
+        // A business rule that conflicts with the current state (e.g. voting on
+        // a lunch event that is not OPEN) is a 409, not an internal error.
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(detail);
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ProblemDetail> handleResponseStatus(ResponseStatusException e) {
+        // This advice is resolved before ResponseStatusExceptionResolver, so a
+        // ResponseStatusException thrown by a controller used to be converted
+        // into a 500 by the catch-all handler. Keep the status the controller
+        // asked for.
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(e.getStatusCode(), e.getReason());
+        return ResponseEntity.status(e.getStatusCode()).body(detail);
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ProblemDetail> handleNoResourceFound(NoResourceFoundException e) {
+        // Spring answers a request for a missing static resource -- which
+        // includes every unmapped URL, public ones such as the whitelisted but
+        // non-existent /actuator/health as well -- with 404 by itself. This
+        // advice's catch-all is resolved first and turned all of them into 500
+        // responses plus a stack trace in the log. Keep the 404.
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.NOT_FOUND, "No resource found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(detail);
     }
 
     @ExceptionHandler(Exception.class)

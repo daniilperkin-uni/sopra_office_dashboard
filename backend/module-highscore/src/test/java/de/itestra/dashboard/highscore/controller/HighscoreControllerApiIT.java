@@ -67,7 +67,7 @@ class HighscoreControllerApiIT {
     }
 
     @Test
-    void api_postDarts_valid_returns200_andBody() throws Exception {
+    void api_postDarts_valid_returns201_andBody() throws Exception {
         DartsEntryRequest req = new DartsEntryRequest("Max Mustermann", 18);
 
         DartsEntryResponse resp = new DartsEntryResponse(1L, "Max Mustermann", 18, "12:30 24.12.2025");
@@ -80,7 +80,7 @@ class HighscoreControllerApiIT {
 
         ResponseEntity<String> res = adminRest().exchange(url("/api/matches/darts"), HttpMethod.POST, entity, String.class);
 
-        assertThat(res.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(res.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         JsonNode json = objectMapper.readTree(res.getBody());
         assertThat(json.get("id").asLong()).isEqualTo(1L);
@@ -116,7 +116,7 @@ class HighscoreControllerApiIT {
     }
 
     @Test
-    void api_postKicker_valid_returns200_andBody() throws Exception {
+    void api_postKicker_valid_returns201_andBody() throws Exception {
         KickerEntryRequest req = new KickerEntryRequest(
                 List.of("Max Mustermann", "Dora Musterfrau"),
                 List.of("Ida Oberstein", "Hans Dampf"),
@@ -140,7 +140,7 @@ class HighscoreControllerApiIT {
 
         ResponseEntity<String> res = adminRest().exchange(url("/api/matches/kicker"), HttpMethod.POST, entity, String.class);
 
-        assertThat(res.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(res.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         JsonNode json = objectMapper.readTree(res.getBody());
 

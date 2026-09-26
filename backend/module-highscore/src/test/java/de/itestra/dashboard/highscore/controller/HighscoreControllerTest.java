@@ -115,7 +115,7 @@ class HighscoreControllerTest {
     }
 
     @Test
-    void createKickerEntry_valid_returns200_andBody() throws Exception {
+    void createKickerEntry_valid_returns201_andBody() throws Exception {
         KickerEntryRequest req = new KickerEntryRequest(
                 List.of("Max Mustermann", "Dora Musterfrau"),
                 List.of("Ida Oberstein", "Hans Dampf"),
@@ -135,7 +135,7 @@ class HighscoreControllerTest {
         mvc.perform(post("/api/matches/kicker")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(2)))
                 .andExpect(jsonPath("$.teamAPlayers", contains("Max Mustermann", "Dora Musterfrau")))
@@ -166,7 +166,7 @@ class HighscoreControllerTest {
     }
 
     @Test
-    void createDartsEntry_valid_returns200_andBody() throws Exception {
+    void createDartsEntry_valid_returns201_andBody() throws Exception {
         DartsEntryRequest req = new DartsEntryRequest("Max Mustermann", 18);
 
         DartsEntryResponse resp = new DartsEntryResponse(1L, "Max Mustermann", 18, "12:30 24.12.2025");
@@ -176,7 +176,7 @@ class HighscoreControllerTest {
         mvc.perform(post("/api/matches/darts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.player", is("Max Mustermann")))

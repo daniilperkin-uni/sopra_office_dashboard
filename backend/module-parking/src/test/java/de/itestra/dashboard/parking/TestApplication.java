@@ -24,8 +24,16 @@ import org.springframework.beans.factory.annotation.Value;
  * configuration that mirrors the production SecurityConfig: GET endpoints are
  * public, mutations require ADMIN role.
  * </p>
+ * <p>
+ * The shared {@code GlobalExceptionHandler} is scanned as well: the production
+ * application scans the whole {@code de.itestra.dashboard} root and therefore
+ * gets the RFC-7807 advice, while ParkingController no longer has a local
+ * IllegalArgumentException handler. Without the exception package a violated
+ * business rule (duplicate booking) surfaced as an unhandled exception instead
+ * of the documented 400.
+ * </p>
  */
-@SpringBootApplication(scanBasePackages = "de.itestra.dashboard.parking")
+@SpringBootApplication(scanBasePackages = {"de.itestra.dashboard.parking", "de.itestra.dashboard.exception"})
 public class TestApplication {
 
     @Configuration

@@ -217,7 +217,8 @@ public class CommunityLunchController {
     @Operation(summary = "Submit employee meal choice", description = "Records or updates an employee's meal choice for the event. Only allowed when event status is OPEN. One choice per employee per event")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Choice submitted successfully"),
-            @ApiResponse(responseCode = "400", description = "Event is not open for voting or invalid request"),
+            @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "409", description = "Event is not open for voting"),
             @ApiResponse(responseCode = "404", description = "Event or option not found")
     })
     public ResponseEntity<Void> choose(

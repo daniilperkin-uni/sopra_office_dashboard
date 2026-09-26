@@ -18,8 +18,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,8 +37,6 @@ import java.util.List;
 @RequestMapping("/api")
 @Tag(name = "Parking", description = "Parkingspot reservation modul")
 public class ParkingController {
-
-    private static final Logger log = LoggerFactory.getLogger(ParkingController.class);
 
     private final ParkingService parkingService;
     private final ParkingAnalyticsService parkingAnalyticsService;
@@ -178,18 +174,5 @@ public class ParkingController {
             @PathVariable("id") Long id) {
         parkingService.deleteRecurringReservation(id);
         return ResponseEntity.noContent().build();
-    }
-
-    /**
-     * Handles {@link IllegalArgumentException} thrown by the service layer when
-     * a business rule is violated (e.g. duplicate entry, fully booked date).
-     *
-     * @param ex the exception
-     * @return 400 Bad Request with the exception message
-     */
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
-        log.warn("Business rule violation: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 }
