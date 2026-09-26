@@ -32,6 +32,7 @@ The main display is located at `/display`. It is designed for high-resolution sc
 2.  **Calendar**: Full-screen 2-week outlook with "Today's Focus" overflow modes.
 3.  **Parking**: Full-screen current week's parking occupancy (**8 working days**).
 4.  **Highscore**: Full-screen Darts & Kicker Top 3 leaderboards + Match History.
+5.  **Weather**: Full-screen weather forecast (display view id `weather`).
 
 ## Admin Panels
 
@@ -46,7 +47,7 @@ The application provides dedicated admin interfaces for managing data:
         *   **Delete Series**: Remove an entire recurring reservation and all its future entries with one click.
     *   **Multi-day Selection**: Create recurring bookings for multiple specific weekdays (e.g., "Mon & Wed") for up to 6 months.
 *   **Highscore Admin** (`/admin/highscores`):
-    *   Add new Darts (Points) and Kicker (2vs2, 1v1, etc.) match results.
+    *   Add new Darts (Würfe / `totalThrows`) and Kicker (2vs2, 1v1, etc.) match results.
     *   View detailed match history.
     *   **Delete** incorrect entries directly from the history list.
     *   **Bulk Delete**: Option to clean up history by removing all "non-top" matches (keeping only the top 3).
@@ -68,7 +69,7 @@ The codebase follows a **Feature-Driven Architecture** to ensure modularity and 
     -   `parking/`: Reservation system and occupancy views.
     -   `highscore/`: Leaderboards, admin forms, and match history.
     -   `community-lunch/`: Lunch event management and voting.
-    -   `dashboard/`: Shared dashboard widgets and **Display Admin** (`admin/`).
+    -   `dashboard/`: Shared dashboard widgets — contains only `components/`; the Display Config admin lives in `src/views/DisplayConfigAdminView.vue`.
 -   `src/components/common/`: Generic UI primitives (Buttons, Cards, Spinners).
 -   `src/views/`: Top-level page layouts (`DisplayView.vue`, `AdminView.vue`).
 -   `src/services/`: API client definitions (`api.js`).

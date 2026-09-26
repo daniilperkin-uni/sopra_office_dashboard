@@ -82,6 +82,7 @@ const viewComponentsMap = {
   parking: ParkingDisplayWrapper,
   highscore: DisplayViewHighscore,
   dashboard: DashboardOverview, // Unser "OneDisplay" Screen
+  weather: WeatherDisplay, // Kiosk-View für das Wetter
 };
 ```
 

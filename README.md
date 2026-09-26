@@ -19,6 +19,7 @@ The system consists of two main interfaces:
 - 🎯 Highscore for Darts & Kicker and leaderboard 
 - 🍽️ Community lunch event management with voting system
 - ⚙️ Dashboard display configuration and rotation settings
+- 🌦️ Weather kiosk view (display view id `weather`, `frontend/src/features/dashboard/components/WeatherDisplay.vue`)
 
 For detailed module documentation, see [Modules Overview](#modules-overview).
 
@@ -147,6 +148,8 @@ To configure the dashboard please look at
 
 **Note:** During development, anonymized employee names are used which are be very long. Set `VITE_ANONYMIZE_NAMES=true` in `.env` to display only the last 10 characters for better readability on the dashboard. In production with real names, this can be set to `false`.
 
+**Secrets:** Database, Odoo and Mattermost credentials are read from environment variables (see `backend/.env.example` and `application.properties`); none are committed to the repository. The Odoo admin password should be rotated as a manual operation.
+
 ## Adding modules
 
 You're warmly welcome to add new modules by your own. To enhance and extend our features.
@@ -257,11 +260,14 @@ CREATE TABLE lunch_events (
 
 ### For Linux/Mac
 
-#### Execute tests:
+#### Execute tests / full build:
 
 ```
-./gradlew test
+./gradlew build
 ```
+
+`./gradlew build` compiles, runs Checkstyle and the tests and assembles the deployable boot jar — this is what CI runs.
+The backend suite is currently 93 tests in 7 modules (91 run, 2 skipped: the `@Disabled` `OdooClientApiTest`).
 
 #### Open test report for module-parking
 
@@ -295,6 +301,17 @@ start module-parking\build\reports\tests\test\index.html
 start module-events\build\reports\tests\test\index.html
 ```
 
+### Frontend
+
+Run from `frontend/` with Node.js 22 (`package.json` requires `node >=22`):
+
+```
+npm run lint          # ESLint
+npm run format:check  # Prettier check
+npm run test          # vitest run — 10 test files / 63 tests
+npm run build         # vue-tsc + vite build
+```
+
 ## Modules Overview
 
 ### module-parking
@@ -304,9 +321,10 @@ The `module-parking` provides functionality for managing employee parking space 
 Key features include:
 
 *   **Manual Reservations:** Employees can create, update, and delete their parking reservations for specific dates.
-*   **Multi-Day Overview:** Displays reservations for the current work day and the following 9 work days.
+*   **Multi-Day Overview:** Displays reservations for the upcoming work days; the display renders 8 days (`ParkingDisplayWrapper` slices `weekData` to 8).
 *   **Administrative Interface:** Provides an admin view (`/admin/parking`) for managing parking reservations.
 *   **Display Integration:** Parking overview is integrated into the auto-rotating dashboard display (`/display`) for large screens.
+*   **Analytics:** Aggregated parking statistics (daily occupancy, bookings per weekday, busiest day of the month) via `GET /api/parking/analytics`.
 
 The module exposes parking data via the `/api/parking` endpoint and provides a user-friendly interface for day-to-day parking management. This helps teams coordinate parking space usage and avoid conflicts, especially in offices with limited parking availability.
 
@@ -335,6 +353,7 @@ Key features include:
 * **Unified Leaderboards:** Display top 3 players/teams for both games
 * **Match History:** View recent matches across both games with results and timestamps
 * **Administrative Interface:** Provides an admin view (`/admin/highscores`) for managing leaderboard.
+* **ELO Rankings:** Darts players are additionally ranked by an ELO rating, exposed via `GET /api/elo-rankings` and rendered by `frontend/src/features/highscore/components/EloRankingsTable.vue`.
 
 ### module-community-lunches
 
@@ -349,7 +368,7 @@ Key features include:
 * **Results Aggregation:** View voting results with counts per meal option, sorted by popularity
 * **Food Catalog:** Maintain a reusable database of meal options with soft-delete support
 * **Mattermost Integration:** Sends automated notifications in German when new events are created with meal options
-* **Administrative Interface:** Provides admin view (`/admin/community-lunches`) for managing lunch events
+* **Administrative Interface:** Provides admin view (`/admin/lunch`) for managing lunch events
 
 The module exposes comprehensive REST APIs at `/api/community-lunches` for event and voting management, and `/api/food-catalog` for catalog administration. It uses Liquibase for database migrations and implements proper validation to ensure data integrity, helping teams coordinate lunch events efficiently.
 

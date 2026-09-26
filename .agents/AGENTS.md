@@ -3,7 +3,7 @@
 This file contains rules and guidelines for AI agents working on the `itestraOfficeDashboard` project.
 
 ## 1. Tech Stack
-- **Backend**: Java 21, Spring Boot 3.5.7, MariaDB, Liquibase, Gradle Multi-Module (in `backend/`).
+- **Backend**: Java 21, Spring Boot 4.1.1, MariaDB, Liquibase, Gradle Multi-Module (in `backend/`).
 - **Frontend**: Vue.js 3, Vite, Tailwind CSS, Pinia, Vue Router (in `frontend/`).
 - **Deployment**: Docker Compose.
 
@@ -42,10 +42,12 @@ This file contains rules and guidelines for AI agents working on the `itestraOff
 - Every module MUST have at least one test file.
 
 ### Frontend
-- **Vitest** + `@testing-library/vue` + `@vue/test-utils` are configured
+- **Vitest** + `@vue/test-utils` + `@testing-library/jest-dom` are configured
   (`frontend/package.json`). CI runs `npm run test`.
-- Place test files adjacent to the source: `src/utils/eventUtils.test.js`,
-  `src/components/common/BaseButton.test.js`.
+- Place pure-function tests next to the source (e.g. `src/utils/eventUtils.test.js`,
+  `src/composables/useViewRotation.test.js`); component tests live in `tests/components/`
+  (e.g. `tests/components/ParkingDisplayWrapper.spec.js`). The suite currently has
+  10 test files / 63 tests (`npx vitest run` in `frontend/`).
 - Prefer testing pure functions (`processCalendarEvents`, `formatDateISO`,
   `useDisplayScaler` math) and component contracts (props → rendered output),
   not implementation details.

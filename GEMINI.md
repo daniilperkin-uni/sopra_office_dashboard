@@ -35,6 +35,7 @@ sopra_office_dashboard\
 │   ├───src\
 │   │   ├───assets\                 # Global Styles (main.css)
 │   │   ├───components\             # Shared Components (common UI elements)
+│   │   ├───composables\            # Reusable Composition-API logic (e.g. useViewRotation)
 │   │   ├───features\
 │   │   │   ├───calendar\           # Calendar View Logic
 │   │   │   ├───community-lunch\    # Community Lunch Logic
@@ -42,9 +43,14 @@ sopra_office_dashboard\
 │   │   │   ├───game\               # Easter-egg game (FallingCats)
 │   │   │   ├───highscore\          # Highscore View & Admin Logic
 │   │   │   └───parking\            # Parking View & Admin Logic
+│   │   ├───router\                 # Vue Router routes (index.js)
 │   │   ├───services\               # API Clients (axios)
+│   │   ├───stores\                 # Pinia stores
+│   │   ├───utils\                  # Shared helpers (dateUtils, eventUtils)
 │   │   └───views\                  # Main Page Views (Display, Admin)
+│   ├───tests\                      # Vitest component/store/service tests
 │   ├───nginx.conf                  # Nginx Configuration
+│   ├───vitest.config.js            # Vitest configuration
 │   └───Dockerfile                  # Frontend Dockerfile
 └───GEMINI.md                       # Project Documentation
 ```
@@ -84,14 +90,14 @@ The frontend follows a **Feature-Driven Architecture** to improve maintainabilit
 ### 4.2 Advanced Calendar Display
 *   **Two-Week View**: Optimized for large screens, showing current and upcoming office events.
 *   **Dynamic Overflow Mode**:
-    *   **Standard Overflow**: If >2 events occur on a day, the view splits to show a "Today's Focus" list on the right.
+    *   **Standard Overflow**: If >4 events occur on a day, the view splits to show a "Today's Focus" list on the right.
     *   **Super Overflow**: If >16 events occur on a day, the view transforms into a **Full-Screen Grid** (2-column layout) to display all events clearly.
 *   **Dashboard Widget**: A specialized `DashboardCalendar` component optimized for the OneDisplay layout.
 
 ### 4.3 Kiosk Mode (View Rotation)
-*   **Automated Cycling**: The dashboard can automatically rotate between the Calendar, Parking, Highscore, and Dashboard views.
+*   **Automated Cycling**: The dashboard can automatically rotate between the Calendar, Parking, Highscore, Dashboard and Weather views.
 *   **Configuration**: Rotation intervals and active views are managed via the **Admin Panel** (`/admin/config`).
-*   **Default View**: Now defaults to the static "Dashboard (OneDisplay)" view.
+*   **Default View**: The default single view id is `calendar` (see `DisplayConfigEntity.defaultSingleViewId` and the `002-insert-default-config` changeset).
 
 ### 4.4 Competitive Highscore System
 *   **Unified Overview**: A consolidated view of Darts and Kicker top performers.
@@ -101,6 +107,13 @@ The frontend follows a **Feature-Driven Architecture** to improve maintainabilit
 ---
 
 ## 5. Resolution History (Changelog)
+
+### **Sep 26, 2026 Updates (Audit-Fix Pass)**
+*   **Security**: Removed the committed Odoo admin credential from the sources (`OdooVersionTest` deleted); the password now comes from `ODOO_API_PASSWORD` — rotating it is a manual user action.
+*   **Liquibase Drift**: Repaired so `ddl-auto=validate` boots on a fresh MariaDB — parking `002`/`003`, events `002` (`employee_email`, `type` -> `dashboard_event_type`), config `003` (`skip_one_display_in_rotation`), highscore `010`. Every repair lives in its own changeset file; applied changesets are never edited (that would change their checksum). Verified with a fresh Docker volume: 65 changesets apply and the context starts.
+*   **Error Mapping**: `GlobalExceptionHandler` -> 404 (`NoSuchElementException`), 409 (`IllegalStateException`), the requested status for `ResponseStatusException`, and 404 for an unmapped path (e.g. `/actuator/health`, allowed by the security whitelist although no actuator dependency exists) instead of the catch-all 500, all as RFC-7807 `ProblemDetail`.
+*   **APIs**: highscore `POST` endpoints return **201 Created**; `GET /api/community-lunches/choices` now requires ADMIN, while the other `GET /api/**` endpoints — including the display config `GET /api/config/display` — stay public for the kiosk.
+*   **Frontend & Build**: Rotation-config updates apply at runtime without a reload; the config form accepts `-1` and 5+ seconds; API failures render error states instead of empty lists; backend CI runs one `./gradlew build` and frontend CI runs `npm ci` + lint + format:check + test + build on Node 22; `.dockerignore` hardens the Docker contexts and the backend image exposes 8080.
 
 ### **Jan 25, 2026 Updates (Scaling & Polish)**
 *   **Scaling Strategy (Fit to Screen)**:
@@ -136,7 +149,7 @@ The frontend follows a **Feature-Driven Architecture** to improve maintainabilit
     *   **Sorting**: Adjusted leaderboard and history sorting for Darts to be ascending (fewest throws first).
     *   **Bulk Delete**: Updated "Delete Non-Top Matches" logic to respect the new sorting order.
 *   **Build System**:
-    *   **Gradle Configuration**: Disabled `bootJar` task for library modules (`common`, `module-config`, `module-events`, `module-parking`) to prevent build failures, ensuring only the main `backend` application produces an executable JAR.
+    *   **Gradle Configuration**: Only `module-config` sets `bootJar { enabled = false }` (keeping `jar { enabled = true }` for its library artifact). `common`, `module-events`, `module-parking`, `module-community-lunches` and `module-highscore` never apply the Spring Boot plugin, so they cannot produce a boot jar; only the main `backend` application is runnable and ships the executable JAR.
 
 ### **Jan 17, 2026 Updates (Recurring Reservations & Schema Fixes)**
 *   **Parking Module (Series Management)**:
@@ -226,8 +239,8 @@ The frontend follows a **Feature-Driven Architecture** to improve maintainabilit
 *   Documentation Correction**: Verified and updated port mappings in documentation to match `compose.yaml`.
     *   Backend: `8099:8080`
     *   Frontend: `8098:80`
-*   **Database Persistence**: Confirmed `spring.jpa.hibernate.ddl-auto` is set to `update` to prevent data loss on restart.
-*   **Health Checks**: Confirmed MariaDB health check uses standard TCP check (Note: `mysqladmin` check is not currently implemented).
+*   **Database Persistence**: `spring.jpa.hibernate.ddl-auto` is `validate`; the schema is owned by Liquibase.
+*   **Health Checks**: The MariaDB container healthcheck runs `mariadb-admin ping` via `CMD-SHELL`, reading the root password from the container environment (`$MARIADB_ROOT_PASSWORD`) so it stays out of `ps`. Interval 5s, timeout 5s, 10 retries and a 30s start period cover first-start initialization.
 
 ---
 
