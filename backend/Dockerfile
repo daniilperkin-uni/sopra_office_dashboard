@@ -24,6 +24,6 @@ FROM eclipse-temurin:21-jre
 WORKDIR /app
 # Kopiere die erstellte JAR-Datei aus der Build-Phase
 COPY --from=build /app/backend/build/libs/*.jar app.jar
-EXPOSE 9000
+EXPOSE 8080
 # Starte die Anwendung
 CMD ["java", "-jar", "app.jar"]

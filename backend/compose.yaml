@@ -15,8 +15,6 @@ services:
       DB_ROOT_PASS: ${DB_ROOT_PASS:?DB_ROOT_PASS must be set in .env}
     ports:
       - "8099:8080"
-    volumes:
-      - ./:/app/backend
     depends_on:
       mariadb:
         condition: service_healthy
@@ -44,10 +42,15 @@ services:
     volumes:
       - mariadb_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASS:?DB_ROOT_PASS must be set in .env}"]
+      # Das Passwort kommt aus der Container-Umgebung; auf der Kommandozeile
+      # waere es ueber 'ps' und 'docker inspect' sichtbar.
+      test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -u root -p\"$$MARIADB_ROOT_PASSWORD\" --silent"]
       timeout: 5s
       retries: 10
       interval: 5s
+      # MariaDB braucht beim ersten Start Zeit fuer die Initialisierung, bevor
+      # der Healthcheck sinnvoll greifen kann.
+      start_period: 30s
 
 volumes:
   mariadb_data:

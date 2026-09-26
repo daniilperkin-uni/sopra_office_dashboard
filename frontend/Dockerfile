@@ -1,16 +1,17 @@
 # STAGE 1: Build das Frontend
 # Dieser Stage nutzt eine Node.js-Umgebung, um die Vue.js-Anwendung zu kompilieren.
 # Das Ergebnis ist ein optimierter Satz statischer Dateien (HTML, CSS, JS) im 'dist'-Ordner.
-FROM node:20-alpine AS build
+FROM node:22-alpine AS build
 
 # Setzt das Arbeitsverzeichnis innerhalb des Containers auf /app.
 WORKDIR /app
 
 # Kopiere nur die package.json und package-lock.json, um das Docker-Layer-Caching zu nutzen.
 # Docker erstellt einen neuen Layer nur, wenn sich diese Dateien ändern.
-# Dies beschleunigt nachfolgende Builds erheblich, da 'npm install' nicht jedes Mal ausgeführt wird.
+# 'npm ci' installiert exakt die im Lockfile gepinnten Versionen; 'npm install'
+# konnte das Lockfile umschreiben und die Integritätsprüfung umgehen.
 COPY frontend/package*.json ./
-RUN npm install
+RUN npm ci
 
 # Kopiere den restlichen Quellcode des Frontends in das Arbeitsverzeichnis.
 # Dies geschieht nach 'npm install', um eine Invalidierung des Caching-Layers bei Codeänderungen zu vermeiden.
@@ -21,7 +22,7 @@ ARG VITE_ANONYMIZE_NAMES=true
 
 # Führt den Build-Skript aus, das in package.json definiert ist (typischerweise 'npm run build').
 # Dieser Befehl kompiliert die Vue.js-Anwendung und legt die fertigen Dateien im Ordner /app/dist ab.
-RUN npm run build --debug
+RUN npm run build
 
 # STAGE 2: Serviere die gebauten Dateien mit Nginx
 # Dieser Stage erstellt das finale, schlankere Produktionsimage.

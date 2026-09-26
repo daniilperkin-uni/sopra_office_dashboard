@@ -26,12 +26,11 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Compile
-        run: ./gradlew compileJava compileTestJava
-      - name: Checkstyle
-        run: ./gradlew checkstyleMain checkstyleTest
-      - name: Tests
-        run: ./gradlew test
+      # A full build compiles, runs checkstyle and the tests and also assembles
+      # the boot jar. The previous compile/checkstyle/test steps never built the
+      # deployable artifact, so a packaging regression shipped undetected.
+      - name: Build
+        run: ./gradlew build
 
   frontend:
     name: Frontend (Vite)

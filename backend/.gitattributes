@@ -1,3 +1,8 @@
 /gradlew text eol=lf
 *.bat text eol=crlf
 *.jar binary
+*.sh text eol=lf
+
+# Normalise line endings in the repository; the checked-in blobs are LF and
+# several committed sources drifted to CRLF in local working trees.
+* text=auto
