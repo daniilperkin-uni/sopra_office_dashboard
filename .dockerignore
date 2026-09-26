@@ -1,0 +1,20 @@
+# Docker build context for the frontend image (backend/compose.yaml uses
+# context: .. with dockerfile: frontend/Dockerfile, i.e. the repository root).
+#
+# Without this file `COPY frontend/ .` copied the host frontend/node_modules
+# (Windows-native esbuild/rollup binaries) over the container's linux install,
+# which breaks the image build, and any local frontend/.env secrets.
+
+**/node_modules/
+**/dist/
+**/build/
+**/bin/
+**/.gradle/
+**/.env
+**/.env.*
+!**/.env.example
+
+.git
+.github
+.idea
+.vscode

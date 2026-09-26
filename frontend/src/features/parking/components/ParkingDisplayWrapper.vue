@@ -27,7 +27,7 @@
           :key="day.date"
           :date="day.date"
           :entries="day.entries"
-          :max-spots="5"
+          :max-spots="day.totalSpots ?? 5"
         />
       </div>
     </div>

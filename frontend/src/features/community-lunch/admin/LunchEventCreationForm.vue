@@ -364,7 +364,7 @@ const createEvent = async () => {
     }
     await lunchService.createEvent(payload)
 
-    newEvent.value = { date: '', note: '' }
+    newEvent.value = { date: '', location: 'Büro', note: '' }
     emit('event-created')
   } catch (e) {
     console.error(e)

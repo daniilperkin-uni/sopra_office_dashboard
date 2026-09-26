@@ -38,3 +38,27 @@ databaseChangeLog:
                   type: DATE
                   constraints:
                     nullable: true
+
+  # Repair changeset: the original table creation omitted employee_email and
+  # used the column name "type", while DashboardEvent maps employee_email and
+  # dashboard_event_type. On a fresh database ddl-auto=validate failed, so the
+  # backend could not start. A new changeset (never an edit of an applied one)
+  # brings an existing database in line with the entity mapping.
+  - changeSet:
+      id: 002-add-employee-email-and-rename-type
+      author: team
+      changes:
+        - addColumn:
+            tableName: dashboard_event
+            columns:
+              - column:
+                  name: employee_email
+                  type: VARCHAR(255)
+                  defaultValue: ""
+                  constraints:
+                    nullable: false
+        - renameColumn:
+            tableName: dashboard_event
+            oldColumnName: type
+            newColumnName: dashboard_event_type
+            columnDataType: VARCHAR(255)

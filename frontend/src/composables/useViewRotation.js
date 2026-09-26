@@ -1,4 +1,4 @@
-import { onUnmounted } from 'vue'
+import { onUnmounted, watch } from 'vue'
 
 /**
  * Composable for managing the automatic view rotation in kiosk mode.
@@ -56,6 +56,17 @@ export function useViewRotation({ config, currentViewId, onRotate, viewIds }) {
       }
     }
   }
+
+  // React to configuration changes at runtime: without these watchers
+  // setupRotation() ran only once at mount time, so toggling rotation, changing
+  // the interval or "skip OneDisplay" in /admin/config silently did nothing
+  // until the display page was reloaded. The individual primitives are watched
+  // (not the whole config object) so the periodic config poll does not re-arm a
+  // rotation interval that has not elapsed yet.
+  watch(() => config.value.rotationEnabled, setupRotation)
+  watch(() => config.value.rotationIntervalSeconds, setupRotation)
+  watch(() => config.value.skipOneDisplayInRotation, setupRotation)
+  watch(() => config.value.defaultSingleViewId, setupRotation)
 
   onUnmounted(() => {
     if (viewRotationInterval) clearInterval(viewRotationInterval)

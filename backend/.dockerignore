@@ -1,0 +1,28 @@
+# Docker build context for the backend image (backend/compose.yaml uses
+# context: . with dockerfile: Dockerfile).
+#
+# Secrets and host build output must never enter the build context: without
+# this file `COPY . .` copied backend/.env (DB root password, Odoo and
+# Mattermost credentials) into the image layers and the local build cache.
+
+.env
+.env.*
+!.env.example
+
+# Host build output and caches
+build/
+**/build/
+bin/
+**/bin/
+.gradle/
+**/.gradle/
+
+# VCS metadata
+.git
+.gitignore
+.gitattributes
+
+# Local docker files are not needed inside the build stage
+Dockerfile
+mariadb.Dockerfile
+compose.yaml

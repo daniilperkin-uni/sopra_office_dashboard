@@ -75,6 +75,12 @@ public class DashboardEventsController {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate endDate
     ) {
-        return dashboardEventService.getEventsInDateRange(startDate, endDate);
+        // The parameters are optional and the Swagger contract promises "next
+        // 14 days" when they are omitted. Passing the raw nulls into the
+        // service caused a NullPointerException (HTTP 500), so default them
+        // here before delegating.
+        LocalDate effectiveStartDate = startDate != null ? startDate : LocalDate.now();
+        LocalDate effectiveEndDate = endDate != null ? endDate : effectiveStartDate.plusDays(14);
+        return dashboardEventService.getEventsInDateRange(effectiveStartDate, effectiveEndDate);
     }
 }

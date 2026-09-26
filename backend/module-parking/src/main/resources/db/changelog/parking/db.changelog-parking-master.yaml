@@ -1,3 +1,7 @@
 databaseChangeLog:
   - include:
       file: classpath:db/changelog/parking/changes/001-create-parking-tables.yaml
+  - include:
+      file: classpath:db/changelog/parking/changes/002-delete-spot-id.yaml
+  - include:
+      file: classpath:db/changelog/parking/changes/003-create-recurring-reservation.yaml

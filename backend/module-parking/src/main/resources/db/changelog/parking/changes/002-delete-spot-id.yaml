@@ -3,9 +3,12 @@ databaseChangeLog:
       id: 002-remove-spot-id-from-parking-entry
       author: st194542
       changes:
-        # - dropConstraint:
-        #     tableName: parking_entry
-        #     constraintName: fk_parkingentry_spot
+        # The foreign key must be dropped first: MariaDB refuses to drop a
+        # column that still participates in a foreign key constraint, so this
+        # changeset failed whenever it was actually executed.
+        - dropForeignKeyConstraint:
+            baseTableName: parking_entry
+            constraintName: fk_parkingentry_spot
         - dropColumn:
             tableName: parking_entry
             columnName: spot_id
