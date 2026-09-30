@@ -1,9 +1,9 @@
-# 📘 itestra Smart Office Dashboard (Frontend)
+# 📘 Smart Office Dashboard (Frontend)
 
 ## 1. Projektübersicht & Ziele (5 Min)
 
 ### Einleitung
-Herzlich willkommen zur Vorstellung des **itestra Smart Office Dashboards**. Wir betrachten heute das Frontend-System, das als zentrales Informations-Hub in unserem Büro dient. Dieses Projekt ist nicht nur eine einfache Webseite, sondern eine hybride Lösung, die zwei sehr unterschiedliche Anforderungen in einer einzigen Codebase vereint.
+Herzlich willkommen zur Vorstellung des **Smart Office Dashboards**. Wir betrachten heute das Frontend-System, das als zentrales Informations-Hub in unserem Büro dient. Dieses Projekt ist nicht nur eine einfache Webseite, sondern eine hybride Lösung, die zwei sehr unterschiedliche Anforderungen in einer einzigen Codebase vereint.
 
 Das Dashboard läuft 24/7 auf einem großen 4K-Display im Eingangsbereich (Kiosk-Mode) und dient gleichzeitig als Administrations-Tool auf den Laptops der Office Manager. Unser Ziel war es, eine robuste, wartungsarme und visuell ansprechende Lösung zu schaffen, die den "Pulse" des Büros visualisiert.
 
@@ -257,7 +257,7 @@ server {
 
 ## Zusammenfassung & Fragen
 
-Wir haben heute gesehen, wie das **itestra Smart Office Dashboard** durch:
+Wir haben heute gesehen, wie das **Smart Office Dashboard** durch:
 1.  **Feature-Driven Architecture** wartbar bleibt,
 2.  **Intelligente Orchestrierung** stabil läuft,
 3.  **Smart Scaling** auf jedem Display gut aussieht und

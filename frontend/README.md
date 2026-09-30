@@ -1,6 +1,6 @@
 # Frontend Application
 
-This is the frontend application for the itestraOfficeDashboard, built with **Vue.js 3** and **Vite**, utilizing a **Feature-Driven Architecture**.
+This is the frontend application for the Office Dashboard, built with **Vue.js 3** and **Vite**, utilizing a **Feature-Driven Architecture**.
 
 ## Running the Application
 

@@ -1,4 +1,4 @@
-# Team i5 — itestra Office Dashboard
+# Team i5 — Office Dashboard
 
 ## Team Members
 

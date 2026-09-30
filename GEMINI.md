@@ -2,7 +2,7 @@
 
 ## 1. Project Overview
 
-The **itestraOfficeDashboard** is a modular, web-based dashboard designed for high-resolution office displays. It provides real-time visibility into office events, parking availability, and competitive highscores.
+The **Office Dashboard** is a modular, web-based dashboard designed for high-resolution office displays. It provides real-time visibility into office events, parking availability, and competitive highscores.
 
 ### Key Components:
 *   **Backend**: Java 21 (Spring Boot 4.1.1, Gradle multi-module) with a modular architecture.
@@ -122,6 +122,8 @@ The frontend follows a **Feature-Driven Architecture** to improve maintainabilit
 *   **History Purge**: The Odoo credential was purged from the entire git history (history rewritten and force-pushed) and the graders' milestone feedback PDFs were removed from the repository (kept privately, outside git). All commit hashes from before this date changed.
 *   **Docs Refresh**: README, frontend/README and the agent guidelines (`AGENTS.md`, moved from `.agents/` to the repository root) were brought in line with the code; the dead Dokploy demo links were removed.
 *   **Display Layout Fixes**: The Game view (easter egg) and the two-week calendar sized themselves with viewport units / content-sized rows inside the fixed 3840x2160 scaler canvas, so they painted only part of the kiosk screen (game view in the top-left corner, calendar in the top half); both now fill the canvas, including a fixed fall distance for the falling cats. The parking rotation view dropped `min-h-screen` and its window-width breakpoints in favor of the fixed 4-column 4K grid, and the calendar's super-overflow container now spans the full grid instead of the first (200px) column.
+
+*   **De-branding**: All company references were removed from the codebase — the Java package is now `de.office.dashboard`, config and environment names are neutral (`DASHBOARD_PORT`, `officeDashboard`), the display headers read `Kalender`/`Parking`/`Highscore` with an `Office Dashboard` shell title, the branded favicon was replaced by a neutral icon, and the Odoo/Mattermost integrations are opt-in via environment variables (both clients degrade gracefully when unconfigured). The git history is untouched by explicit decision.
 
 ### **Sep 26, 2026 Updates (Audit-Fix Pass)**
 *   **Security**: Removed the committed Odoo admin credential from the sources (`OdooVersionTest` deleted); the password now comes from `ODOO_API_PASSWORD` — rotating it is a manual user action.

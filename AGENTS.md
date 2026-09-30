@@ -1,6 +1,6 @@
-# Agent Guidelines for itestraOfficeDashboard
+# Agent Guidelines for the Office Dashboard
 
-This file contains rules and guidelines for AI agents working on the `itestraOfficeDashboard` project.
+This file contains rules and guidelines for AI agents working on the `office_dashboard` project.
 
 ## 1. Tech Stack
 - **Backend**: Java 21, Spring Boot 4.1.1, MariaDB, Liquibase, Gradle Multi-Module (in `backend/`).

@@ -1,10 +1,10 @@
-# itestraOfficeDashboard
+# Office Dashboard
 
 [![CI](https://github.com/daniilperkin-uni/sopra_office_dashboard/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/daniilperkin-uni/sopra_office_dashboard/actions/workflows/ci.yml)
 
 ## Description
 
-The **itestraOfficeDashboard** is a modular office management platform designed for displaying information on large 4K screens in kiosk mode with configurable view rotation. The dashboard aggregates and visualizes office information such as parking reservations, employee events, game statistics, and community lunch planning.
+The **Office Dashboard** is a modular office management platform designed for displaying information on large 4K screens in kiosk mode with configurable view rotation. The dashboard aggregates and visualizes office information such as parking reservations, employee events, game statistics, and community lunch planning.
 
 The system consists of two main interfaces:
 - **Display Mode** (`/display`): Optimized for 4K screens, rotates between different modules (when enabled in configuration) to provide an overview of current office information
@@ -105,7 +105,7 @@ Here is an example for the `backend/src/main/resources/application-dev.propertie
 server.port=9000
 
 # MariaDB Datasource
-spring.datasource.url=jdbc:mariadb://localhost:3306/itestraOfficeDashboard
+spring.datasource.url=jdbc:mariadb://localhost:3306/officeDashboard
 spring.datasource.username=root
 spring.datasource.password=test
 ```
@@ -157,7 +157,7 @@ module-lunch
 ├── src
 │   └── main
 │       ├── java
-│       │   └── de.itestra.lunch
+│       │   └── de.office.dashboard.lunch
 │       │       ├── controller
 │       │       ├── entity
 │       │       ├── repository
