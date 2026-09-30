@@ -100,7 +100,10 @@ onUnmounted(() => {
     transform: translateY(0) rotate(0deg);
   }
   100% {
-    transform: translateY(150vh) rotate(360deg);
+    /* Feste Fallstrecke statt 150vh: Die Spalte ist 2160px hoch
+       (4K-Container), Viewport-Einheiten ließen die Katzen mitten im
+       Bild verschwinden. 2800px deckt Containerhöhe + Startversatz ab. */
+    transform: translateY(2800px) rotate(360deg);
   }
 }
 </style>

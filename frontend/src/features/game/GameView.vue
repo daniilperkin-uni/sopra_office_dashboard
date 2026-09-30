@@ -325,9 +325,12 @@ onUnmounted(() => {
 
 <style scoped>
 /* --- Layout --- */
+/* Füllt den 4K-Container (3840x2160) des Kiosk-Scalers. Viewport-Einheiten
+   (100vw/100vh) würden nur die Fenstergröße abdecken; der Rest des
+   Canvas bliebe leer. */
 .main-layout {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   display: flex;
   background-color: #000;
   overflow: hidden;
