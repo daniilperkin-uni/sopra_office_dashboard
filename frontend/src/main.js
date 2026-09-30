@@ -3,7 +3,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
-// Load professional fonts (matching itestra branding)
+// Load professional fonts (matching the dashboard branding)
 import '@fontsource/mulish/300.css'
 import '@fontsource/mulish/400.css'
 import '@fontsource/mulish/600.css'

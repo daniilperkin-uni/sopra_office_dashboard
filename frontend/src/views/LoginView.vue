@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-neutral-bg px-4">
     <div class="max-w-md w-full bg-white rounded-2xl shadow-lg p-8">
-      <h1 class="text-3xl font-black text-primary text-center mb-2">itestra Dashboard</h1>
+      <h1 class="text-3xl font-black text-primary text-center mb-2">Office Dashboard</h1>
       <p class="text-center text-gray-500 mb-8">Admin-Login</p>
 
       <form class="space-y-4" @submit.prevent="handleSubmit">

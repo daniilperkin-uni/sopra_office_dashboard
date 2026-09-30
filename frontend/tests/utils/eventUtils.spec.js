@@ -39,7 +39,7 @@ describe('processCalendarEvents', () => {
       },
       {
         employeeName: 'Bob Bauer',
-        dashboardEventDescription: '26.01.2026 Bob Bauer ist 5 Jahre bei itestra!',
+        dashboardEventDescription: '26.01.2026 Bob Bauer ist 5 Jahre im Team!',
         dashboardEventType: 'WORK_ANNIVERSARY',
         dashboardEventDate: '26.01.2026',
       },
@@ -74,7 +74,7 @@ describe('processCalendarEvents', () => {
     const events = [
       {
         employeeName: 'Anna Schmidt',
-        dashboardEventDescription: 'Anna Schmidt ist 5 Jahre bei itestra!',
+        dashboardEventDescription: 'Anna Schmidt ist 5 Jahre im Team!',
         dashboardEventType: 'WORK_ANNIVERSARY',
         dashboardEventDate: '15.03.2026',
       },

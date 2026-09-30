@@ -26,7 +26,7 @@ export function processCalendarEvents(events) {
       const match = event.dashboardEventDescription.match(/(\d+)\s*Jahre/i)
       const years = match ? match[1] : ''
       if (years && displayName) {
-        title = `${displayName} ist ${years} Jahre bei itestra!`
+        title = `${displayName} ist ${years} Jahre dabei!`
       } else {
         title = event.dashboardEventDescription.replace(/^\d{2}\.\d{2}\.\d{4}\s+/, '')
       }

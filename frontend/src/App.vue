@@ -6,7 +6,7 @@
         <!-- Left spacer to balance the nav on the right -->
         <div class="hidden sm:block flex-1" />
 
-        <h1 class="text-3xl sm:text-7xl font-black text-primary text-center">itestra Dashboard</h1>
+        <h1 class="text-3xl sm:text-7xl font-black text-primary text-center">Office Dashboard</h1>
 
         <nav class="flex-1 flex justify-center sm:justify-end space-x-2 sm:space-x-4 mt-4 sm:mt-0">
           <router-link

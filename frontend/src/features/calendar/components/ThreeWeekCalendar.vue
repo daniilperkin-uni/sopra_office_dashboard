@@ -3,7 +3,7 @@
     <!-- Header specifically for Calendar View -->
     <header class="bg-gray-100 text-primary shadow-sm w-full border-b border-gray-200">
       <div class="px-4 py-3 flex items-center">
-        <h1 class="text-7xl font-black flex-grow text-center tracking-wider">itestra Kalender</h1>
+        <h1 class="text-7xl font-black flex-grow text-center tracking-wider">Kalender</h1>
       </div>
     </header>
 
