@@ -593,8 +593,12 @@ defineExpose({
   padding: 1rem 3rem 3rem 3rem;
   display: grid;
   grid-template-columns: [weekday] 200px [week1] 300px [notes1] 1.5fr [week2] 300px [notes2] 1.5fr;
-  grid-template-rows: auto repeat(7, auto);
+  /* Tag-Zeilen teilen sich die restliche Höhe des 4K-Canvas. Mit 'auto'
+     endete das Raster am Inhalt und ließ die untere Bildhälfte leer. */
+  grid-template-rows: auto repeat(7, minmax(0, 1fr));
   gap: 2rem;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .header-cell {
@@ -695,6 +699,13 @@ defineExpose({
   padding: 1rem;
   border-radius: 12px;
   border: 1px solid rgba(60, 60, 60, 0.12);
+}
+
+.super-overflow-container {
+  /* Über die gesamte Rasterfläche spannen: Ohne diese Platzierung landete
+     der Container in der ersten (nur 200px breiten) Rasterspalte. */
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
 }
 
 .super-events-grid {

@@ -1,5 +1,6 @@
 <template>
-  <div class="flex flex-col min-h-screen bg-neutral-bg">
+  <!-- Höhe aus dem 4K-Canvas (h-full), nicht aus dem Viewport (min-h-screen). -->
+  <div class="flex flex-col h-full w-full bg-neutral-bg">
     <!-- Header specifically for Parking View -->
     <header class="bg-gray-100 text-primary shadow-sm w-full border-b border-gray-200">
       <div class="px-4 py-3 flex items-center">
@@ -21,7 +22,8 @@
           Erneut versuchen
         </BaseButton>
       </div>
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <!-- Immer 4 Spalten: Der Kiosk-Canvas ist fest 3840px breit, Fenster-Breakpoints wären hier falsch. -->
+      <div v-else class="grid grid-cols-4 gap-6">
         <BarDisplay
           v-for="day in weekData.slice(0, 8)"
           :key="day.date"
