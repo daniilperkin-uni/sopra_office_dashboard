@@ -11,7 +11,7 @@ plugins {
     id 'java'
 }
 
-group = 'de.itestra.dashboard'
+group = 'de.office.dashboard'
 version = '0.0.1-SNAPSHOT'
 
 repositories {

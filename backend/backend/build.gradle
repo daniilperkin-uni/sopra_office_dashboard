@@ -3,7 +3,7 @@ plugins {
 }
 
 springBoot {
-    mainClass = 'de.itestra.dashboard.BackendApplication'
+    mainClass = 'de.office.dashboard.BackendApplication'
 }
 
 dependencies {

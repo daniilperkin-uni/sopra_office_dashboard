@@ -1,4 +1,4 @@
-rootProject.name = 'itestra-dashboard-backend'
+rootProject.name = 'office-dashboard-backend'
 
 include 'common'
 include 'module-events'

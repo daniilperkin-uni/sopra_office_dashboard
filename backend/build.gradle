@@ -11,7 +11,7 @@ subprojects{//will be applied to all subprojects
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'checkstyle'
 
-    group = 'de.itestra.dashboard'
+    group = 'de.office.dashboard'
     version = '0.0.1-SNAPSHOT'
 
     repositories {
