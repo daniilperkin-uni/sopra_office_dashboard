@@ -9,8 +9,9 @@ This file contains rules and guidelines for AI agents working on the `itestraOff
 
 ## 2. Coding Conventions & Language
 - **Language Requirements**: All source code comments and JSDoc MUST be written in **German**. This is a strict and documented project requirement.
-- **Frontend Architecture**: Follow the existing **Feature-Driven Architecture** (`frontend/src/features/`). Each feature (`calendar`, `parking`, `highscore`, `community-lunch`, `dashboard`) should encapsulate its own components and logic. Use generic components from `src/components/common/`.
-- **Backend Architecture**: The backend uses a modular approach (`module-events`, `module-parking`, etc.). When adding new modules, ensure they are properly registered in `settings.gradle`, `backend/build.gradle`, and the master Liquibase changelog.
+- **Frontend Architecture**: Follow the existing **Feature-Driven Architecture** (`frontend/src/features/`). Each feature (`calendar`, `parking`, `highscore`, `community-lunch`, `dashboard`, `game`) should encapsulate its own components and logic. Use generic components from `src/components/common/`.
+- **Backend Architecture**: The backend uses a modular approach (`module-events`, `module-parking`, etc.). When adding new modules, ensure they are properly registered in `settings.gradle`, `backend/build.gradle`, and the master Liquibase changelog. Never edit an already applied changeset — add a new changeset file and include it from the module's master changelog (applied checksums are validated).
+- **Secrets & Personal Data**: Credentials and personal data never belong in the repository — use environment variables (`.env.example` documents the required names).
 
 ## 3. UI/UX Rules
 - **4K Display Mode**: The Display view (`/display`) is optimized for 4K (3840x2160) screens. It uses a global "Smart Scaler" (CSS transforms) to fit smaller screens. Always design UI components to scale well in 4K by default rather than using complex responsive media queries.
@@ -20,6 +21,7 @@ This file contains rules and guidelines for AI agents working on the `itestraOff
 ## 4. Testing & Running
 - **Frontend**: Local dev on `http://localhost:3000` (`npm run dev`). Docker runs on `http://localhost:8098` (mapped `8098:80`).
 - **Backend**: Local dev on port `8080` (or `9000` via `application-dev.properties` using `./gradlew bootRun --args='--spring.profiles.active=dev'`). Docker runs on port `8099` (mapped `8099:8080`).
+- **Verification gates**: backend `./gradlew build` (compile + Checkstyle + tests + boot jar); frontend on Node 22: `npm ci && npm run lint && npm run format:check && npm run test && npm run build`.
 
 ## 5. Documentation
 - When creating new features, always update `README.md`, `frontend/README.md`, and `GEMINI.md` to reflect the changes.

@@ -24,5 +24,4 @@ bin/
 
 # Local docker files are not needed inside the build stage
 Dockerfile
-mariadb.Dockerfile
 compose.yaml

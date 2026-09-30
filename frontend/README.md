@@ -32,15 +32,15 @@ The main display is located at `/display`. It is designed for high-resolution sc
 2.  **Calendar**: Full-screen 2-week outlook with "Today's Focus" overflow modes.
 3.  **Parking**: Full-screen current week's parking occupancy (**8 working days**).
 4.  **Highscore**: Full-screen Darts & Kicker Top 3 leaderboards + Match History.
-5.  **Weather**: Full-screen weather forecast (display view id `weather`).
+5.  **Weather**: Full-screen weather forecast (display view id `weather`) fetched from Open-Meteo without an API key; the location is hardcoded in `WeatherDisplay.vue` (Stuttgart).
 
 ## Admin Panels
 
-The application provides dedicated admin interfaces for managing data:
+The application provides dedicated admin interfaces for managing data. All admin routes require the session login (`/login`); the API is CSRF-protected via the `XSRF-TOKEN` cookie (Axios sends it as the `X-XSRF-TOKEN` header automatically).
 
 *   **Overview**: Navigate to `/admin` for the main admin landing page.
 *   **Parking Admin** (`/admin/parking`): 
-    *   Manage individual parking spots.
+    *   Manage parking reservations (single days and recurring series); occupancy capacity is served by the backend (`maximumParkingSpots`).
     *   **Search by Name**: Filter reservations by employee name and date.
     *   **Series Management**: Recurring reservations are now grouped by series in the list.
         *   **Expand/Collapse**: View individual dates within a series.
@@ -70,6 +70,8 @@ The codebase follows a **Feature-Driven Architecture** to ensure modularity and 
     -   `highscore/`: Leaderboards, admin forms, and match history.
     -   `community-lunch/`: Lunch event management and voting.
     -   `dashboard/`: Shared dashboard widgets — contains only `components/`; the Display Config admin lives in `src/views/DisplayConfigAdminView.vue`.
+    -   `game/`: Easter-egg game (FallingCats).
 -   `src/components/common/`: Generic UI primitives (Buttons, Cards, Spinners).
--   `src/views/`: Top-level page layouts (`DisplayView.vue`, `AdminView.vue`).
--   `src/services/`: API client definitions (`api.js`).
+-   `src/views/`: Top-level page layouts — `DisplayView.vue` (kiosk), `LoginView.vue`, `AdminView.vue` plus the admin sections (`ParkingAdminSection`, `HighscoreAdminView`, `LunchAdminSection`, `DisplayConfigAdminView`).
+-   `src/services/`: API clients (`api.js`, `authService.js`, `lunchService.js`).
+-   `src/stores/`, `src/composables/`, `src/utils/`, `src/router/`: Pinia stores, reusable composition logic (view rotation, display scaler), date/event helpers and the routes; the Vitest suites live in `tests/` and next to pure functions in `src/`.

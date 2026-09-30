@@ -6,7 +6,9 @@
 |------|------|
 | Daniil Perkin | Backend / API, OpenAPI Docs, Readme, Checkstyle, Mattermost Integration |
 
-## Roles
+## Role Groups
+
+The team i5 work split into three role groups; the descriptions below cover the work done in each group.
 
 ### Backend / API
 - Implementation of REST API (Controller, Services, Repositories) for modules: Parking, Highscore, Events, Community Lunches

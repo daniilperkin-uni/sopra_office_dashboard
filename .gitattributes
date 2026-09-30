@@ -1,0 +1,3 @@
+# Normalise line endings for the repository-root files; the backend/ and
+# frontend/ subtrees carry their own .gitattributes.
+* text=auto eol=lf

@@ -13,20 +13,20 @@ The system consists of two main interfaces:
 **Key Features:**
 - 🚗 Parking spot reservation management
 - 📅 Calendar overview including employee birthdays, end of probation period and work anniversaries (via Odoo integration) and community lunches (via Admin UI) 
-- 💬 Automated daily Mattermost notifications for upcoming employee events (birthdays, end of probation period, work anniversaries and community lunches)
+- 💬 Automated daily Mattermost notifications for upcoming employee events (birthdays, end of probation period, work anniversaries); community lunch events are announced as soon as they are created
 
-**Additional Feature:**
+**Additional Features:**
 - 🎯 Highscore for Darts & Kicker and leaderboard 
 - 🍽️ Community lunch event management with voting system
 - ⚙️ Dashboard display configuration and rotation settings
-- 🌦️ Weather kiosk view (display view id `weather`, `frontend/src/features/dashboard/components/WeatherDisplay.vue`)
+- 🌦️ Weather kiosk view (Open-Meteo, display view id `weather`, `frontend/src/features/dashboard/components/WeatherDisplay.vue`)
 
 For detailed module documentation, see [Modules Overview](#modules-overview).
 
 ## Architecture overview
 
-- **Backend** (`backend/`): Spring Boot 4 multi-module Gradle build (Java 21). `backend` is the runnable app (security, Liquibase master changelog); `module-*` hold the features (parking, events, highscore, community lunches, config) and `common` shared code. MariaDB in production, H2 in tests.
-- **Frontend** (`frontend/`): Vue 3 + Vite + Tailwind SPA with the kiosk display (`/display`) and the admin UI (`/admin/*`); talks to the backend via `/api` (session login, CSRF token from the `XSRF-TOKEN` cookie).
+- **Backend** (`backend/`): Spring Boot 4.1.1 multi-module Gradle build (Java 21, wrapper 9.7.1). `backend` is the runnable app (security, Liquibase master changelog); `module-*` hold the features (parking, events, highscore, community lunches, config) and `common` shared code. MariaDB in production, H2 in tests.
+- **Frontend** (`frontend/`): Vue 3 + Vite + Tailwind SPA (Node 22) with the kiosk display (`/display`) and the admin UI (`/admin/*`); talks to the backend via `/api` (session login, CSRF token from the `XSRF-TOKEN` cookie).
 - **Deployment**: Docker Compose (`backend/compose.yaml`); CI runs Gradle build and frontend lint/test/build on every push.
 
 ## My contribution
@@ -38,7 +38,6 @@ This was a university team project (SoPra). My roles and work are listed in [Tea
 - [Description](#description)
 - [Architecture overview](#architecture-overview)
 - [My contribution](#my-contribution)
-- [Live Demo (Dokploy)](#live-demo-dokploy)
 - [Install using docker compose](#install-using-docker-compose)
 - [Local setup](#local-setup)
   - [Prerequisites](#prerequisites)
@@ -60,24 +59,14 @@ This was a university team project (SoPra). My roles and work are listed in [Tea
   - [module-events](#module-events)
   - [module-highscore](#module-highscore)
   - [module-community-lunches](#module-community-lunches)
-  - [feature-mattermost](#feature-mattermost)
+  - [Mattermost integration](#mattermost-integration)
   - [module-config](#module-config)
 - [Troubleshooting](#troubleshooting)
 - [More information](#more-information)
-## Live Demo (Dokploy)
-
-[Dashboard](http://frontend-test-frontend-owkgfq-b06fa7-129-69-217-24.traefik.me/display)
-
-A read-only view optimized for display on large screens (kiosk mode). It automatically rotates between different modules such as the calendar and parking overview.
-
-[Admin-UI](http://frontend-test-frontend-owkgfq-b06fa7-129-69-217-24.traefik.me/admin/parking)
-
-An administrative view for managing data (currently for parking reservations).
-
 ## Install using docker compose
 
 ```bash
-$ git clone [University Internal Git Repository]
+$ git clone https://github.com/daniilperkin-uni/sopra_office_dashboard.git
 $ cd sopra_office_dashboard/backend
 $ cp .env.example .env
 $ docker compose up -d # or
@@ -95,7 +84,7 @@ $ docker compose up -d --build # to force a build after applying changes
 ### For Linux
 
 ```bash
-$ git clone [University Internal Git Repository]
+$ git clone https://github.com/daniilperkin-uni/sopra_office_dashboard.git
 # start the backend
 $ cd sopra_office_dashboard/backend
 $ touch backend/src/main/resources/application-dev.properties # and edit to your needs (example below)
@@ -146,7 +135,7 @@ To configure the dashboard please look at
 - `./backend/.env.example` (docker compose configuration)
 - `./backend/backend/src/main/resources/application.properties` (backend configuration)
 
-**Note:** During development, anonymized employee names are used which are be very long. Set `VITE_ANONYMIZE_NAMES=true` in `.env` to display only the last 10 characters for better readability on the dashboard. In production with real names, this can be set to `false`.
+**Note:** During development the anonymized employee names are very long. `VITE_ANONYMIZE_NAMES=true` reduces them to their last 10 characters for better readability on the dashboard; it defaults to `true` in dev when unset and to `false` in production builds, and can be overridden via `frontend/.env` or the `VITE_ANONYMIZE_NAMES` build arg of the compose frontend service.
 
 **Secrets:** Database, Odoo and Mattermost credentials are read from environment variables (see `backend/.env.example` and `application.properties`); none are committed to the repository. The Odoo admin password should be rotated as a manual operation.
 
@@ -372,19 +361,20 @@ Key features include:
 
 The module exposes comprehensive REST APIs at `/api/community-lunches` for event and voting management, and `/api/food-catalog` for catalog administration. It uses Liquibase for database migrations and implements proper validation to ensure data integrity, helping teams coordinate lunch events efficiently.
 
-### feature-mattermost
+### Mattermost integration
 
-The `feature-mattermost` provides automated daily notifications for upcoming employee events via the Mattermost messaging platform. It serves as a bridge between the dashboard's event system and team communication channels.
+The Mattermost integration has no Gradle module of its own: the client and sender live in `common` (`MattermostClient`, `NotificationSender`), the daily event digest runs in `module-events` (`EventNotificationScheduler`), and `module-community-lunches` announces new lunch events through the same sender.
 
 Key features include:
 
-* **Automated Daily Reminders:** Sends notifications every day at 12:00 PM UTC about upcoming employee events
+* **Automated Daily Reminders:** Sends notifications every day at 12:00 noon (cron default; server time — UTC in the Docker image) about upcoming employee events
 * **Event Integration:** Fetches cached events (birthdays, work anniversaries, probation endings) from the events module
 * **Next-Day Preview:** Notifies team members about events happening the next day
+* **Creation Notifications:** Community lunch events are announced (German) as soon as they are created with meal options
 * **Mattermost API Integration:** Uses Mattermost API v4 for posting messages to configured channels
 * **German Localization:** Event descriptions are formatted in German for the target audience
 
-It runs as a scheduled background service and requires configuration of the Mattermost API URL, authentication token, and target channel ID in the application properties.
+It runs as a scheduled background service (`notifications.events.enabled` / `notifications.events.schedule.cron`) and reads the Mattermost API URL, token and channel ID from environment variables.
 
 ### module-config
 
@@ -394,7 +384,7 @@ Key features include:
 
 * **Rotation Control:** Enable or disable automatic rotation between different dashboard views
 * **Rotation Interval Management:** Configure the time interval (minimum 5 seconds) between view changes
-* **View Selection:** Choose which view to display when rotation is disabled (Dashboard, Calendar, Parking, Highscore)
+* **View Selection:** Choose which view to display when rotation is disabled (Dashboard, Calendar, Parking, Highscore, Game; a rotation interval of `-1` boots straight into the FallingCats game view)
 * **Skip Display Option:** Optionally skip the OneDisplay (dashboard) view during automatic rotation cycles
 * **Administrative Interface:** Provides admin view (`/admin/config`) with German-language UI for easy configuration
 
@@ -404,8 +394,8 @@ The module exposes configuration via the `/api/config/display` endpoint.
 
 ### Using docker compose my backend is not able to connect to the database
 
-- Ensure you did not change the database connection in the `.env` file wihtout rebuilding the container
-- Try running `docker compose down -v` do remove the volume
+- Ensure you did not change the database connection in the `.env` file without rebuilding the container
+- Try running `docker compose down -v` to remove the volume
 
 ## More information
-For detailed frontend documentation, see [frontend/README.md](frontend/README.md)
+For detailed frontend documentation, see [frontend/README.md](frontend/README.md). The (German) script of the final frontend presentation is kept in [docs/presentation.md](docs/presentation.md)

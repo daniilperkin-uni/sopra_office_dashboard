@@ -9,7 +9,7 @@ The **itestraOfficeDashboard** is a modular, web-based dashboard designed for hi
     *   Internal Port: `8080`
     *   External Port (Docker): `8099`
 *   **Database**: MariaDB with Liquibase migrations.
-*   Frontend: Vue.js 3 (Vite, JavaScript, Pinia, Tailwind CSS) using a **Feature-Driven Architecture**.
+*   Frontend: Vue.js 3 (Vite, JavaScript with vue-tsc type checking, Pinia, Tailwind CSS) using a **Feature-Driven Architecture**.
     *   Internal Port: `80` (Nginx)
     *   External Port (Docker): `8098`
 *   **Deployment**: Docker-compose orchestrated environment.
@@ -52,7 +52,12 @@ sopra_office_dashboard\
 │   ├───nginx.conf                  # Nginx Configuration
 │   ├───vitest.config.js            # Vitest configuration
 │   └───Dockerfile                  # Frontend Dockerfile
-└───GEMINI.md                       # Project Documentation
+├───docs\                           # Presentation script (German)
+├───.github\workflows\              # CI pipeline (ci.yml)
+├───AGENTS.md                       # Guidelines for AI agents
+├───GEMINI.md                       # Project documentation (this file)
+├───README.md                       # Overview for humans
+└───Team.md                         # Team roles
 ```
 
 ---
@@ -104,13 +109,21 @@ The frontend follows a **Feature-Driven Architecture** to improve maintainabilit
 *   **Match Recording**: Supports specialized scoring for Darts (points) and Kicker (2vs2 teams).
 *   **Compact Widget**: A streamlined version for the Dashboard view with reduced padding and optimized font sizes.
 
+### 4.5 Weather Kiosk & Easter Egg
+*   **Weather Kiosk**: Fetched from Open-Meteo (no API key) for a location hardcoded in `WeatherDisplay.vue`; on failure the view shows an honest empty state instead of fabricated data.
+*   **FallingCats Game**: Easter-egg view in `frontend/src/features/game/`, reachable via the "Game" default view or a rotation interval of `-1`.
+
 ---
 
 ## 5. Resolution History (Changelog)
 
+### **Sep 30, 2026 Updates (Public Repository & Docs Refresh)**
+*   **Repository Public**: The project is now public as `daniilperkin-uni/sopra_office_dashboard`.
+*   **History Purge**: The Odoo credential was purged from the entire git history (history rewritten and force-pushed) and the graders' milestone feedback PDFs were removed from the repository (kept privately, outside git). All commit hashes from before this date changed.
+*   **Docs Refresh**: README, frontend/README and the agent guidelines (`AGENTS.md`, moved from `.agents/` to the repository root) were brought in line with the code; the dead Dokploy demo links were removed.
+
 ### **Sep 26, 2026 Updates (Audit-Fix Pass)**
 *   **Security**: Removed the committed Odoo admin credential from the sources (`OdooVersionTest` deleted); the password now comes from `ODOO_API_PASSWORD` — rotating it is a manual user action.
-*   **History Purge (Sep 30, 2026)**: The credential was additionally purged from the entire git history (history rewritten and force-pushed) and the graders' milestone feedback PDFs were removed from the repository (kept privately, outside git).
 *   **Liquibase Drift**: Repaired so `ddl-auto=validate` boots on a fresh MariaDB — parking `002`/`003`, events `002` (`employee_email`, `type` -> `dashboard_event_type`), config `003` (`skip_one_display_in_rotation`), highscore `010`. Every repair lives in its own changeset file; applied changesets are never edited (that would change their checksum). Verified with a fresh Docker volume: 65 changesets apply and the context starts.
 *   **Error Mapping**: `GlobalExceptionHandler` -> 404 (`NoSuchElementException`), 409 (`IllegalStateException`), the requested status for `ResponseStatusException`, and 404 for an unmapped path (e.g. `/actuator/health`, allowed by the security whitelist although no actuator dependency exists) instead of the catch-all 500, all as RFC-7807 `ProblemDetail`.
 *   **APIs**: highscore `POST` endpoints return **201 Created**; `GET /api/community-lunches/choices` now requires ADMIN, while the other `GET /api/**` endpoints — including the display config `GET /api/config/display` — stay public for the kiosk.
@@ -237,7 +250,7 @@ The frontend follows a **Feature-Driven Architecture** to improve maintainabilit
     *   **Admin UX**: Standardized input fields in Highscore and Config admin panels to use a white background for better contrast and consistency.
 
 ### **Jan 03, 2026 Updates (Revision)**
-*   Documentation Correction**: Verified and updated port mappings in documentation to match `compose.yaml`.
+*   **Documentation Correction**: Verified and updated port mappings in documentation to match `compose.yaml`.
     *   Backend: `8099:8080`
     *   Frontend: `8098:80`
 *   **Database Persistence**: `spring.jpa.hibernate.ddl-auto` is `validate`; the schema is owned by Liquibase.
@@ -249,7 +262,7 @@ The frontend follows a **Feature-Driven Architecture** to improve maintainabilit
 
 ### 6.1 Local Development
 1.  **Backend**: Run `./gradlew bootRun` from the `backend` folder.
-2.  **Frontend**: Run `npm install` and `npm run dev` from the `frontend` folder.
+2.  **Frontend**: Run `npm install` and `npm run dev` from the `frontend` folder (Node 22 — see `engines` in `package.json`).
 3.  **Docker**: Use `docker-compose -f backend/compose.yaml up --build` for a full system spin-up.
 
 ### 6.2 Troubleshooting
