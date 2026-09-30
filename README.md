@@ -31,7 +31,7 @@ For detailed module documentation, see [Modules Overview](#modules-overview).
 
 ## My contribution
 
-This was a university team project (SoPra). My roles and work are listed in [Team.md](Team.md). The `feedback_folder/` contains the graders' milestone feedback.
+This was a university team project (SoPra). My roles and work are listed in [Team.md](Team.md).
 
 ## Table of Contents
 
