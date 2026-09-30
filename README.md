@@ -137,7 +137,7 @@ To configure the dashboard please look at
 
 **Note:** During development the anonymized employee names are very long. `VITE_ANONYMIZE_NAMES=true` reduces them to their last 10 characters for better readability on the dashboard; it defaults to `true` in dev when unset and to `false` in production builds, and can be overridden via `frontend/.env` or the `VITE_ANONYMIZE_NAMES` build arg of the compose frontend service.
 
-**Secrets:** Database, Odoo and Mattermost credentials are read from environment variables (see `backend/.env.example` and `application.properties`); none are committed to the repository. The Odoo admin password should be rotated as a manual operation.
+**Secrets:** Database, Odoo and Mattermost credentials are read from environment variables (see `backend/.env.example` and `application.properties`); none are committed to the repository.
 
 ## Adding modules
 
