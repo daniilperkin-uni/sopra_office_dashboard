@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/daniilperkin-uni/sopra_office_dashboard/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/daniilperkin-uni/sopra_office_dashboard/actions/workflows/ci.yml)
 
+**Live showcase:** real captures of the running kiosk plus a browser replay of the view rotation — part of the [uni-old-projects showcase](https://daniilperkin-uni.github.io/uni-old-projects/#sopra_office_dashboard).
+
 ## Description
 
 The **Office Dashboard** is a modular office management platform designed for displaying information on large 4K screens in kiosk mode with configurable view rotation. The dashboard aggregates and visualizes office information such as parking reservations, employee events, game statistics, and community lunch planning.
