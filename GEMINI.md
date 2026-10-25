@@ -117,6 +117,14 @@ The frontend follows a **Feature-Driven Architecture** to improve maintainabilit
 
 ## 5. Resolution History (Changelog)
 
+### **Oct 25, 2026 Updates (UI feedback, reduced motion, actuator health)**
+
+- **Admin-Feedback ohne native Dialoge:** `alert()` und `confirm()` sind aus allen Admin-Views verschwunden. Ein neuer `useToast()`-Store plus `ToastHost.vue` (in `App.vue` gemountet, `role="status"` / `aria-live="polite"`) zeigt Fehler und Erfolge als nicht-blockierende Meldung; destruktive Aktionen laufen über den vorhandenen `ConfirmDialog` (Parking-Serien, einzelne Buchungen, Lunch-Events).
+- **`prefers-reduced-motion`:** globaler Block in `assets/main.css` schaltet Animationen und Transitionen ab, wenn das Betriebssystem Bewegungsreduktion meldet.
+- **Actuator ist echt:** `spring-boot-starter-actuator` ist jetzt eine Abhängigkeit, `/actuator/health` antwortet 200 (vorher war der Pfad in `SecurityConfig` erlaubt, aber ohne Endpunkt). Compose hat dafür einen Healthcheck auf Basis von `bash` + `/dev/tcp`, weil das JRE-Image weder `curl` noch `wget` mitbringt.
+- **Tests:** `tests/components/ToastHost.spec.js` (5 Tests) pinnt Erscheinen, Typ, `aria-live`, manuelles Schließen und den Auto-Dismiss.
+
+
 ### **Sep 30, 2026 Updates (Public Repository & Docs Refresh)**
 *   **Repository Public**: The project is now public as `daniilperkin-uni/sopra_office_dashboard`.
 *   **History Purge**: The Odoo credential was purged from the entire git history (history rewritten and force-pushed) and the graders' milestone feedback PDFs were removed from the repository (kept privately, outside git). All commit hashes from before this date changed.

@@ -16,9 +16,14 @@ import org.springframework.test.web.servlet.MockMvc;
  * An unmapped public URL was answered with 500 "Internal server error" plus a
  * logged stack trace, because the {@code Exception} handler is resolved before
  * Spring's own 404 handling of a missing static resource. Found while smoke
- * testing the packaged application: GET /actuator/health is allowed by
- * SecurityConfig but no actuator dependency exists, so it hit exactly this
+ * testing the packaged application: GET /actuator/health was allowed by
+ * SecurityConfig but no actuator dependency existed, so it hit exactly this
  * path.
+ * </p>
+ * <p>
+ * The actuator starter is a real dependency now, so /actuator/health answers
+ * 200 and this test asserts the live endpoint instead of the former 404. The
+ * catch-all guard is still covered by {@link #unmappedApiPath_returns404_not500()}.
  * </p>
  */
 @SpringBootTest
@@ -29,10 +34,10 @@ class GlobalExceptionHandlerIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    void whitelistedButMissingActuatorPath_returns404_not500() throws Exception {
+    void whitelistedActuatorHealth_isReachableWithoutAuthentication() throws Exception {
         mockMvc.perform(get("/actuator/health"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.status").value(404));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("UP"));
     }
 
     @Test
