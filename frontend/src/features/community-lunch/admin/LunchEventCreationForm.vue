@@ -197,6 +197,9 @@ import { ref, onMounted, computed, nextTick, reactive, watch } from 'vue'
 import { lunchService } from '@/services/lunchService'
 import { isPastDate } from '@/utils/dateUtils'
 import BaseButton from '@/components/common/BaseButton.vue'
+import { useToast } from '@/composables/useToast'
+
+const toast = useToast()
 
 const emit = defineEmits(['event-created'])
 
@@ -275,9 +278,9 @@ const saveEdit = async () => {
   } catch (e) {
     console.error(e)
     if (e.response && e.response.status === 409) {
-      alert('Dieses Gericht existiert bereits.')
+      toast.error('Dieses Gericht existiert bereits.')
     } else {
-      alert('Fehler beim Speichern.')
+      toast.error('Fehler beim Speichern.')
     }
   }
 }
@@ -324,9 +327,9 @@ const createCatalogItem = async () => {
   } catch (e) {
     console.error(e)
     if (e.response && e.response.status === 409) {
-      alert('Diese Option existiert bereits (aktiv oder inaktiv).')
+      toast.error('Diese Option existiert bereits (aktiv oder inaktiv).')
     } else {
-      alert('Fehler beim Erstellen der Option.')
+      toast.error('Fehler beim Erstellen der Option.')
     }
   }
 }
@@ -342,7 +345,7 @@ const toggleActive = async (item) => {
   } catch (e) {
     console.error(e)
     item.active = !newState
-    alert('Fehler beim Aktualisieren des Status.')
+    toast.error('Fehler beim Aktualisieren des Status.')
   }
 }
 
@@ -368,7 +371,7 @@ const createEvent = async () => {
     emit('event-created')
   } catch (e) {
     console.error(e)
-    alert('Fehler beim Erstellen des Events')
+    toast.error('Fehler beim Erstellen des Events')
   } finally {
     loading.value = false
   }

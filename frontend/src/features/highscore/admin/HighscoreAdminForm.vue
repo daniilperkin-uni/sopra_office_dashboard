@@ -110,6 +110,9 @@
  */
 import { reactive, watch } from 'vue'
 import BaseButton from '@/components/common/BaseButton.vue'
+import { useToast } from '@/composables/useToast'
+
+const toast = useToast()
 
 // Defines the type of game (darts or kicker).
 const props = defineProps({
@@ -188,7 +191,7 @@ function handleSubmit() {
   if (props.type === 'darts') {
     // Validierung: Es macht keinen Sinn, mit 0 oder weniger Würfen zu gewinnen.
     if (dartsData.dartsToFinish < 1) {
-      alert('Die Anzahl der Würfe muss mindestens 1 sein.')
+      toast.error('Die Anzahl der Würfe muss mindestens 1 sein.')
       return // Abbruch bei ungültigen Daten
     }
     // Einfaches Kopieren des Objekts, da die Struktur bereits passt.

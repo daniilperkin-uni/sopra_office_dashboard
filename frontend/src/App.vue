@@ -41,6 +41,9 @@
     >
       <router-view />
     </main>
+
+    <!-- Globale Meldungen (ersetzt die früheren nativen alert()-Dialoge) -->
+    <ToastHost />
   </div>
 </template>
 
@@ -53,6 +56,7 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { authService } from '@/services/authService'
+import ToastHost from '@/components/common/ToastHost.vue'
 
 const route = useRoute()
 const router = useRouter()

@@ -37,3 +37,19 @@ body {
 .focus\:border-primary:focus {
   border-color: #009ee2;
 }
+
+/*
+ * Reduced motion: Tailwind-Transitionen und eigene Animationen (Kiosk-Rotation,
+ * Toast-Slide-in) respektieren die Systemeinstellung. Ohne diesen Block laufen
+ * alle Übergänge weiter, auch wenn das OS "Bewegung reduzieren" meldet.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

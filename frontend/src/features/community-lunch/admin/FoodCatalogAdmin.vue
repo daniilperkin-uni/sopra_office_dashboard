@@ -129,6 +129,9 @@
 import { ref, onMounted, nextTick } from 'vue'
 import { lunchService } from '@/services/lunchService'
 import BaseButton from '@/components/common/BaseButton.vue'
+import { useToast } from '@/composables/useToast'
+
+const toast = useToast()
 
 const items = ref([])
 const loading = ref(false)
@@ -168,9 +171,9 @@ const createItem = async () => {
   } catch (e) {
     console.error(e)
     if (e.response && e.response.data && e.response.data.message) {
-      alert(e.response.data.message)
+      toast.error(e.response.data.message)
     } else {
-      alert('Ein Fehler ist aufgetreten.')
+      toast.error('Ein Fehler ist aufgetreten.')
     }
   }
 }
@@ -218,9 +221,9 @@ const saveEdit = async () => {
   } catch (e) {
     console.error(e)
     if (e.response && e.response.status === 409) {
-      alert('Dieses Gericht existiert bereits.')
+      toast.error('Dieses Gericht existiert bereits.')
     } else {
-      alert('Fehler beim Speichern.')
+      toast.error('Fehler beim Speichern.')
     }
   }
 }

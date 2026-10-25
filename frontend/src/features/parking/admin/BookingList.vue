@@ -200,6 +200,16 @@
         </div>
       </div>
     </div>
+
+    <ConfirmDialog
+      :is-open="showDeleteSeriesDialog"
+      title="Serie löschen"
+      message="Möchten Sie wirklich die gesamte Serien-Reservierung und alle zugehörigen Termine löschen?"
+      confirm-text="Löschen"
+      cancel-text="Abbrechen"
+      @confirm="confirmDeleteSeries"
+      @cancel="showDeleteSeriesDialog = false"
+    />
   </div>
 </template>
 
@@ -215,6 +225,10 @@ import { parkingApi } from '@/services/api'
 import { formatDate } from '@/utils/dateUtils'
 import BaseButton from '@/components/common/BaseButton.vue'
 import DateInput from '@/components/common/DateInput.vue'
+import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
+import { useToast } from '@/composables/useToast'
+
+const toast = useToast()
 
 const props = defineProps({
   bookings: {
@@ -308,11 +322,11 @@ const startEditSeries = (reservation) => {
 
 const saveSeriesEdit = async () => {
   if (!seriesEditData.value.employeeName.trim()) {
-    alert('Bitte geben Sie einen Namen ein.')
+    toast.error('Bitte geben Sie einen Namen ein.')
     return
   }
   if (seriesEditData.value.daysOfWeek.length === 0) {
-    alert('Bitte wählen Sie mindestens einen Wochentag.')
+    toast.error('Bitte wählen Sie mindestens einen Wochentag.')
     return
   }
 
@@ -336,7 +350,7 @@ const saveSeriesEdit = async () => {
     await parkingApi.updateRecurringReservation(editingSeriesId.value, payload)
 
     // Success feedback (using name)
-    alert(`Serie ${seriesEditData.value.employeeName} erfolgreich aktualisiert.`)
+    toast.success(`Serie ${seriesEditData.value.employeeName} erfolgreich aktualisiert.`)
 
     editingSeriesId.value = null
     emit('booking-updated')
@@ -346,28 +360,36 @@ const saveSeriesEdit = async () => {
       e.response?.data?.detail ||
       e.response?.data?.message ||
       'Fehler beim Aktualisieren der Serie.'
-    alert(msg)
+    toast.error(msg)
   } finally {
     savingSeries.value = false
   }
 }
 
-const deleteSeries = async (id) => {
-  if (
-    !confirm(
-      'Möchten Sie wirklich die gesamte Serien-Reservierung und alle zugehörigen Termine löschen?'
-    )
-  )
-    return
+const showDeleteSeriesDialog = ref(false)
+const seriesToDelete = ref(null)
+
+const deleteSeries = (id) => {
+  seriesToDelete.value = id
+  showDeleteSeriesDialog.value = true
+}
+
+const confirmDeleteSeries = async () => {
+  const id = seriesToDelete.value
+  showDeleteSeriesDialog.value = false
+  if (!id) return
 
   try {
     await parkingApi.deleteRecurringReservation(id)
+    toast.success('Serie gelöscht.')
     emit('booking-deleted')
   } catch (e) {
     console.error(e)
     const msg =
       e.response?.data?.detail || e.response?.data?.message || 'Fehler beim Löschen der Serie.'
-    alert(msg)
+    toast.error(msg)
+  } finally {
+    seriesToDelete.value = null
   }
 }
 

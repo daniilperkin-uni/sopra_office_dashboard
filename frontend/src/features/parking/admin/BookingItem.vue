@@ -91,6 +91,16 @@
         </BaseButton>
       </div>
     </div>
+
+    <ConfirmDialog
+      :is-open="showDeleteDialog"
+      title="Reservierung löschen"
+      :message="`Möchten Sie die Reservierung für ${booking.employeeName} wirklich löschen?`"
+      confirm-text="Löschen"
+      cancel-text="Abbrechen"
+      @confirm="confirmDelete"
+      @cancel="showDeleteDialog = false"
+    />
   </div>
 </template>
 
@@ -106,6 +116,10 @@ import { parkingApi } from '@/services/api'
 import { formatDate, formatWeekday, formatDateForAPI } from '@/utils/dateUtils'
 import BaseButton from '@/components/common/BaseButton.vue'
 import DateInput from '@/components/common/DateInput.vue'
+import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
+import { useToast } from '@/composables/useToast'
+
+const toast = useToast()
 
 const props = defineProps({
   booking: {
@@ -131,7 +145,7 @@ const startEdit = () => {
 
 const saveEdit = async () => {
   if (!editData.value.employeeName.trim()) {
-    alert('Bitte geben Sie einen Namen ein.')
+    toast.error('Bitte geben Sie einen Namen ein.')
     return
   }
 
@@ -151,23 +165,25 @@ const saveEdit = async () => {
       error.response?.data?.detail ||
       error.response?.data?.message ||
       'Fehler beim Speichern der Änderungen.'
-    alert(msg)
+    toast.error(msg)
   } finally {
     saving.value = false
   }
 }
 
-const deleteBooking = async () => {
-  if (
-    !confirm(`Möchten Sie die Reservierung für ${props.booking.employeeName} wirklich löschen?`)
-  ) {
-    return
-  }
+const showDeleteDialog = ref(false)
 
+const deleteBooking = () => {
+  showDeleteDialog.value = true
+}
+
+const confirmDelete = async () => {
+  showDeleteDialog.value = false
   deleting.value = true
 
   try {
     await parkingApi.deleteEntry(props.booking.id)
+    toast.success('Reservierung gelöscht.')
     emit('booking-deleted')
   } catch (error) {
     console.error('Error deleting booking:', error)
@@ -175,7 +191,7 @@ const deleteBooking = async () => {
       error.response?.data?.detail ||
       error.response?.data?.message ||
       'Fehler beim Löschen der Reservierung.'
-    alert(msg)
+    toast.error(msg)
   } finally {
     deleting.value = false
   }

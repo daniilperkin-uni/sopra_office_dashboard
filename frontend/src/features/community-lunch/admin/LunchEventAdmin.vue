@@ -128,6 +128,16 @@
         </div>
       </div>
     </div>
+
+    <ConfirmDialog
+      :is-open="showDeleteDialog"
+      title="Lunch-Event löschen"
+      :message="`Möchtest du das Lunch-Event am ${lunchToDelete ? formatDate(lunchToDelete.date) : ''} wirklich löschen?`"
+      confirm-text="Löschen"
+      cancel-text="Abbrechen"
+      @confirm="confirmDeleteLunch"
+      @cancel="showDeleteDialog = false"
+    />
   </div>
 </template>
 
@@ -138,6 +148,10 @@
  */
 import { ref, onMounted, watch } from 'vue'
 import { lunchService } from '@/services/lunchService'
+import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
+import { useToast } from '@/composables/useToast'
+
+const toast = useToast()
 
 const lunches = ref([])
 const loading = ref(false)
@@ -203,7 +217,7 @@ const hasVotedFor = (lunch, option) => {
  */
 const voteForOption = async (lunch, option) => {
   if (!userName.value) {
-    alert('Bitte gib zuerst deinen Namen oben ein!')
+    toast.error('Bitte gib zuerst deinen Namen oben ein!')
     return
   }
   try {
@@ -212,7 +226,7 @@ const voteForOption = async (lunch, option) => {
     await fetchMyChoices()
   } catch (e) {
     console.error(e)
-    alert('Fehler beim Abstimmen')
+    toast.error('Fehler beim Abstimmen')
   }
 }
 
@@ -284,17 +298,30 @@ const refreshEvent = async (lunch) => {
 }
 
 /**
- * Deletes a lunch event after user confirmation.
+ * Fragt vor dem Löschen nach (ConfirmDialog statt nativem confirm()).
  */
-const deleteLunch = async (lunch) => {
-  if (!confirm(`Möchtest du das Lunch-Event am ${formatDate(lunch.date)} wirklich löschen?`)) return
+const showDeleteDialog = ref(false)
+const lunchToDelete = ref(null)
+
+const deleteLunch = (lunch) => {
+  lunchToDelete.value = lunch
+  showDeleteDialog.value = true
+}
+
+const confirmDeleteLunch = async () => {
+  const lunch = lunchToDelete.value
+  showDeleteDialog.value = false
+  if (!lunch) return
 
   try {
     await lunchService.deleteEvent(lunch.id)
     lunches.value = lunches.value.filter((l) => l.id !== lunch.id)
+    toast.success('Lunch-Event gelöscht.')
   } catch (e) {
     console.error('Failed to delete event', e)
-    alert('Fehler beim Löschen des Events.')
+    toast.error('Fehler beim Löschen des Events.')
+  } finally {
+    lunchToDelete.value = null
   }
 }
 
