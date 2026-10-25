@@ -4,6 +4,18 @@
 
 **Live showcase:** real captures of the running kiosk plus a browser replay of the view rotation — part of the [uni-old-projects showcase](https://daniilperkin-uni.github.io/uni-old-projects/#sopra_office_dashboard).
 
+## Screenshots
+
+Captured from the running stack (Docker Compose, demo data — fictional names):
+
+| Display — combined view (4K kiosk) | Display — calendar |
+| --- | --- |
+| ![Kiosk display showing calendar, parking and highscore side by side](docs/screenshots/display-dashboard.webp) | ![Three-week calendar with birthdays, anniversaries and lunch chips](docs/screenshots/display-calendar.webp) |
+
+| Admin — parking | Admin — community lunch |
+| --- | --- |
+| ![Admin parking view with per-day bookings](docs/screenshots/admin-parking.webp) | ![Admin lunch view with food catalog, options and votes](docs/screenshots/admin-lunch.webp) |
+
 ## Description
 
 The **Office Dashboard** is a modular office management platform designed for displaying information on large 4K screens in kiosk mode with configurable view rotation. The dashboard aggregates and visualizes office information such as parking reservations, employee events, game statistics, and community lunch planning.
