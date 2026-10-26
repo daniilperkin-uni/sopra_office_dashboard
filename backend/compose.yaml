@@ -6,7 +6,15 @@ services:
     env_file:
       - .env
     environment:
-      SERVER_PORT: ${DASHBOARD_PORT:-8080}
+      # Der interne Port ist bewusst fest auf 8080 verdrahtet: die
+      # Portweiterleitung unten mappt "8099:8080" und nginx im Frontend-Container
+      # proxyt auf "backend:8080". Ein konfigurierbarer Port (SERVER_PORT bzw.
+      # DASHBOARD_PORT) haette bei jedem anderen Wert dazu gefuehrt, dass der
+      # Container auf einem Port lauscht, den weder die Weiterleitung noch nginx
+      # anspricht - der Healthcheck waere trotzdem gruen geblieben.
+      # TZ haelt Datumsgrenzen (LocalDate.now()) in der Zeitzone der Nutzer;
+      # der globale JVM-Default wird nicht mehr in main() gesetzt.
+      TZ: Europe/Berlin
       DB_HOST: mariadb
       DB_PORT: 3306
       DB_NAME: ${DB_NAME:-test}
@@ -24,7 +32,7 @@ services:
       # ueber /dev/tcp eine HTTP-Anfrage stellen - so bleibt das Image schlank.
       test:
         - "CMD-SHELL"
-        - "bash -c 'exec 3<>/dev/tcp/127.0.0.1/$${SERVER_PORT:-8080}; printf \"GET /actuator/health HTTP/1.0\\r\\n\\r\\n\" >&3; grep -q 200 <&3'"
+        - "bash -c 'exec 3<>/dev/tcp/127.0.0.1/8080; printf \"GET /actuator/health HTTP/1.0\\r\\n\\r\\n\" >&3; grep -q 200 <&3'"
       interval: 15s
       timeout: 5s
       retries: 5

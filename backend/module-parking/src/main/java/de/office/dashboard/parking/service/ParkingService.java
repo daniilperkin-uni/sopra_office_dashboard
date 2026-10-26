@@ -182,8 +182,17 @@ public class ParkingService {
      * It validates availability for all target dates before making any changes.
      * </p>
      * <p>
-     * The update is performed in an all-or-nothing manner: if validation fails for
-     * any target date, no changes are persisted and an exception is thrown.
+     * The update is performed in an all-or-nothing manner when applied
+     * ({@code dryRun = false}): if validation fails for any target date, no
+     * changes are persisted and an exception is thrown.
+     * </p>
+     * <p>
+     * In preview mode ({@code dryRun = true}) conflicts are <em>not</em> an
+     * error: the method returns the per-date status map
+     * ({@link DateStatus#OK}, {@link DateStatus#RESERVED_BEFORE},
+     * {@link DateStatus#FULL}) so the UI can show which dates collide, and
+     * nothing is written to the database. This mirrors
+     * {@link #createRecurringReservation(RecurringReservationRequest, boolean)}.
      * </p>
      * <p>
      * Validation includes:
@@ -272,7 +281,12 @@ public class ParkingService {
             entriesToSave.add(parkingEntry);
         }
 
-        if (!failedDates.isEmpty()) {
+        // Konflikte blockieren nur das tatsaechliche Speichern. Im Vorschau-Modus
+        // (preview=true) ist die Statusmap pro Datum die Antwort: die UI zeigt
+        // daran, welche Tage kollidieren (FULL / RESERVED_BEFORE). Ein 400 waere
+        // hier falsch, weil die Vorschau genau diese Information liefern soll -
+        // createRecurringReservation verhaelt sich genauso.
+        if (!preview && !failedDates.isEmpty()) {
             String dateList = failedDates.stream()
                     .map(LocalDate::toString)
                     .collect(Collectors.joining(", "));

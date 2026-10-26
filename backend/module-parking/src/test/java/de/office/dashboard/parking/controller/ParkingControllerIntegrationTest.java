@@ -2,7 +2,9 @@ package de.office.dashboard.parking.controller;
 
 import de.office.dashboard.parking.TestApplication;
 import de.office.dashboard.parking.entity.ParkingEntry;
+import de.office.dashboard.parking.entity.RecurringReservation;
 import de.office.dashboard.parking.repository.ParkingEntryRepository;
+import de.office.dashboard.parking.repository.RecurringReservationRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -11,11 +13,14 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(classes = TestApplication.class)
@@ -32,6 +37,9 @@ public class ParkingControllerIntegrationTest {
 
     @Autowired
     private ParkingEntryRepository repository;
+
+    @Autowired
+    private RecurringReservationRepository recurringReservationRepository;
 
     @Test
     public void createEntry_ValidRequest_ReturnsCreatedEntry() throws Exception {
@@ -130,11 +138,103 @@ public class ParkingControllerIntegrationTest {
                 .andExpect(content().json("[]"));
     }
 
+    @Test
+    public void updateRecurringReservation_PreviewWithConflictingDate_ReturnsPerDateStatus() throws Exception {
+        LocalDate conflictDate = futureWeekday(7);
+        LocalDate freeDate = nextWeekday(conflictDate);
+        RecurringReservation reservation = createAndSaveRecurringReservation("Vorschau Konflikt", conflictDate);
+        createAndSaveEntry("Vorschau Konflikt", conflictDate);
+
+        String requestJson = recurringRequestJson("Vorschau Konflikt", conflictDate, freeDate,
+                Set.of(conflictDate.getDayOfWeek(), freeDate.getDayOfWeek()));
+
+        // Vorschau: kein 400, sondern die Statusmap pro Datum - die UI markiert
+        // damit den kollidierenden Tag, statt eine Fehlermeldung zu zeigen.
+        mockMvc.perform(put("/api/recurring/{id}", reservation.getId())
+                        .param("preview", "true")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(reservation.getId()))
+                .andExpect(jsonPath("$.dates['" + conflictDate.format(ISO_FORMAT) + "']").value("RESERVED_BEFORE"))
+                .andExpect(jsonPath("$.dates['" + freeDate.format(ISO_FORMAT) + "']").value("OK"));
+
+        // Eine Vorschau darf nichts schreiben: nur der Konflikt-Eintrag existiert.
+        assertThat(repository.count()).isEqualTo(1);
+        assertThat(repository.existsByEmployeeNameAndDate("Vorschau Konflikt", freeDate)).isFalse();
+    }
+
+    @Test
+    public void updateRecurringReservation_ApplyWithConflictingDate_ReturnsBadRequest() throws Exception {
+        LocalDate conflictDate = futureWeekday(7);
+        RecurringReservation reservation = createAndSaveRecurringReservation("Anwenden Konflikt", conflictDate);
+        createAndSaveEntry("Anwenden Konflikt", conflictDate);
+
+        String requestJson = recurringRequestJson("Anwenden Konflikt", conflictDate, conflictDate,
+                Set.of(conflictDate.getDayOfWeek()));
+
+        // Beim echten Speichern bleibt die Alles-oder-nichts-Regel bestehen.
+        mockMvc.perform(put("/api/recurring/{id}", reservation.getId())
+                        .param("preview", "false")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isBadRequest());
+
+        assertThat(repository.count()).isEqualTo(1);
+    }
+
     private void createAndSaveEntry(String employeeName, LocalDate date) {
         ParkingEntry entry = new ParkingEntry();
         entry.setEmployeeName(employeeName);
         entry.setDate(date);
         repository.save(entry);
+    }
+
+    /**
+     * Legt eine bestehende Serienreservierung an, die per PUT aktualisiert wird.
+     * Der Zeitraum deckt bewusst die Testdaten ab, damit die Validierung im
+     * Service (endDate nicht in der Vergangenheit) greift.
+     */
+    private RecurringReservation createAndSaveRecurringReservation(String employeeName, LocalDate startDate) {
+        RecurringReservation reservation = new RecurringReservation();
+        reservation.setEmployeeName(employeeName);
+        reservation.setStartDate(startDate);
+        reservation.setEndDate(startDate.plusDays(28));
+        reservation.setDaysOfWeek(Set.of(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY,
+                DayOfWeek.THURSDAY, DayOfWeek.FRIDAY));
+        return recurringReservationRepository.save(reservation);
+    }
+
+    /**
+     * Baut den Request-Body fuer eine Serienreservierung. {@code daysOfWeek} wird
+     * explizit gesetzt, damit der Service genau die gewuenschten Tage prueft.
+     */
+    private static String recurringRequestJson(String employeeName, LocalDate startDate, LocalDate endDate,
+            Set<DayOfWeek> daysOfWeek) {
+        String days = daysOfWeek.stream()
+                .map(day -> "\"" + day.name() + "\"")
+                .sorted()
+                .reduce((left, right) -> left + ", " + right)
+                .orElseThrow();
+        return """
+                {
+                    "employeeName": "%s",
+                    "startDate": "%s",
+                    "endDate": "%s",
+                    "daysOfWeek": [%s]
+                }
+                """.formatted(employeeName, startDate.format(API_DATE_FORMAT), endDate.format(API_DATE_FORMAT), days);
+    }
+
+    /**
+     * Liefert den naechsten Werktag nach {@code date} (Ueberspringt Wochenenden).
+     */
+    private static LocalDate nextWeekday(LocalDate date) {
+        LocalDate next = date.plusDays(1);
+        while (next.getDayOfWeek() == DayOfWeek.SATURDAY || next.getDayOfWeek() == DayOfWeek.SUNDAY) {
+            next = next.plusDays(1);
+        }
+        return next;
     }
 
     /**

@@ -30,10 +30,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.stream(allowedOrigins.split(","))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .toList());
+        config.setAllowedOrigins(parseAllowedOrigins());
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
@@ -47,9 +44,30 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(allowedOrigins.split(","))
+                .allowedOrigins(parseAllowedOrigins().toArray(String[]::new))
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
+    }
+
+    /**
+     * Zerlegt die kommaseparierte Origin-Liste und entfernt Leerzeichen sowie
+     * leere Eintraege.
+     * <p>
+     * Beide Registrierungen (Spring Security ueber {@link CorsConfigurationSource}
+     * und MVC ueber {@link #addCorsMappings(CorsRegistry)}) muessen dieselbe,
+     * normalisierte Liste sehen. Ein Leerzeichen nach dem Komma (z. B.
+     * {@code "http://a, http://b"}) fuehrte sonst dazu, dass eine der beiden
+     * Registrierungen die Origin nicht mehr erkannte und CORS nur teilweise
+     * funktionierte.
+     * </p>
+     *
+     * @return die bereinigte Liste der erlaubten Origins
+     */
+    private List<String> parseAllowedOrigins() {
+        return Arrays.stream(allowedOrigins.split(","))
+                .map(String::trim)
+                .filter(origin -> !origin.isEmpty())
+                .toList();
     }
 }

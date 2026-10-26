@@ -311,7 +311,7 @@ Run from `frontend/` with Node.js 22 (`package.json` requires `node >=22`):
 ```
 npm run lint          # ESLint
 npm run format:check  # Prettier check
-npm run test          # vitest run — 10 test files / 63 tests
+npm run test          # vitest run — 11 test files / 71 tests
 npm run build         # vue-tsc + vite build
 ```
 
