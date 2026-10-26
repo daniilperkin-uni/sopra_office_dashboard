@@ -47,4 +47,19 @@ describe('useDisplayConfigStore', () => {
     expect(store.loaded).toBe(false)
     expect(store.error).toBe('Konfiguration konnte nicht geladen werden.')
   })
+
+  it('ignoriert einen Abbruch beim Verlassen der Ansicht statt einen Fehler zu setzen', async () => {
+    // Ein AbortSignal-Abbruch ist kein Ladefehler und darf kein Fehlerbanner
+    // erzeugen; der Ladezustand muss trotzdem zurueckgesetzt werden.
+    const canceled = new Error('canceled')
+    canceled.name = 'CanceledError'
+    canceled.code = 'ERR_CANCELED'
+    configApiMock.getConfig.mockRejectedValue(canceled)
+    const store = useDisplayConfigStore()
+
+    await store.fetchConfig(new AbortController().signal)
+
+    expect(store.error).toBe(null)
+    expect(store.loading).toBe(false)
+  })
 })

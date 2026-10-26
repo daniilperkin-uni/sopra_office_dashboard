@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { highscoreApi, highscoreAdminApi } from '@/services/api'
+import { isRequestCanceled } from '@/utils/requestUtils'
 
 /**
  * Store for managing highscore data for both display and admin views.
@@ -19,17 +20,24 @@ export const useHighscoreStore = defineStore('highscore', () => {
   const adminLoading = ref(false)
   const adminError = ref(null)
 
-  async function fetchHighscore(silent = false) {
+  /**
+   * Laedt die Highscore-Daten fuer die Anzeige.
+   * @param {boolean} [silent=false] - Unterdrueckt den Ladezustand beim Polling.
+   * @param {AbortSignal} [signal] - Bricht die Anfrage ab, wenn die Ansicht verlassen wird.
+   */
+  async function fetchHighscore(silent = false, signal) {
     if (!silent) loading.value = true
     error.value = null
     try {
-      const data = await highscoreApi.getHighscore()
+      const data = await highscoreApi.getHighscore(signal)
       displayData.value = {
         'Match history': data['Match history'] || [],
         'Darts Leaderboard': data['Darts Leaderboard'] || [],
         'Kicker leaderboard': data['Kicker leaderboard'] || [],
       }
     } catch (e) {
+      // Ein Abbruch beim Verlassen der Ansicht ist kein Ladefehler.
+      if (isRequestCanceled(e)) return
       console.error('Error fetching highscore data:', e)
       if (!silent) error.value = 'Failed to load highscore data.'
     } finally {

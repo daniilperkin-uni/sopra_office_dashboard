@@ -11,11 +11,22 @@ import axios from 'axios'
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api'
 
 /**
+ * Maximale Wartezeit pro Anfrage in Millisekunden.
+ * Ohne Timeout bleibt eine Anfrage, die nie beantwortet wird, fuer immer offen:
+ * Lade-Flags bleiben auf true, Admin-Buttons bleiben deaktiviert und auf
+ * /display wird startPolling() nie erreicht, weil onMounted auf fetchConfig()
+ * wartet. Der Wert ist zentral gesetzt, damit keine Anfrage einzeln konfiguriert
+ * werden muss.
+ */
+const REQUEST_TIMEOUT_MS = 10000
+
+/**
  * The configured Axios instance for all API requests.
  * Includes a response interceptor that redirects to /login on 401.
  */
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
+  timeout: REQUEST_TIMEOUT_MS,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -57,11 +68,12 @@ export const parkingApi = {
 
   /**
    * Retrieves an occupancy overview for the next working days.
+   * @param {AbortSignal} [signal] - Bricht die Anfrage ab, wenn die Ansicht verlassen wird.
    * @returns {Promise<Object>} Overview of parking occupancy
    */
-  async getOverview() {
+  async getOverview(signal) {
     try {
-      const response = await apiClient.get('/overview')
+      const response = await apiClient.get('/overview', { signal })
       return response.data
     } catch (error) {
       console.error('Error fetching overview:', error)
@@ -171,9 +183,10 @@ export const calendarApi = {
    * Retrieves dashboard events for a specific period.
    * @param {string} [startDate] - Start date (YYYY-MM-DD, optional)
    * @param {string} [endDate] - End date (YYYY-MM-DD, optional)
+   * @param {AbortSignal} [signal] - Bricht die Anfrage ab, wenn die Ansicht verlassen wird.
    * @returns {Promise<Array>} List of events
    */
-  async getEvents(startDate, endDate) {
+  async getEvents(startDate, endDate, signal) {
     try {
       let params = {}
       if (startDate) {
@@ -182,7 +195,7 @@ export const calendarApi = {
       if (endDate) {
         params.endDate = endDate
       }
-      const response = await apiClient.get('/dashboard-events', { params })
+      const response = await apiClient.get('/dashboard-events', { params, signal })
       return response.data
     } catch (error) {
       console.error('Error fetching calendar events:', error)
@@ -197,11 +210,12 @@ export const calendarApi = {
 export const highscoreApi = {
   /**
    * Retrieves highscore data and formats it for the display view.
+   * @param {AbortSignal} [signal] - Bricht die Anfrage ab, wenn die Ansicht verlassen wird.
    * @returns {Promise<Object>} Formatted highscore data
    */
-  async getHighscore() {
+  async getHighscore(signal) {
     try {
-      const data = await this.getHighscoreOverview()
+      const data = await this.getHighscoreOverview(signal)
 
       return {
         'Match history': (data.matchHistoryEntries || []).map((item) => ({
@@ -228,11 +242,12 @@ export const highscoreApi = {
 
   /**
    * Retrieves raw highscore overview from the backend.
+   * @param {AbortSignal} [signal] - Bricht die Anfrage ab, wenn die Ansicht verlassen wird.
    * @returns {Promise<Object>} Raw highscore overview data
    */
-  async getHighscoreOverview() {
+  async getHighscoreOverview(signal) {
     try {
-      const response = await apiClient.get('/highscore-overview')
+      const response = await apiClient.get('/highscore-overview', { signal })
       return response.data
     } catch (error) {
       console.error('Error fetching highscore overview:', error)
@@ -386,11 +401,12 @@ export const highscoreAdminApi = {
 export const configApi = {
   /**
    * Retrieves current display configuration.
+   * @param {AbortSignal} [signal] - Bricht die Anfrage ab, wenn die Ansicht verlassen wird.
    * @returns {Promise<Object>} Configuration object
    */
-  async getConfig() {
+  async getConfig(signal) {
     try {
-      const response = await apiClient.get('/config/display')
+      const response = await apiClient.get('/config/display', { signal })
       return response.data
     } catch (error) {
       console.error('Error fetching configuration:', error)

@@ -49,7 +49,7 @@ This file contains rules and guidelines for AI agents working on the `office_das
 - Place pure-function tests next to the source (e.g. `src/utils/eventUtils.test.js`,
   `src/composables/useViewRotation.test.js`); component tests live in `tests/components/`
   (e.g. `tests/components/ParkingDisplayWrapper.spec.js`). The suite currently has
-  10 test files / 63 tests (`npx vitest run` in `frontend/`).
+  11 test files / 72 tests (`npx vitest run` in `frontend/`).
 - Prefer testing pure functions (`processCalendarEvents`, `formatDateISO`,
   `useDisplayScaler` math) and component contracts (props → rendered output),
   not implementation details.

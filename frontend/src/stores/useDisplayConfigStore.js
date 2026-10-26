@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { configApi } from '@/services/api'
+import { isRequestCanceled } from '@/utils/requestUtils'
 
 /**
  * Store for managing the dashboard display configuration.
@@ -18,16 +19,22 @@ export const useDisplayConfigStore = defineStore('displayConfig', () => {
   const loaded = ref(false)
   const error = ref(null)
 
-  async function fetchConfig() {
+  /**
+   * Laedt die Anzeige-Konfiguration vom Backend.
+   * @param {AbortSignal} [signal] - Bricht die Anfrage ab, wenn die Ansicht verlassen wird.
+   */
+  async function fetchConfig(signal) {
     loading.value = true
     try {
-      const remoteConfig = await configApi.getConfig()
+      const remoteConfig = await configApi.getConfig(signal)
       if (remoteConfig) {
         config.value = { ...config.value, ...remoteConfig }
       }
       loaded.value = true
       error.value = null
     } catch (e) {
+      // Ein Abbruch beim Verlassen der Ansicht ist kein Ladefehler.
+      if (isRequestCanceled(e)) return
       console.error('Failed to load config', e)
       // The admin view renders an error banner from this ref; without it a
       // failed load was indistinguishable from a successful one.

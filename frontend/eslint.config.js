@@ -17,6 +17,22 @@ export default [
         globals: globals.browser 
     }
   },
+  {
+    // Build- und Tooling-Konfiguration laeuft in Node (process, __dirname, ...).
+    files: ["**/*.config.{js,mjs,cjs,ts}", "eslint.config.js"],
+    languageOptions: {
+        globals: globals.node
+    }
+  },
+  {
+    // Tests laufen mit Vitest (globals: true in vitest.config.js) und brauchen
+    // daher describe/it/expect/vi als globale Bezeichner. Die Browser-Globals
+    // aus dem Block oben bleiben gemerged erhalten (jsdom-Umgebung).
+    files: ["tests/**/*.{js,ts}", "src/**/*.test.{js,ts}"],
+    languageOptions: {
+        globals: globals.vitest
+    }
+  },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   ...pluginVue.configs["flat/recommended"],

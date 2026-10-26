@@ -59,12 +59,20 @@ let configPollInterval = null
 let dataPollInterval = null
 
 /**
+ * Sammelt alle Anfragen dieser Ansicht, damit sie beim Verlassen abgebrochen
+ * werden. Ein Abbruch ist kein Fehler: Die Stores ignorieren ihn, statt ein
+ * Fehlerbanner zu setzen.
+ */
+const requestController = new AbortController()
+const requestSignal = requestController.signal
+
+/**
  * Starts the 30s config + data polling loops. Paused while the tab is hidden
  * (a kiosk display tab in a background window would otherwise keep polling).
  */
 function startPolling() {
   if (configPollInterval || dataPollInterval) return
-  configPollInterval = setInterval(() => configStore.fetchConfig(), 30000)
+  configPollInterval = setInterval(() => configStore.fetchConfig(requestSignal), 30000)
   dataPollInterval = setInterval(() => {
     refreshDataForView(currentViewId.value, true)
   }, 30000)
@@ -82,7 +90,7 @@ function handleVisibilityChange() {
     stopPolling()
   } else {
     // Refresh immediately on return so the display is current, then resume.
-    configStore.fetchConfig()
+    configStore.fetchConfig(requestSignal)
     refreshDataForView(currentViewId.value, true)
     startPolling()
   }
@@ -152,11 +160,11 @@ async function refreshDataForView(view, silent = false) {
   if (view === 'game') return
 
   if (view === 'parking' || view === 'dashboard') {
-    await parkingStore.fetchOverview(silent)
+    await parkingStore.fetchOverview(silent, requestSignal)
   }
 
   if (view === 'highscore' || view === 'dashboard') {
-    await highscoreStore.fetchHighscore(silent)
+    await highscoreStore.fetchHighscore(silent, requestSignal)
   }
 
   if (view === 'calendar' || view === 'dashboard') {
@@ -189,13 +197,13 @@ async function refreshDataForView(view, silent = false) {
       effectiveEndDate = formatDateISO(new Date(today.getFullYear(), today.getMonth() + 2, 0))
     }
 
-    await calendarStore.fetchEvents(effectiveStartDate, effectiveEndDate)
+    await calendarStore.fetchEvents(effectiveStartDate, effectiveEndDate, requestSignal)
   }
 }
 
 // --- Lifecycle ---
 onMounted(async () => {
-  await configStore.fetchConfig()
+  await configStore.fetchConfig(requestSignal)
 
   if (configStore.config.rotationIntervalSeconds === -1) {
     currentViewId.value = 'game'
@@ -216,6 +224,9 @@ onMounted(async () => {
 onUnmounted(() => {
   document.removeEventListener('visibilitychange', handleVisibilityChange)
   stopPolling()
+  // Laufende Anfragen dieser Ansicht abbrechen, damit keine veralteten
+  // Antworten mehr in die Stores geschrieben werden.
+  requestController.abort()
 })
 
 // --- Watchers ---

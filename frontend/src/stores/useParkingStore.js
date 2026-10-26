@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { parkingApi } from '@/services/api'
+import { isRequestCanceled } from '@/utils/requestUtils'
 
 /**
  * Store for managing parking data for both the display and admin views.
@@ -14,13 +15,20 @@ export const useParkingStore = defineStore('parking', () => {
   const adminLoading = ref(false)
   const adminError = ref(null)
 
-  async function fetchOverview(silent = false) {
+  /**
+   * Laedt die Wochenuebersicht der Parkplaetze.
+   * @param {boolean} [silent=false] - Unterdrueckt den Ladezustand beim Polling.
+   * @param {AbortSignal} [signal] - Bricht die Anfrage ab, wenn die Ansicht verlassen wird.
+   */
+  async function fetchOverview(silent = false, signal) {
     if (!silent) loading.value = true
     error.value = null
     try {
-      const data = await parkingApi.getOverview()
+      const data = await parkingApi.getOverview(signal)
       weekData.value = Array.isArray(data) ? data : []
     } catch (e) {
+      // Ein Abbruch beim Verlassen der Ansicht ist kein Ladefehler.
+      if (isRequestCanceled(e)) return
       console.error('Error fetching parking data:', e)
       if (!silent) error.value = 'Failed to load parking data.'
     } finally {

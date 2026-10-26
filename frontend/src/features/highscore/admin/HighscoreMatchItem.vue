@@ -71,7 +71,6 @@
         <BaseButton
           variant="danger"
           size="small"
-          :loading="deleting"
           title="Löschen"
           class="w-full sm:w-auto px-2"
           @click="deleteMatch"
@@ -130,21 +129,23 @@ const props = defineProps({
 
 // Declares the event for deleting a match.
 const emit = defineEmits(['delete', 'edit'])
-const deleting = ref(false)
 const showDeleteDialog = ref(false)
 
-const deleteMatch = async () => {
+/**
+ * Oeffnet den Bestaetigungsdialog fuer das Loeschen.
+ */
+const deleteMatch = () => {
   showDeleteDialog.value = true
 }
 
-const confirmDelete = async () => {
+/**
+ * Reicht das Loeschen nach der Bestaetigung an die Elternliste weiter.
+ * Der Ladezustand liegt bewusst bei der Elternliste (eigener Spinner waehrend
+ * der Anfrage), weil nur sie die tatsaechliche Loeschanfrage kennt.
+ */
+const confirmDelete = () => {
   showDeleteDialog.value = false
-  deleting.value = true
-  try {
-    emit('delete', { id: props.match.id, type: props.type })
-  } finally {
-    deleting.value = false
-  }
+  emit('delete', { id: props.match.id, type: props.type })
 }
 
 /**
