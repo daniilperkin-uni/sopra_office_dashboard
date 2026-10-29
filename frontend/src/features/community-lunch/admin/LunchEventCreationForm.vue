@@ -277,12 +277,10 @@ const saveEdit = async () => {
     cancelEdit()
   } catch (e) {
     console.error(e)
-    // Duplikate beantwortet das Backend mit 400 und der Begruendung in
-    // ProblemDetail.detail, nicht mit 409 und nicht in "message".
     if (e.response && e.response.status === 409) {
       toast.error('Dieses Gericht existiert bereits.')
     } else {
-      toast.error(e.response?.data?.detail || 'Fehler beim Speichern.')
+      toast.error('Fehler beim Speichern.')
     }
   }
 }
@@ -331,7 +329,7 @@ const createCatalogItem = async () => {
     if (e.response && e.response.status === 409) {
       toast.error('Diese Option existiert bereits (aktiv oder inaktiv).')
     } else {
-      toast.error(e.response?.data?.detail || 'Fehler beim Erstellen der Option.')
+      toast.error('Fehler beim Erstellen der Option.')
     }
   }
 }
