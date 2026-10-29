@@ -1,5 +1,6 @@
 package de.office.dashboard.communitylunch.service;
 
+import de.office.dashboard.common.exception.DuplicateResourceException;
 import de.office.dashboard.common.services.MattermostNotificationSender;
 import de.office.dashboard.communitylunch.dto.choice.request.LunchChoiceRequest;
 import de.office.dashboard.communitylunch.dto.choice.response.LunchChoiceResponse;
@@ -126,12 +127,12 @@ public class CommunityLunchService {
      *
      * @param request the event creation request containing date, location, note, and optional initial catalog item IDs
      * @return the newly created event
-     * @throws IllegalArgumentException if an event already exists for the specified date
+     * @throws DuplicateResourceException if an event already exists for the specified date
      */
     @Transactional
     public CommunityLunchEventResponse createCommunityLunch(CreateCommunityLunchEventRequest request) {
         if (communityLunchEventRepository.existsByDate(request.date())) {
-            throw new IllegalArgumentException("Event already exists for date: " + request.date());
+            throw new DuplicateResourceException("Event already exists for date: " + request.date());
         }
 
         CommunityLunchEvent event = new CommunityLunchEvent();
@@ -165,7 +166,8 @@ public class CommunityLunchService {
      * @param request the update request containing new values
      * @return the updated event
      * @throws NoSuchElementException if event not found
-     * @throws IllegalArgumentException if new date conflicts with existing event or status is invalid
+     * @throws DuplicateResourceException if new date conflicts with an existing event
+     * @throws IllegalArgumentException if status is invalid
      */
     @Transactional
     public CommunityLunchEventResponse updateCommunityLunch(Long eventId, UpdateCommunityLunchEventRequest request) {
@@ -174,7 +176,7 @@ public class CommunityLunchService {
 
         if (request.date() != null && !request.date().equals(event.getDate())) {
             if (communityLunchEventRepository.existsByDate(request.date())) {
-                throw new IllegalArgumentException("Another event already exists for date: " + request.date());
+                throw new DuplicateResourceException("Another event already exists for date: " + request.date());
             }
             event.setDate(request.date());
         }
@@ -270,7 +272,7 @@ public class CommunityLunchService {
      * @param request request containing the custom option label and save-to-catalog flag
      * @return the updated event with the new option
      * @throws NoSuchElementException if event not found
-     * @throws IllegalArgumentException if option with same label already exists in event
+     * @throws DuplicateResourceException if option with same label already exists in event
      */
     @Transactional
     public CommunityLunchEventResponse addCustomOption(Long eventId, AddCustomOptionRequest request) {
@@ -283,7 +285,7 @@ public class CommunityLunchService {
                 .map(LunchOptionMapper::label)
                 .anyMatch(l -> l.equalsIgnoreCase(label));
         if (exists) {
-            throw new IllegalArgumentException("Option already exists for this event");
+            throw new DuplicateResourceException("Option already exists for this event");
         }
 
         FoodCatalogItem catalogItem = null;

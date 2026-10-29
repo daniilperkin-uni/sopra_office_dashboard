@@ -1,6 +1,7 @@
 package de.office.dashboard.exception;
 
 import jakarta.validation.ConstraintViolationException;
+import de.office.dashboard.common.exception.DuplicateResourceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -83,6 +84,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ProblemDetail> handleIllegalState(IllegalStateException e) {
         // A business rule that conflicts with the current state (e.g. voting on
         // a lunch event that is not OPEN) is a 409, not an internal error.
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(detail);
+    }
+
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<ProblemDetail> handleDuplicate(DuplicateResourceException e) {
+        // "Already exists" is a conflict with the current state, not a broken
+        // request: the controllers document 409 for these cases and the
+        // frontend checks for it. Answering 400 forced every client to special
+        // case a status the API never documented.
         ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(detail);
     }

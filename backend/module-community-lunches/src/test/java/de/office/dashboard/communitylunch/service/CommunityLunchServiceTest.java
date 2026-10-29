@@ -1,7 +1,9 @@
 package de.office.dashboard.communitylunch.service;
 
+import de.office.dashboard.common.exception.DuplicateResourceException;
 import de.office.dashboard.common.services.MattermostNotificationSender;
 import de.office.dashboard.communitylunch.dto.choice.request.LunchChoiceRequest;
+import de.office.dashboard.communitylunch.dto.event.request.CreateCommunityLunchEventRequest;
 import de.office.dashboard.communitylunch.entity.CommunityLunchEvent;
 import de.office.dashboard.communitylunch.entity.LunchChoice;
 import de.office.dashboard.communitylunch.entity.LunchEventOption;
@@ -19,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+import java.time.LocalDate;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -78,6 +81,17 @@ class CommunityLunchServiceTest {
 
         assertThrows(IllegalStateException.class, () -> service.choose(7L, request));
         verify(lunchChoiceRepository, never()).save(any(LunchChoice.class));
+    }
+
+    @Test
+    void createCommunityLunch_rejectsADateThatIsAlreadyTaken() {
+        LocalDate date = LocalDate.now().plusDays(3);
+        when(communityLunchEventRepository.existsByDate(date)).thenReturn(true);
+
+        CreateCommunityLunchEventRequest request =
+                new CreateCommunityLunchEventRequest(date, "Büro", "Test", null);
+
+        assertThrows(DuplicateResourceException.class, () -> service.createCommunityLunch(request));
     }
 
     @Test

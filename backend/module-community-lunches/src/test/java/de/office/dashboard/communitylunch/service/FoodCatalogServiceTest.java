@@ -1,5 +1,7 @@
 package de.office.dashboard.communitylunch.service;
 
+import de.office.dashboard.common.exception.DuplicateResourceException;
+import de.office.dashboard.communitylunch.dto.catalog.request.CreateFoodCatalogItemRequest;
 import de.office.dashboard.communitylunch.entity.FoodCatalogItem;
 import de.office.dashboard.communitylunch.repository.FoodCatalogItemRepository;
 import org.junit.jupiter.api.Test;
@@ -10,7 +12,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
+import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,5 +42,17 @@ class FoodCatalogServiceTest {
 
         assertEquals(1, result.size());
         assertEquals("Pizza", result.get(0).label());
+    }
+
+    @Test
+    void createCatalogItem_failsWithADuplicateResourceWhenTheLabelIsActive() {
+        FoodCatalogItem existing = new FoodCatalogItem();
+        existing.setLabel("Pizza");
+        existing.setActive(true);
+
+        when(repository.findByLabelIgnoreCase("Pizza")).thenReturn(Optional.of(existing));
+
+        assertThrows(DuplicateResourceException.class,
+                () -> service.createCatalogItem(new CreateFoodCatalogItemRequest("Pizza")));
     }
 }

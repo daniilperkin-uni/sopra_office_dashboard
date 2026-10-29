@@ -7,6 +7,7 @@ springBoot {
 }
 
 dependencies {
+    implementation project(':common')
     implementation project(':module-events')
     implementation project(':module-parking')
     implementation project(':module-community-lunches')

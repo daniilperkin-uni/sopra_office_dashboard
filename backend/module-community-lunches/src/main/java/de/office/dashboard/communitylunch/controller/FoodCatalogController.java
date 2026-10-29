@@ -14,11 +14,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 /**
@@ -66,11 +64,9 @@ public class FoodCatalogController {
     public ResponseEntity<FoodCatalogItemResponse> createCatalogItem(
             @Valid @RequestBody CreateFoodCatalogItemRequest request
     ) {
-        try {
-            return ResponseEntity.ok(service.createCatalogItem(request));
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-        }
+        // Duplicate labels are reported as DuplicateResourceException and mapped
+        // to 409 by the global handler; no controller-local translation needed.
+        return ResponseEntity.ok(service.createCatalogItem(request));
     }
 
     @PutMapping("/{id}")
@@ -86,11 +82,7 @@ public class FoodCatalogController {
             @PathVariable @Positive Long id,
             @Valid @RequestBody UpdateFoodCatalogItemRequest request
     ) {
-        try {
-            return ResponseEntity.ok(service.updateCatalogItem(id, request));
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-        }
+        return ResponseEntity.ok(service.updateCatalogItem(id, request));
     }
 
     @PatchMapping("/{id}")

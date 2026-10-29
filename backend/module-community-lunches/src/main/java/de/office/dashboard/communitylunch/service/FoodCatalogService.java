@@ -1,5 +1,6 @@
 package de.office.dashboard.communitylunch.service;
 
+import de.office.dashboard.common.exception.DuplicateResourceException;
 import de.office.dashboard.communitylunch.dto.catalog.request.CreateFoodCatalogItemRequest;
 import de.office.dashboard.communitylunch.dto.catalog.request.UpdateFoodCatalogItemRequest;
 import de.office.dashboard.communitylunch.dto.catalog.response.FoodCatalogItemResponse;
@@ -55,7 +56,7 @@ public class FoodCatalogService {
      *
      * @param request request containing the catalog item label
      * @return the created or reactivated catalog item
-     * @throws IllegalArgumentException if an active item with this label already exists
+     * @throws DuplicateResourceException if an active item with this label already exists
      */
     @Transactional
     public FoodCatalogItemResponse createCatalogItem(CreateFoodCatalogItemRequest request) {
@@ -64,7 +65,7 @@ public class FoodCatalogService {
         FoodCatalogItem item = foodCatalogItemRepository.findByLabelIgnoreCase(label)
                 .map(existing -> {
                     if (existing.isActive()) {
-                        throw new IllegalArgumentException("This item is already in the catalog.");
+                        throw new DuplicateResourceException("This item is already in the catalog.");
                     }
                     existing.setActive(true);
                     return existing;
@@ -86,7 +87,7 @@ public class FoodCatalogService {
      * @param request request containing the new label
      * @return the updated catalog item
      * @throws NoSuchElementException if catalog item not found
-     * @throws IllegalArgumentException if another active item with this label already exists
+     * @throws DuplicateResourceException if another active item with this label already exists
      */
     @Transactional
     public FoodCatalogItemResponse updateCatalogItem(Long id, UpdateFoodCatalogItemRequest request) {
@@ -101,7 +102,7 @@ public class FoodCatalogService {
         }
 
         if (foodCatalogItemRepository.existsByLabelIgnoreCaseAndIdNot(newLabel, id)) {
-            throw new IllegalArgumentException("This item is already in the catalog.");
+            throw new DuplicateResourceException("This item is already in the catalog.");
         }
 
         item.setLabel(newLabel);

@@ -96,7 +96,7 @@ public class CommunityLunchController {
     @Operation(summary = "Create new lunch event", description = "Creates a new community lunch event. Events must have unique dates. Optionally includes initial meal options from the catalog. Sends Mattermost notification on creation")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Event created successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CommunityLunchEventResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid request or event with this date already exists"),
+            @ApiResponse(responseCode = "400", description = "Invalid request"),
             @ApiResponse(responseCode = "409", description = "Event with this date already exists")
     })
     public ResponseEntity<CommunityLunchEventResponse> createCommunityLunch(
@@ -109,8 +109,9 @@ public class CommunityLunchController {
     @Operation(summary = "Update lunch event", description = "Updates an existing community lunch event's details including date, location, note, and status")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Event updated successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CommunityLunchEventResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid request or date conflict"),
-            @ApiResponse(responseCode = "404", description = "Event not found")
+            @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "404", description = "Event not found"),
+            @ApiResponse(responseCode = "409", description = "Another event already exists for this date")
     })
     public ResponseEntity<CommunityLunchEventResponse> updateCommunityLunch(
             @Parameter(description = "Unique identifier of the lunch event", example = "1", required = true)
@@ -156,7 +157,8 @@ public class CommunityLunchController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Custom option added successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CommunityLunchEventResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request"),
-            @ApiResponse(responseCode = "404", description = "Event not found")
+            @ApiResponse(responseCode = "404", description = "Event not found"),
+            @ApiResponse(responseCode = "409", description = "Option with this label already exists in the event")
     })
     public ResponseEntity<CommunityLunchEventResponse> addCustomOption(
             @Parameter(description = "Unique identifier of the lunch event", example = "1", required = true)
