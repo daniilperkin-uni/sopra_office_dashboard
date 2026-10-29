@@ -170,11 +170,10 @@ const createItem = async () => {
     newItemLabel.value = ''
   } catch (e) {
     console.error(e)
-    if (e.response && e.response.data && e.response.data.message) {
-      toast.error(e.response.data.message)
-    } else {
-      toast.error('Ein Fehler ist aufgetreten.')
-    }
+    // Fehlerdetails stehen in ProblemDetail.detail; "message" ist dort nie gesetzt.
+    toast.error(
+      e.response?.data?.detail || e.response?.data?.message || 'Ein Fehler ist aufgetreten.'
+    )
   }
 }
 
@@ -223,7 +222,7 @@ const saveEdit = async () => {
     if (e.response && e.response.status === 409) {
       toast.error('Dieses Gericht existiert bereits.')
     } else {
-      toast.error('Fehler beim Speichern.')
+      toast.error(e.response?.data?.detail || 'Fehler beim Speichern.')
     }
   }
 }
