@@ -270,7 +270,7 @@ CREATE TABLE lunch_events (
 ```
 
 `./gradlew build` compiles, runs Checkstyle and the tests and assembles the deployable boot jar — this is what CI runs.
-The backend suite is currently 93 tests in 7 modules (91 run, 2 skipped: the `@Disabled` `OdooClientApiTest`).
+The backend suite is currently 100 tests in 7 modules (98 run, 2 skipped: the `@Disabled` `OdooClientApiTest`).
 
 #### Open test report for module-parking
 
@@ -311,7 +311,7 @@ Run from `frontend/` with Node.js 22 (`package.json` requires `node >=22`):
 ```
 npm run lint          # ESLint
 npm run format:check  # Prettier check
-npm run test          # vitest run — 11 test files / 71 tests
+npm run test          # vitest run — 13 test files / 75 tests
 npm run build         # vue-tsc + vite build
 ```
 
@@ -371,7 +371,7 @@ Key features include:
 * **Results Aggregation:** View voting results with counts per meal option, sorted by popularity
 * **Food Catalog:** Maintain a reusable database of meal options with soft-delete support
 * **Mattermost Integration:** Sends automated notifications in German when new events are created with meal options
-* **Administrative Interface:** Provides admin view (`/admin/lunch`) for managing lunch events
+* **Administrative Interface:** Provides admin view (`/admin/lunch`) for managing lunch events, including opening and closing the vote
 
 The module exposes comprehensive REST APIs at `/api/community-lunches` for event and voting management, and `/api/food-catalog` for catalog administration. It uses Liquibase for database migrations and implements proper validation to ensure data integrity, helping teams coordinate lunch events efficiently.
 

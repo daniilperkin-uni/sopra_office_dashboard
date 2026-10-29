@@ -117,6 +117,14 @@ The frontend follows a **Feature-Driven Architecture** to improve maintainabilit
 
 ## 5. Resolution History (Changelog)
 
+### **Oct 29, 2026 Updates (QA-Fix-Pass)**
+
+- **Lunch-Abstimmung erreichbar:** Neue Lunch-Events werden als `DRAFT` angelegt und `choose()` akzeptiert nur `OPEN`. Dafür gab es in der Oberfläche keinen Auslöser; `LunchEventAdmin.vue` zeigt jetzt ein Status-Badge und einen Öffnen/Schließen-Schalter (`PATCH /api/community-lunches/{id}/status`). Klicks auf Optionen eines nicht geöffneten Events lösen außerdem keine 409-Antwort mehr aus, sondern eine klare Meldung.
+- **Event-Cache:** `DashboardEventService.generateEvents()` ersetzt den Cache nicht mehr, sondern führt neu erzeugte Events mit den vorhandenen zusammen (Dedupe über Typ, Name und Datum). Vorher wuchsen die Cache-Grenzen über die tatsächlich gecachten Daten hinaus, sodass ein Fensterwechsel die Events des vorherigen Fensters stillschweigend verlor.
+- **Jubiläen:** Arbeitsjubiläen entstehen erst ab dem ersten vollendeten Jahr (`year > contractStartDate.getYear()`); am Einstellungstag stand vorher „0 Jahre im Team" auf dem Kiosk.
+- **Lunch-API-Client:** `lunchService.addOptionFromCatalog` sendet `catalogItemIds: [id]` statt `catalogItemId`, und die Katalog-Formulare zeigen die Begründung aus `ProblemDetail.detail` statt eines generischen Toasts.
+- **Aufräumarbeiten:** leerer O(n²)-Loop in `EloRankingService.getRankings()` entfernt, `dateUtils` in `BookingList.vue` statisch importiert (beseitigt die Vite-Chunk-Warnung), Javadoc des `ParkingScheduler` auf 00:00 korrigiert, Testzahlen im README aktualisiert.
+
 ### **Oct 25, 2026 Updates (UI feedback, reduced motion, actuator health)**
 
 - **Admin-Feedback ohne native Dialoge:** `alert()` und `confirm()` sind aus allen Admin-Views verschwunden. Ein neuer `useToast()`-Store plus `ToastHost.vue` (in `App.vue` gemountet, `role="status"` / `aria-live="polite"`) zeigt Fehler und Erfolge als nicht-blockierende Meldung; destruktive Aktionen laufen über den vorhandenen `ConfirmDialog` (Parking-Serien, einzelne Buchungen, Lunch-Events).
