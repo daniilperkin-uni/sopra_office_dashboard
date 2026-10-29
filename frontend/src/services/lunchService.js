@@ -105,14 +105,14 @@ export const lunchService = {
   // --- Food Options ---
 
   /**
-   * Adds a food option from the main catalog to a specific event.
+   * Adds one or more food options from the main catalog to a specific event.
    * @param {number} eventId - The ID of the event to add the option to.
    * @param {number} catalogItemId - The ID of the item from the food catalog.
-   * @returns {Promise<Object>} A promise that resolves to the newly added option object.
+   * @returns {Promise<Object>} A promise that resolves to the updated event object.
    */
   async addOptionFromCatalog(eventId, catalogItemId) {
     const response = await apiClient.post(`${API_PATH}/${eventId}/options/from-catalog`, {
-      catalogItemId,
+      catalogItemIds: [catalogItemId],
     })
     return response.data
   },
