@@ -41,11 +41,15 @@ class DashboardEventServiceTest {
     private DashboardEventService service;
 
     private Map<String, Object> employeeWithBirthday(LocalDate birthday) {
+        return employeeWithBirthday("Max Mustermann", 1L, birthday);
+    }
+
+    private Map<String, Object> employeeWithBirthday(String name, long id, LocalDate birthday) {
         return Map.of(
-                "id", 1L,
-                "name", "Max Mustermann",
+                "id", id,
+                "name", name,
                 "birthday", birthday.toString(),
-                "work_email", "max@example.test");
+                "work_email", name.toLowerCase() + "@example.test");
     }
 
     private void mapEntitiesLikeProduction() {
@@ -89,5 +93,31 @@ class DashboardEventServiceTest {
         assertThat(result).hasSize(1);
         assertThat(result.get(0).dashboardEventDate())
                 .isEqualTo(today.plusDays(2).format(DateTimeFormatterConstants.DATE_FORMATTER));
+    }
+
+    @Test
+    void getEventsInDateRange_keepsEarlierEventsWhenTheWindowGrows() throws Exception {
+        LocalDate today = LocalDate.of(2026, 3, 1);
+        when(odooClient.getEmployees()).thenReturn(List.of(employeeWithBirthday("Alice", 1L, today.plusDays(1))));
+        when(odooClient.getContracts()).thenReturn(List.of());
+        mapEntitiesLikeProduction();
+
+        assertThat(service.getEventsInDateRange(today, today.plusDays(5)))
+                .extracting(DashboardEventResponse::employeeName)
+                .containsExactly("Alice");
+
+        when(odooClient.getEmployees()).thenReturn(List.of(
+                employeeWithBirthday("Alice", 1L, today.plusDays(1)),
+                employeeWithBirthday("Bob", 2L, today.plusDays(10))));
+
+        assertThat(service.getEventsInDateRange(today.plusDays(6), today.plusDays(15)))
+                .extracting(DashboardEventResponse::employeeName)
+                .containsExactly("Bob");
+
+        // The second request widened the tracked bounds to today .. today+15, so this
+        // one is served from the cache. Alice's birthday must still be in it.
+        assertThat(service.getEventsInDateRange(today, today.plusDays(5)))
+                .extracting(DashboardEventResponse::employeeName)
+                .containsExactly("Alice");
     }
 }

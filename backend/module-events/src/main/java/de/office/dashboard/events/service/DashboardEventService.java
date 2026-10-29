@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -144,7 +145,7 @@ public class DashboardEventService {
      *
      * @param startFilterDate the start date for filtering events
      * @param endFilterDate   the end date for filtering events
-     * @return list of generated dashboard event responses
+     * @return the events of the requested range (not the whole cache)
      */
     private List<DashboardEventResponse> generateEvents(LocalDate startFilterDate, LocalDate endFilterDate) {
         log.info("Method generateEvents called with startFilterDate: " + startFilterDate + " endFilterDate "
@@ -172,11 +173,52 @@ public class DashboardEventService {
         allEvents.addAll(getWorkAnniversariesInDateRange(startFilterDate, endFilterDate, contracts));
         allEvents.addAll(getProbationEndingsInDateRange(startFilterDate, endFilterDate, contracts));
 
-        cachedEvents = allEvents.stream()
+        List<DashboardEventResponse> generated = allEvents.stream()
                 .map(dashboardEventMapper::toResponse)
                 .collect(Collectors.toList());
 
-        return cachedEvents;
+        // Merge instead of replace. The tracked bounds below grow to the union of
+        // every requested range, so replacing the list would leave the bounds
+        // promising data that is no longer cached: a later request for the earlier
+        // window would skip generation and filter a list that no longer holds it.
+        cachedEvents = mergeIntoCache(cachedEvents, generated);
+
+        return generated;
+    }
+
+    /**
+     * Merges freshly generated events into the existing cache.
+     * <p>
+     * Generated events win over cached ones with the same identity, so an event
+     * that is regenerated (for example because an employee name changed) is
+     * refreshed instead of being kept twice.
+     * </p>
+     *
+     * @param existing  the events already in the cache
+     * @param generated the events generated for the newly requested range
+     * @return the merged cache, ordered like the cache before the merge
+     */
+    private List<DashboardEventResponse> mergeIntoCache(List<DashboardEventResponse> existing,
+                                                        List<DashboardEventResponse> generated) {
+        Map<String, DashboardEventResponse> merged = new LinkedHashMap<>();
+        for (DashboardEventResponse event : existing) {
+            merged.put(cacheKey(event), event);
+        }
+        for (DashboardEventResponse event : generated) {
+            merged.put(cacheKey(event), event);
+        }
+        return new ArrayList<>(merged.values());
+    }
+
+    /**
+     * Builds the identity of a cached event: one person can have several events of
+     * the same type in the cache, but not two on the same day.
+     *
+     * @param event the cached event
+     * @return a key that identifies the event inside the cache
+     */
+    private String cacheKey(DashboardEventResponse event) {
+        return event.dashboardEventType() + "|" + event.employeeName() + "|" + event.dashboardEventDate();
     }
 
     private void calculateEarliestCachedDate(LocalDate startFilterDate) {
