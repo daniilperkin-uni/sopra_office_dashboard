@@ -323,6 +323,14 @@ public class DashboardEventService {
                 int endYear = endDate.getYear();
 
                 for (int year = startYear - 1; year <= endYear + 1; year++) {
+                    // An anniversary celebrates completed years. On the start date
+                    // itself the difference is zero, and for a contract that starts in
+                    // the future it is negative; both used to reach the kiosk as
+                    // "0 Jahre im Team" or a negative number.
+                    if (year <= contractStartDate.getYear()) {
+                        continue;
+                    }
+
                     LocalDate currentYearAnniversary = contractStartDate.withYear(year);
 
                     if (!currentYearAnniversary.isBefore(startDate) && !currentYearAnniversary.isAfter(endDate)) {

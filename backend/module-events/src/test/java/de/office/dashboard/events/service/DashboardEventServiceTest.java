@@ -52,6 +52,12 @@ class DashboardEventServiceTest {
                 "work_email", name.toLowerCase() + "@example.test");
     }
 
+    private Map<String, Object> contract(long employeeId, String employeeName, LocalDate startDate) {
+        return Map.of(
+                "employee_id", new Object[]{employeeId, employeeName},
+                "date_start", startDate.toString());
+    }
+
     private void mapEntitiesLikeProduction() {
         when(dashboardEventMapper.toResponse(any(DashboardEvent.class))).thenAnswer(invocation -> {
             DashboardEvent event = invocation.getArgument(0);
@@ -119,5 +125,31 @@ class DashboardEventServiceTest {
         assertThat(service.getEventsInDateRange(today, today.plusDays(5)))
                 .extracting(DashboardEventResponse::employeeName)
                 .containsExactly("Alice");
+    }
+
+    @Test
+    void getEventsInDateRange_ignoresContractsThatStartInsideTheWindow() throws Exception {
+        LocalDate start = LocalDate.of(2026, 6, 1);
+        when(odooClient.getEmployees()).thenReturn(List.of());
+        when(odooClient.getContracts()).thenReturn(List.of(contract(1L, "New Employee", start)));
+
+        // A work anniversary celebrates completed years, so the start date itself is
+        // not one: it used to be published as "0 Jahre im Team".
+        assertThat(service.getEventsInDateRange(start, start.plusDays(7))).isEmpty();
+    }
+
+    @Test
+    void getEventsInDateRange_reportsTheFirstAnniversaryOneYearAfterTheStart() throws Exception {
+        when(odooClient.getEmployees()).thenReturn(List.of());
+        when(odooClient.getContracts())
+                .thenReturn(List.of(contract(1L, "New Employee", LocalDate.of(2026, 6, 1))));
+        mapEntitiesLikeProduction();
+
+        List<DashboardEventResponse> result =
+                service.getEventsInDateRange(LocalDate.of(2027, 5, 30), LocalDate.of(2027, 6, 5));
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).dashboardEventType()).isEqualTo("WORK_ANNIVERSARY");
+        assertThat(result.get(0).dashboardEventDate()).isEqualTo("01.06.2027");
     }
 }
