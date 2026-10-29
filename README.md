@@ -270,7 +270,7 @@ CREATE TABLE lunch_events (
 ```
 
 `./gradlew build` compiles, runs Checkstyle and the tests and assembles the deployable boot jar — this is what CI runs.
-The backend suite is currently 100 tests in 7 modules (98 run, 2 skipped: the `@Disabled` `OdooClientApiTest`).
+The backend suite is currently 103 tests in 7 modules (101 run, 2 skipped: the `@Disabled` `OdooClientApiTest`).
 
 #### Open test report for module-parking
 
