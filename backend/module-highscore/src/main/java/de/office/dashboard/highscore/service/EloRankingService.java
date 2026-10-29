@@ -69,16 +69,9 @@ public class EloRankingService {
         // records: [0]=wins, [1]=losses, [2]=currentStreak, [3]=bestStreak
 
         List<DartsEntryView> entries = reader.findAllOrdered();
-        for (int i = 0; i < entries.size(); i++) {
-            for (int j = i + 1; j < entries.size(); j++) {
-                // Pair entries with identical finish counts played "together"
-                // is not derivable from the flat schema; instead each entry
-                // is compared against the next entry of another player with
-                // the same dartsToFinish semantics is ambiguous. We therefore
-                // treat consecutive pairs (2i, 2i+1) as one match.
-            }
-        }
 
+        // Which two entries belong to the same match is not derivable from the flat
+        // schema, so consecutive pairs (2i, 2i+1) are treated as one match.
         List<DartsEntryView> ordered = new ArrayList<>(entries);
         for (int i = 0; i + 1 < ordered.size(); i += 2) {
             DartsEntryView first = ordered.get(i);
