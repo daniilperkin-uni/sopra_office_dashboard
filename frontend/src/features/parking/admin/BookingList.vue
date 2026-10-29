@@ -222,7 +222,7 @@
 import { computed, ref } from 'vue'
 import BookingItem from './BookingItem.vue'
 import { parkingApi } from '@/services/api'
-import { formatDate } from '@/utils/dateUtils'
+import { formatDate, formatDateForAPI } from '@/utils/dateUtils'
 import BaseButton from '@/components/common/BaseButton.vue'
 import DateInput from '@/components/common/DateInput.vue'
 import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
@@ -332,8 +332,6 @@ const saveSeriesEdit = async () => {
 
   savingSeries.value = true
   try {
-    const { formatDateForAPI } = await import('@/utils/dateUtils')
-
     // Calculate new End Date based on Start Date + Duration
     const startDateObj = new Date(seriesEditData.value.startDate)
     const endDateObj = new Date(startDateObj)
