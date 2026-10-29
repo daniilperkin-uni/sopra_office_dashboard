@@ -34,7 +34,7 @@ public class ParkingScheduler {
      * historical parking data that is no longer needed.
      * </p>
      * <p>
-     * Default schedule: Daily at 12:00 (noon).
+     * Default schedule: Daily at 00:00 (midnight).
      * Can be customized via {@code past.parking.entries.remove.cron} property.
      * Cron expression: "0 0 0 * * *" (second, minute, hour, day, month, day of week)
      * </p>
