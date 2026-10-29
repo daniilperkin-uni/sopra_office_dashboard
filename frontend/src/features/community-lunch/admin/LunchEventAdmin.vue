@@ -44,28 +44,48 @@
             <p class="text-sm opacity-90">
               {{ lunch.note || 'Keine Notiz' }}
             </p>
-          </div>
-          <!-- Delete Button -->
-          <button
-            class="text-white hover:text-red-200 transition-colors p-1 bg-white/10 rounded hover:bg-white/20"
-            title="Event löschen"
-            @click.stop="deleteLunch(lunch)"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+            <span
+              class="inline-flex items-center text-xs font-semibold px-2 py-0.5 rounded mt-2 bg-white/20"
+              data-testid="lunch-status"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-              />
-            </svg>
-          </button>
+              {{ statusLabel(lunch.status) }}
+            </span>
+          </div>
+          <div class="flex items-center gap-1">
+            <!--
+              Ohne diesen Schalter blieb jedes über die Oberfläche angelegte
+              Event im Status DRAFT und die Abstimmung war nie erreichbar.
+            -->
+            <button
+              class="text-xs font-semibold px-2 py-1 text-white bg-white/10 rounded hover:bg-white/20 transition-colors"
+              :title="lunch.status === 'OPEN' ? 'Abstimmung schließen' : 'Abstimmung öffnen'"
+              data-testid="toggle-voting"
+              @click.stop="toggleVoting(lunch)"
+            >
+              {{ lunch.status === 'OPEN' ? 'Schließen' : 'Öffnen' }}
+            </button>
+            <!-- Delete Button -->
+            <button
+              class="text-white hover:text-red-200 transition-colors p-1 bg-white/10 rounded hover:bg-white/20"
+              title="Event löschen"
+              @click.stop="deleteLunch(lunch)"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
 
         <!-- Options List -->
@@ -220,6 +240,12 @@ const voteForOption = async (lunch, option) => {
     toast.error('Bitte gib zuerst deinen Namen oben ein!')
     return
   }
+  // Das Backend lehnt Stimmen ausserhalb von OPEN mit 409 ab; ohne diese
+  // Pruefung sah der Nutzer nur ein generisches Fehler-Toast.
+  if (lunch.status !== 'OPEN') {
+    toast.error('Die Abstimmung ist für dieses Event nicht geöffnet.')
+    return
+  }
   try {
     await lunchService.voteForOption(lunch.id, option.id, userName.value)
     await refreshEvent(lunch)
@@ -294,6 +320,34 @@ const refreshEvent = async (lunch) => {
     }
   } catch (e) {
     console.error('Error refreshing event', e)
+  }
+}
+
+/**
+ * Beschriftung des Event-Status fuer die Anzeige im Kartenkopf.
+ */
+const statusLabel = (status) => {
+  if (status === 'OPEN') return 'Abstimmung offen'
+  if (status === 'CLOSED') return 'Abstimmung geschlossen'
+  return 'Entwurf'
+}
+
+/**
+ * Oeffnet oder schliesst die Abstimmung eines Events.
+ *
+ * Der Statuswechsel war im Backend vorhanden (PATCH /{id}/status), aber in der
+ * Oberflaeche gab es keinen Ausloeser: jedes hier angelegte Event blieb im
+ * Status DRAFT und konnte deshalb nie bewertet werden.
+ */
+const toggleVoting = async (lunch) => {
+  const nextStatus = lunch.status === 'OPEN' ? 'CLOSED' : 'OPEN'
+  try {
+    const updated = await lunchService.updateStatus(lunch.id, nextStatus)
+    lunch.status = updated.status
+    toast.success(nextStatus === 'OPEN' ? 'Abstimmung geöffnet.' : 'Abstimmung geschlossen.')
+  } catch (e) {
+    console.error('Failed to update event status', e)
+    toast.error('Status konnte nicht geändert werden.')
   }
 }
 
