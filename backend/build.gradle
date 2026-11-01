@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '4.1.1' apply false //Download the Spring Boot plugin, but do NOT apply it to this project.
+    id 'org.springframework.boot' version '4.1.2' apply false //Download the Spring Boot plugin, but do NOT apply it to this project.
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
